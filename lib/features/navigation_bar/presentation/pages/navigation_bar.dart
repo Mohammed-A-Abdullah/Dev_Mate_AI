@@ -1,0 +1,46 @@
+import 'package:dev_mate_ai/features/chat_screen/presentation/pages/chat_screen.dart';
+import 'package:dev_mate_ai/features/home/presentation/pages/home_screen.dart';
+import 'package:dev_mate_ai/features/navigation_bar/navigation_pages.dart';
+import 'package:dev_mate_ai/features/navigation_bar/presentation/cubit/navigation_bar_cubit.dart';
+import 'package:dev_mate_ai/features/navigation_bar/presentation/widgets/custom_bottom_navigation_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class CustomNavigationBar extends StatefulWidget {
+  const CustomNavigationBar({super.key});
+
+  @override
+  State<CustomNavigationBar> createState() => _CustomNavigationBarState();
+}
+
+class _CustomNavigationBarState extends State<CustomNavigationBar> {
+  int index = 0;
+
+  final screens = <Widget>[
+    const HomeScreen(),
+    ChatScreen(),
+    const HomeScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => NavigationCubit(),
+      child: BlocBuilder<NavigationCubit, int>(
+        builder: (context, state) {
+          return Scaffold(
+            extendBody: true,
+            backgroundColor: Colors.transparent,
+            body: NavigationPages.pages[index],
+
+            bottomNavigationBar: CustomBottomNavigationBar(
+              currentIndex: index,
+              onTap: (value) =>
+                  context.read<NavigationCubit>().changeIndex(value),
+            )
+          );
+        },
+      ),
+    );
+  }
+}
