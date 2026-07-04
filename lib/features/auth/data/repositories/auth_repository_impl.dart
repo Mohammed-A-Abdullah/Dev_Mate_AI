@@ -1,36 +1,41 @@
-import 'package:dev_mate_ai/core/services/app_preferences.dart';
+import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/repository/auth_repository.dart';
+import '../datasources/auth_local_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
+  AuthRepositoryImpl({AuthLocalDataSource? localDataSource})
+    : _localDataSource = localDataSource ?? AuthLocalDataSource();
+
+  final AuthLocalDataSource _localDataSource;
+
   @override
   Future<bool> isAuthenticated() async {
-    return AppPreferences.isAuthenticated();
+    return _localDataSource.isAuthenticated();
   }
 
   @override
-  Future<bool> signIn(String email, String password) async {
-    final storedEmail = await AppPreferences.getStoredEmail();
-    final storedPassword = await AppPreferences.getStoredPassword();
-
-    if (storedEmail == null || storedPassword == null) {
-      return false;
-    }
-
-    return email.trim().toLowerCase() == storedEmail.trim().toLowerCase() &&
-        password == storedPassword;
+  Future<AuthUserEntity?> signIn({
+    required String email,
+    required String password,
+  }) async {
+    return _localDataSource.signIn(email: email, password: password);
   }
 
   @override
-  Future<bool> signUp(String email, String password) async {
-    if (email.trim().isEmpty || password.trim().length < 6) {
-      return false;
-    }
-
-    return AppPreferences.saveCredentials(email.trim().toLowerCase(), password);
+  Future<AuthUserEntity?> signUp({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    return _localDataSource.signUp(
+      name: name,
+      email: email,
+      password: password,
+    );
   }
 
   @override
   Future<void> signOut() async {
-    await AppPreferences.clearAuth();
+    await _localDataSource.signOut();
   }
 }

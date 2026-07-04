@@ -1,17 +1,39 @@
 import 'package:bloc/bloc.dart';
 
-import '../../domain/repository/auth_repository.dart';
+import '../../domain/entities/auth_user_entity.dart';
+import '../../domain/usecases/check_auth_status_usecase.dart';
+import '../../domain/usecases/sign_in_usecase.dart';
+import '../../domain/usecases/sign_out_usecase.dart';
+import '../../domain/usecases/sign_up_usecase.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit(this.authRepository) : super(AuthInitial());
+  AuthCubit({
+    required CheckAuthStatusUseCase checkAuthStatusUseCase,
+    required SignInUseCase signInUseCase,
+    required SignUpUseCase signUpUseCase,
+    required SignOutUseCase signOutUseCase,
+  }) : _checkAuthStatusUseCase = checkAuthStatusUseCase,
+       _signInUseCase = signInUseCase,
+       _signUpUseCase = signUpUseCase,
+       _signOutUseCase = signOutUseCase,
+       super(AuthInitial());
 
-  final AuthRepository authRepository;
+  final CheckAuthStatusUseCase _checkAuthStatusUseCase;
+  final SignInUseCase _signInUseCase;
+  final SignUpUseCase _signUpUseCase;
+  final SignOutUseCase _signOutUseCase;
 
   Future<void> checkAuthStatus() async {
     emit(AuthLoading());
-    final authenticated = await authRepository.isAuthenticated();
-    emit(authenticated ? AuthAuthenticated() : AuthUnauthenticated());
+    final authenticated = await _checkAuthStatusUseCase();
+    emit(
+      authenticated
+          ? AuthAuthenticated(
+              user: AuthUserEntity(uid: 'local-user', email: ''),
+            )
+          : AuthUnauthenticated(),
+    );
   }
 
   Future<void> submitSignIn({
@@ -20,20 +42,26 @@ class AuthCubit extends Cubit<AuthState> {
   }) async {
     emit(AuthLoading());
 
-    final authenticated = await authRepository.signIn(email, password);
+    final user = await _signInUseCase(email: email, password: password);
 
-    if (authenticated) {
-      emit(AuthAuthenticated());
+    if (user != null) {
+      emit(AuthAuthenticated(user: user));
     } else {
       emit(AuthError('Incorrect email or password. Sign up first if needed.'));
     }
   }
 
   Future<void> submitSignUp({
+    required String name,
     required String email,
     required String password,
   }) async {
     emit(AuthLoading());
+
+    if (name.trim().isEmpty) {
+      emit(AuthError('Please enter your name.'));
+      return;
+    }
 
     if (email.trim().isEmpty || password.trim().length < 6) {
       emit(
@@ -44,10 +72,14 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
 
-    final created = await authRepository.signUp(email, password);
+    final user = await _signUpUseCase(
+      name: name,
+      email: email,
+      password: password,
+    );
 
-    if (created) {
-      emit(AuthAuthenticated());
+    if (user != null) {
+      emit(AuthAuthenticated(user: user));
     } else {
       emit(AuthError('We could not create your account right now.'));
     }
@@ -55,7 +87,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> signOut() async {
     emit(AuthLoading());
-    await authRepository.signOut();
+    await _signOutUseCase();
     emit(AuthUnauthenticated());
   }
 }

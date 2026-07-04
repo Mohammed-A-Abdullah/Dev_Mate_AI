@@ -1,6 +1,10 @@
 import 'package:dev_mate_ai/core/widgets/custom_text_field.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/check_auth_status_usecase.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_usecase.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/sign_out_usecase.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_state.dart';
 import 'package:dev_mate_ai/features/home/data/repository/home_repository_imp.dart';
@@ -27,8 +31,14 @@ class HomeScreen extends StatelessWidget {
           create: (context) => HomeCubit(HomeRepositoryImp())..loadHomeData(),
         ),
         BlocProvider(
-          create: (context) =>
-              AuthCubit(AuthRepositoryImpl())..checkAuthStatus(),
+          create: (context) => AuthCubit(
+            checkAuthStatusUseCase: CheckAuthStatusUseCase(
+              AuthRepositoryImpl(),
+            ),
+            signInUseCase: SignInUseCase(AuthRepositoryImpl()),
+            signUpUseCase: SignUpUseCase(AuthRepositoryImpl()),
+            signOutUseCase: SignOutUseCase(AuthRepositoryImpl()),
+          )..checkAuthStatus(),
         ),
       ],
       child: Scaffold(
