@@ -10,4 +10,9 @@ class SplashRepositoryImpl implements SplashRepository {
   Future<bool> isOnboardingCompleted() {
     return local.isOnboardingCompleted();
   }
+  
+  @override
+  Future<bool> saveOnboardingCompleted() {
+    return local.saveOnboardingCompleted();
+  }
 }

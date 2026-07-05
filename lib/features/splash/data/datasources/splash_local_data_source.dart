@@ -6,4 +6,9 @@ class SplashLocalDataSourceImpl implements SplashLocalDataSource {
   Future<bool> isOnboardingCompleted() {
     return AppPreferences.isOnboardingCompleted();
   }
+  
+  @override
+  Future<bool> saveOnboardingCompleted() {
+    return AppPreferences.completedOnboarding();
+  }
 }

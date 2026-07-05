@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/routing/route_name.dart';
 import '../../data/datasources/splash_local_data_source.dart';
 import '../../data/repositories/splash_repository_impl.dart';
+import '../../domain/usecases/save_onboarding_completed.dart';
 import '../cubit/splash_state.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -26,22 +27,27 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SplashCubit(
-        CheckOnboarding(SplashRepositoryImpl(SplashLocalDataSourceImpl())),
-      )..start(),
+      create: (_) {
+        final repository = SplashRepositoryImpl(SplashLocalDataSourceImpl());
+
+        return SplashCubit(
+          CheckOnboarding(repository),
+          SaveOnboardingCompleted(repository),
+        )..start();
+      },
 
       child: BlocListener<SplashCubit, SplashState>(
         listener: (context, state) {
-          if (state is SplashGoToChat) {
-            context.goNamed(RouteName.navigationBar);
-          }
-
           if (state is SplashGoToOnboarding) {
             context.goNamed(RouteName.onboardingScreen);
           }
 
           if (state is SplashGoToAuth) {
             context.goNamed(RouteName.authScreen);
+          }
+
+          if (state is SplashGoToChat) {
+            context.goNamed(RouteName.navigationBar);
           }
         },
         child: Scaffold(
