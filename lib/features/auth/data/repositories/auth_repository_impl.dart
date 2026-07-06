@@ -1,16 +1,18 @@
+import 'package:dev_mate_ai/features/auth/data/datasources/auth_remote_data_source.dart';
+
 import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/repository/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl({AuthLocalDataSource? localDataSource})
-    : _localDataSource = localDataSource ?? AuthLocalDataSource();
+  AuthRepositoryImpl({AuthRemoteDataSource? remoteDataSource})
+    : _remoteDataSource = remoteDataSource ?? AuthLocalDataSource();
 
-  final AuthLocalDataSource _localDataSource;
+  final AuthRemoteDataSource _remoteDataSource;
 
   @override
   Future<bool> isAuthenticated() async {
-    return _localDataSource.isAuthenticated();
+    return _remoteDataSource.isAuthenticated();
   }
 
   @override
@@ -18,7 +20,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    return _localDataSource.signIn(email: email, password: password);
+    return _remoteDataSource.signIn(email: email, password: password);
   }
 
   @override
@@ -27,7 +29,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    return _localDataSource.signUp(
+    return _remoteDataSource.signUp(
       name: name,
       email: email,
       password: password,
@@ -36,6 +38,6 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> signOut() async {
-    await _localDataSource.signOut();
+    await _remoteDataSource.signOut();
   }
 }

@@ -117,7 +117,6 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           ),
                         ),
-                      HeightSpace(height: 24),
                       HeightSpace(height: 16),
                       GestureDetector(
                         onTap: () {
@@ -125,35 +124,48 @@ class _AuthScreenState extends State<AuthScreen> {
                             _isSignUp = !_isSignUp;
                           });
                         },
-                        child: Text(
+                        child: Text.rich(
                           _isSignUp
-                              ? 'Already have an account? Sign in'
-                              : 'Need an account? Sign up',
-                          style: GoogleFonts.inter(
-                            color: const Color(0xffB5C4FF),
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                              ? TextSpan(
+                                  text: 'Already have an account? ',
+                                  style: GoogleFonts.inter(
+                                    color: const Color(0xffB5C4FF),
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: 'Sign in',
+                                      style: GoogleFonts.inter(
+                                        color: const Color(0xffE2E2EB),
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : TextSpan(
+                                  text: 'Need an account? ',
+                                  style: GoogleFonts.inter(
+                                    color: const Color(0xffB5C4FF),
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: 'Sign up',
+                                      style: GoogleFonts.inter(
+                                        color: const Color(0xffE2E2EB),
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                         ),
                       ),
+
                       HeightSpace(height: 24),
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(14.w),
-                        decoration: BoxDecoration(
-                          color: const Color(0xff1E1F26),
-                          borderRadius: BorderRadius.circular(16.r),
-                          border: Border.all(color: const Color(0xff434654)),
-                        ),
-                        child: Text(
-                          'This auth flow is structured for a future Firebase integration while staying ready for local testing now.',
-                          style: GoogleFonts.inter(
-                            color: const Color(0xff8D90A0),
-                            fontSize: 12.sp,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

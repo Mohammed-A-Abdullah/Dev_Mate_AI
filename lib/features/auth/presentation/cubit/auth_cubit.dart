@@ -30,7 +30,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(
       authenticated
           ? AuthAuthenticated(
-              user: AuthUserEntity(uid: 'local-user', email: ''),
+              user: AuthUserEntity(uid: 'remote-user', email: ''),
             )
           : AuthUnauthenticated(),
     );
@@ -42,12 +42,12 @@ class AuthCubit extends Cubit<AuthState> {
   }) async {
     emit(AuthLoading());
 
-    final user = await _signInUseCase(email: email, password: password);
+    try {
+      final user = await _signInUseCase(email: email, password: password);
 
-    if (user != null) {
-      emit(AuthAuthenticated(user: user));
-    } else {
-      emit(AuthError('Incorrect email or password. Sign up first if needed.'));
+      emit(AuthAuthenticated(user: user!));
+    } catch (e) {
+      emit(AuthError(e.toString()));
     }
   }
 
@@ -72,17 +72,16 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
 
-    final user = await _signUpUseCase(
-      name: name,
-      email: email,
-      password: password,
-    );
-
-    if (user != null) {
-      emit(AuthAuthenticated(user: user));
-    } else {
-      emit(AuthError('We could not create your account right now.'));
-    }
+    try {
+  final user = await _signUpUseCase(
+    name: name,
+    email: email,
+    password: password,
+  );
+  emit(AuthAuthenticated(user: user!));
+}  catch (e) {
+  emit(AuthError(e.toString()));
+}
   }
 
   Future<void> signOut() async {

@@ -1,6 +1,5 @@
 import 'package:dev_mate_ai/core/routing/route_name.dart';
 import 'package:dev_mate_ai/features/auth/presentation/pages/auth_screen.dart';
-import 'package:dev_mate_ai/features/auth/presentation/pages/sign_in_screen.dart';
 import 'package:dev_mate_ai/features/chat_screen/presentation/pages/chat_screen.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/pages/navigation_bar.dart';
 import 'package:dev_mate_ai/features/splash/presentation/pages/splash_screen.dart';
