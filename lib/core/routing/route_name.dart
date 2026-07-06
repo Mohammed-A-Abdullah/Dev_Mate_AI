@@ -5,4 +5,5 @@ class RouteName {
   static const String navigationBar = '/navigationBar';
   static const String authScreen = '/authScreen';
   static const String loginScreen = '/loginScreen';
+  static const String historySreen = '/historySreen';
 }

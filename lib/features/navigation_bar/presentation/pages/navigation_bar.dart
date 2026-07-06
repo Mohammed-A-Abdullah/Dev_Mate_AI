@@ -14,13 +14,6 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  int index = 0;
-
-  final screens = <Widget>[
-    const HomeScreen(),
-    ChatScreen(),
-    const HomeScreen(),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +24,10 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           return Scaffold(
             extendBody: true,
             backgroundColor: Colors.transparent,
-            body: NavigationPages.pages[index],
+            body: NavigationPages.pages[state],
 
             bottomNavigationBar: CustomBottomNavigationBar(
-              currentIndex: index,
+              currentIndex: state,
               onTap: (value) =>
                   context.read<NavigationCubit>().changeIndex(value),
             )
