@@ -1,26 +1,23 @@
-import 'package:dev_mate_ai/features/auth/data/datasources/auth_remote_data_source.dart';
-
 import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/repository/auth_repository.dart';
-import '../datasources/auth_local_data_source.dart';
+import '../datasources/auth_remote_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl({AuthRemoteDataSource? remoteDataSource})
-    : _remoteDataSource = remoteDataSource ?? AuthLocalDataSource();
+  final AuthRemoteDataSource remote;
 
-  final AuthRemoteDataSource _remoteDataSource;
+  AuthRepositoryImpl({required this.remote});
 
   @override
-  Future<bool> isAuthenticated() async {
-    return _remoteDataSource.isAuthenticated();
+  Future<bool> isAuthenticated() {
+    return remote.isAuthenticated();
   }
 
   @override
   Future<AuthUserEntity?> signIn({
     required String email,
     required String password,
-  }) async {
-    return _remoteDataSource.signIn(email: email, password: password);
+  }) {
+    return remote.signIn(email: email, password: password);
   }
 
   @override
@@ -28,16 +25,32 @@ class AuthRepositoryImpl implements AuthRepository {
     required String name,
     required String email,
     required String password,
-  }) async {
-    return _remoteDataSource.signUp(
-      name: name,
-      email: email,
-      password: password,
-    );
+  }) {
+    return remote.signUp(name: name, email: email, password: password);
   }
 
   @override
-  Future<void> signOut() async {
-    await _remoteDataSource.signOut();
+  Future<AuthUserEntity?> signInWithGoogle() {
+    return remote.signInWithGoogle();
+  }
+
+  @override
+  Future<AuthUserEntity?> signInWithGithub() {
+    return remote.signInWithGithub();
+  }
+
+  @override
+  Future<AuthUserEntity?> signInAnonymously() {
+    return remote.signInAnonymously();
+  }
+
+  @override
+  Future<void> sendEmailVerification() {
+    return remote.sendEmailVerification();
+  }
+
+  @override
+  Future<void> signOut() {
+    return remote.signOut();
   }
 }

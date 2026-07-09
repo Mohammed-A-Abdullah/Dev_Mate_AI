@@ -64,4 +64,28 @@ class AuthLocalDataSource implements AuthRemoteDataSource {
   Future<void> signOut() async {
     await AppPreferences.clearAuth();
   }
+  
+  @override
+  Future<void> sendEmailVerification() {
+    // TODO: implement sendEmailVerification
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<AuthUserEntity?> signInAnonymously() {
+    // TODO: implement signInAnonymously
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<AuthUserEntity?> signInWithGithub() {
+    // TODO: implement signInWithGithub
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<AuthUserEntity?> signInWithGoogle() {
+    // TODO: implement signInWithGoogle
+    throw UnimplementedError();
+  }
 }

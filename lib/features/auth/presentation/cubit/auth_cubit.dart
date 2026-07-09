@@ -1,92 +1,181 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/usecases/check_auth_status_usecase.dart';
+import '../../domain/usecases/send_email_verification_usecase.dart';
+import '../../domain/usecases/sign_in_google_usecase.dart';
+import '../../domain/usecases/sign_in_guest_usecase.dart';
+import '../../domain/usecases/sign_in_github_usecase.dart';
 import '../../domain/usecases/sign_in_usecase.dart';
 import '../../domain/usecases/sign_out_usecase.dart';
 import '../../domain/usecases/sign_up_usecase.dart';
+
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit({
-    required CheckAuthStatusUseCase checkAuthStatusUseCase,
-    required SignInUseCase signInUseCase,
-    required SignUpUseCase signUpUseCase,
-    required SignOutUseCase signOutUseCase,
-  }) : _checkAuthStatusUseCase = checkAuthStatusUseCase,
-       _signInUseCase = signInUseCase,
-       _signUpUseCase = signUpUseCase,
-       _signOutUseCase = signOutUseCase,
-       super(AuthInitial());
+    required this.checkAuthStatusUseCase,
+    required this.signInUseCase,
+    required this.signUpUseCase,
+    required this.signOutUseCase,
+    required this.googleUseCase,
+    required this.githubUseCase,
+    required this.guestUseCase,
+    required this.sendEmailVerificationUseCase,
+  }) : super(const AuthInitial());
 
-  final CheckAuthStatusUseCase _checkAuthStatusUseCase;
-  final SignInUseCase _signInUseCase;
-  final SignUpUseCase _signUpUseCase;
-  final SignOutUseCase _signOutUseCase;
+  final CheckAuthStatusUseCase checkAuthStatusUseCase;
+
+  final SignInUseCase signInUseCase;
+
+  final SignUpUseCase signUpUseCase;
+
+  final SignOutUseCase signOutUseCase;
+
+  final SignInGoogleUseCase googleUseCase;
+
+  final SignInGithubUseCase githubUseCase;
+
+  final SignInGuestUseCase guestUseCase;
+
+  final SendEmailVerificationUseCase sendEmailVerificationUseCase;
 
   Future<void> checkAuthStatus() async {
-    emit(AuthLoading());
-    final authenticated = await _checkAuthStatusUseCase();
-    emit(
-      authenticated
-          ? AuthAuthenticated(
-              user: AuthUserEntity(uid: 'remote-user', email: ''),
-            )
-          : AuthUnauthenticated(),
-    );
-  }
-
-  Future<void> submitSignIn({
-    required String email,
-    required String password,
-  }) async {
-    emit(AuthLoading());
+    emit(const AuthLoading());
 
     try {
-      final user = await _signInUseCase(email: email, password: password);
+      final authenticated = await checkAuthStatusUseCase();
 
-      emit(AuthAuthenticated(user: user!));
+      if (authenticated) {
+        emit(AuthAuthenticated(const AuthUserEntity(uid: '', email: '')));
+      } else {
+        emit(const AuthUnauthenticated());
+      }
     } catch (e) {
       emit(AuthError(e.toString()));
     }
   }
 
-  Future<void> submitSignUp({
+  Future<void> signIn({required String email, required String password}) async {
+    emit(const AuthLoading());
+
+    try {
+      final user = await signInUseCase(email: email, password: password);
+
+      if (user == null) {
+        emit(const AuthError("Unable to login."));
+        return;
+      }
+
+      emit(AuthAuthenticated(user));
+    } catch (e) {
+      emit(AuthError(e.toString().replaceFirst("Exception: ", "")));
+    }
+  }
+
+  Future<void> signUp({
     required String name,
     required String email,
     required String password,
   }) async {
-    emit(AuthLoading());
-
-    if (name.trim().isEmpty) {
-      emit(AuthError('Please enter your name.'));
-      return;
-    }
-
-    if (email.trim().isEmpty || password.trim().length < 6) {
-      emit(
-        AuthError(
-          'Please enter a valid email and a password with at least 6 characters.',
-        ),
-      );
-      return;
-    }
+    emit(const AuthLoading());
 
     try {
-  final user = await _signUpUseCase(
-    name: name,
-    email: email,
-    password: password,
-  );
-  emit(AuthAuthenticated(user: user!));
-}  catch (e) {
-  emit(AuthError(e.toString()));
-}
+      final user = await signUpUseCase(
+        name: name,
+        email: email,
+        password: password,
+      );
+
+      if (user == null) {
+        emit(const AuthError("Unable to create account."));
+        return;
+      }
+
+      emit(
+        const AuthSuccess(
+          "Verification email has been sent. Please verify your email before signing in.",
+        ),
+      );
+
+      await signOutUseCase();
+
+      emit(const AuthUnauthenticated());
+    } catch (e) {
+      emit(AuthError(e.toString().replaceFirst("Exception: ", "")));
+    }
+  }
+
+  Future<void> googleSignIn() async {
+    emit(const AuthLoading());
+
+    try {
+      final user = await googleUseCase();
+
+      if (user == null) {
+        emit(const AuthError("Google Sign-In cancelled."));
+        return;
+      }
+
+      emit(AuthAuthenticated(user));
+    } catch (e) {
+      emit(AuthError(e.toString().replaceFirst("Exception: ", "")));
+    }
+  }
+
+  Future<void> githubSignIn() async {
+    emit(const AuthLoading());
+
+    try {
+      final user = await githubUseCase();
+
+      if (user == null) {
+        emit(const AuthError("GitHub Sign-In cancelled."));
+        return;
+      }
+
+      emit(AuthAuthenticated(user));
+    } catch (e) {
+      emit(AuthError(e.toString().replaceFirst("Exception: ", "")));
+    }
+  }
+
+  Future<void> guestSignIn() async {
+    emit(const AuthLoading());
+
+    try {
+      final user = await guestUseCase();
+
+      if (user == null) {
+        emit(const AuthError("Unable to continue as guest."));
+        return;
+      }
+
+      emit(AuthAuthenticated(user));
+    } catch (e) {
+      emit(AuthError(e.toString().replaceFirst("Exception: ", "")));
+    }
+  }
+
+  Future<void> resendVerificationEmail() async {
+    try {
+      await sendEmailVerificationUseCase();
+
+      emit(const AuthSuccess("Verification email sent."));
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
   }
 
   Future<void> signOut() async {
-    emit(AuthLoading());
-    await _signOutUseCase();
-    emit(AuthUnauthenticated());
+    emit(const AuthLoading());
+
+    try {
+      await signOutUseCase();
+
+      emit(const AuthUnauthenticated());
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
   }
 }

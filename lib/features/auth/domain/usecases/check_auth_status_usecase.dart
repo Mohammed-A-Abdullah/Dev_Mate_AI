@@ -1,11 +1,11 @@
 import '../repository/auth_repository.dart';
 
 class CheckAuthStatusUseCase {
-  CheckAuthStatusUseCase(this.repository);
-
   final AuthRepository repository;
 
-  Future<bool> call() async {
+  CheckAuthStatusUseCase(this.repository);
+
+  Future<bool> call() {
     return repository.isAuthenticated();
   }
 }

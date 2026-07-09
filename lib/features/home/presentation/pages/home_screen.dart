@@ -1,7 +1,11 @@
 import 'package:dev_mate_ai/core/widgets/custom_text_field.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
+import 'package:dev_mate_ai/features/auth/data/datasources/firebase_auth_data_source.dart';
 import 'package:dev_mate_ai/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/check_auth_status_usecase.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/send_email_verification_usecase.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_github_usecase.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_guest_usecase.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/sign_up_usecase.dart';
@@ -18,6 +22,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/routing/route_name.dart';
+import '../../../auth/domain/usecases/sign_in_google_usecase.dart';
 import '../cubit/home_state.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -25,6 +30,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authRepository = AuthRepositoryImpl(remote: FirebaseAuthDataSource());
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -32,12 +39,16 @@ class HomeScreen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => AuthCubit(
-            checkAuthStatusUseCase: CheckAuthStatusUseCase(
-              AuthRepositoryImpl(),
+            checkAuthStatusUseCase: CheckAuthStatusUseCase(authRepository),
+            signInUseCase: SignInUseCase(authRepository),
+            signUpUseCase: SignUpUseCase(authRepository),
+            signOutUseCase: SignOutUseCase(authRepository),
+            googleUseCase: SignInGoogleUseCase(authRepository),
+            githubUseCase: SignInGithubUseCase(authRepository),
+            guestUseCase: SignInGuestUseCase(authRepository),
+            sendEmailVerificationUseCase: SendEmailVerificationUseCase(
+              authRepository,
             ),
-            signInUseCase: SignInUseCase(AuthRepositoryImpl()),
-            signUpUseCase: SignUpUseCase(AuthRepositoryImpl()),
-            signOutUseCase: SignOutUseCase(AuthRepositoryImpl()),
           )..checkAuthStatus(),
         ),
       ],
