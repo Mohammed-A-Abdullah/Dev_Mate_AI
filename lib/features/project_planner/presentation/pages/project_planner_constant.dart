@@ -34,6 +34,11 @@ static const List<String> platforms = [
     'Intermediate',
     'Advanced',
   ];
+  static const List<String> reviewDepth = [
+    'Quick Review',
+    'Detailed Review',
+    'Professional Audit',
+  ];
 
   static const List<String> architectures = [
     'Clean Architecture',

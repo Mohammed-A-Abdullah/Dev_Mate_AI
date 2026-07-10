@@ -274,7 +274,9 @@ class _GenerateReadmeScreenState extends State<GenerateReadmeScreen> {
               HeightSpace(height: 20),
               GestureDetector(
                 onTap: () async {
-                  print('=====================================================');
+                  print(
+                    '=====================================================',
+                  );
                   final result = await generateReadme();
                   print(result);
 

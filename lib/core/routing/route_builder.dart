@@ -1,6 +1,7 @@
 import 'package:dev_mate_ai/core/routing/route_name.dart';
 import 'package:dev_mate_ai/features/auth/presentation/pages/auth_screen.dart';
 import 'package:dev_mate_ai/features/chat_screen/presentation/pages/chat_screen.dart';
+import 'package:dev_mate_ai/features/code_review/presentation/pages/code_review_screen.dart';
 import 'package:dev_mate_ai/features/debug_code/presentation/pages/debug_code_screen.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/pages/explain_code_screen.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/pages/result_model_screen.dart';
@@ -79,6 +80,11 @@ class RouteBuilder {
         name: RouteName.projectPlannerScreen,
         path: RouteName.projectPlannerScreen,
         builder: (context, state) => const ProjectPlannerScreen(),
+      ),
+      GoRoute(
+        name: RouteName.codeReviewScreen,
+        path: RouteName.codeReviewScreen,
+        builder: (context, state) => const CodeReviewScreen(),
       ),
       
     ],

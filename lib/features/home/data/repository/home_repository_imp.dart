@@ -36,13 +36,13 @@ class HomeRepositoryImp implements HomeQuickToolsRepository {
         icon: Icons.chat_bubble_outline,
         iconColor: Color(0xffDCE1FF),
         title: "AI Chat",
-        description: "Open-ended coding help", screen: RouteName.explainCodeScreen
+        description: "Open-ended coding help", screen: RouteName.chatScreen
       ),
       HomeQuickToolEntity(
         icon: Icons.fact_check_outlined,
         iconColor: Color(0xffE8DEFF),
         title: "Code Review",
-        description: "Analyze for best practices", screen: RouteName.explainCodeScreen
+        description: "Analyze for best practices", screen: RouteName.codeReviewScreen
       ),
     ];
   }
