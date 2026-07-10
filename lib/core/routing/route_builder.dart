@@ -4,6 +4,8 @@ import 'package:dev_mate_ai/features/chat_screen/presentation/pages/chat_screen.
 import 'package:dev_mate_ai/features/debug_code/presentation/pages/debug_code_screen.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/pages/explain_code_screen.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/pages/result_model_screen.dart';
+import 'package:dev_mate_ai/features/generate_readme/presentation/pages/generate_readme_screen.dart';
+import 'package:dev_mate_ai/features/generate_readme/presentation/pages/readme_result_screen.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/pages/navigation_bar.dart';
 import 'package:dev_mate_ai/features/splash/presentation/pages/splash_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -54,9 +56,23 @@ class RouteBuilder {
         }
       ),
       GoRoute(
+        name: RouteName.readmeResultScreen,
+        path: RouteName.readmeResultScreen,
+
+        builder: (context, state) {
+          final String responsData = state.extra as String;
+          return ReadmeResultScreen(readme: responsData);
+        },
+      ),
+      GoRoute(
         name: RouteName.debugCodeScreen,
         path: RouteName.debugCodeScreen,
         builder: (context, state) => const DebugCodeScreen(),
+      ),
+      GoRoute(
+        name: RouteName.generateReadmeScreen,
+        path: RouteName.generateReadmeScreen,
+        builder: (context, state) => const GenerateReadmeScreen(),
       ),
       
     ],

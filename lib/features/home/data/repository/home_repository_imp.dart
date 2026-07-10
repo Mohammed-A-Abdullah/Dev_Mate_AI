@@ -23,7 +23,7 @@ class HomeRepositoryImp implements HomeQuickToolsRepository {
         icon: Icons.description_outlined,
         iconColor: Color(0xffCDBDFF),
         title: "Generate README",
-        description: "Instant documentation", screen: RouteName.explainCodeScreen
+        description: "Instant documentation", screen: RouteName.generateReadmeScreen
       ),
       HomeQuickToolEntity(
         icon: Icons.account_tree_outlined,

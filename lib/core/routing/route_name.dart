@@ -9,4 +9,6 @@ class RouteName {
   static const String explainCodeScreen = '/explainCodeScreen';
   static const String ansewerEplainCode = '/ansewerEplainCode';
   static const String debugCodeScreen = '/debugCodeScreen';
+  static const String generateReadmeScreen = '/generateReadmeScreen';
+  static const String readmeResultScreen = '/readmeResultScreen';
 }
