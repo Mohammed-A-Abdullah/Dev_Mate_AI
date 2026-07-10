@@ -180,7 +180,9 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                
+                              },
                               child: Text(
                                 'View All',
                                 style: GoogleFonts.jetBrainsMono(

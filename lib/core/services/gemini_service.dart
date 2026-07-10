@@ -30,4 +30,10 @@ Rules:
 
     return response.text ?? "No Response";
   }
+  // Future<String> _generate(String prompt) async {
+  //   final response = await model.generateContent([Content.text(prompt)]);
+
+  //   return response.text ?? "No response";
+  // }
+
 }

@@ -21,7 +21,7 @@ class CustomTextField extends StatefulWidget {
     this.borderColor,
     this.cursorColor,
     this.textStyle,
-    this.hintTextStyle, this.suffixIconWidget,this.minLine=1
+    this.hintTextStyle, this.suffixIconWidget,this.minLine=1, this.labelStyle, this.label
   });
 
   final String? textFieldTitle;
@@ -42,6 +42,8 @@ class CustomTextField extends StatefulWidget {
   final Color? cursorColor;
   final TextStyle? textStyle;
   final TextStyle? hintTextStyle;
+  final TextStyle? labelStyle;
+  final String? label;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -90,6 +92,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
           cursorErrorColor: Colors.red,
           style: widget.textStyle,
           decoration: InputDecoration(
+            labelText: widget.label,
+            labelStyle: widget.labelStyle,
             hintText: widget.hintText ?? '',
             hintStyle: widget.hintTextStyle,
             contentPadding: EdgeInsets.symmetric(
