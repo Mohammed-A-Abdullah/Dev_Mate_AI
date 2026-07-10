@@ -30,7 +30,7 @@ class HomeRepositoryImp implements HomeQuickToolsRepository {
         iconColor: Color(0xff3CDDC7),
         title: "Project Planner",
         description: "Architect your next app",
-        screen: RouteName.explainCodeScreen
+        screen: RouteName.projectPlannerScreen
       ),
       HomeQuickToolEntity(
         icon: Icons.chat_bubble_outline,

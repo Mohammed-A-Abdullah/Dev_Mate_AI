@@ -11,4 +11,5 @@ class RouteName {
   static const String debugCodeScreen = '/debugCodeScreen';
   static const String generateReadmeScreen = '/generateReadmeScreen';
   static const String readmeResultScreen = '/readmeResultScreen';
+  static const String projectPlannerScreen = '/projectPlannerScreen';
 }
