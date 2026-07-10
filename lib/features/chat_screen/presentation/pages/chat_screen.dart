@@ -1,216 +1,90 @@
-import 'package:dev_mate_ai/features/chat_screen/domain/model/chat_message_model.dart';
-import 'package:dev_mate_ai/core/services/gemini_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/widgets/code_builder.dart';
-import '../../../../core/widgets/custom_text_field.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/services/gemini_service.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
+import '../../data/repositories/chat_repository_impl.dart';
+import '../../domain/usecases/send_message_usecase.dart';
+import '../cubit/chat_cubit.dart';
+import '../cubit/chat_state.dart';
+import '../widgets/custom_chat_text_field.dart';
+import '../widgets/custom_loading_progress.dart';
+import '../widgets/custom_user_and_bot_message.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => ChatCubit(
+        sendMessageUsecase: SendMessageUseCase(
+          repository: ChatRepositoryImpl(gemnini: GeminiService()),
+        ),
+      ),
+      child: const ChatView(),
+    );
+  }
 }
 
-class _ChatScreenState extends State<ChatScreen> {
-  final gemini = GeminiService();
-  final TextEditingController chatController = TextEditingController();
-  final List<ChatMessage> messages = [];
-  bool isLoading = false;
+class ChatView extends StatefulWidget {
+  const ChatView({super.key});
 
-  void sendMessage() async {
-    final userText = chatController.text.trim();
-    if (userText.isEmpty) return;
+  @override
+  State<ChatView> createState() => _ChatViewState();
+}
 
-    setState(() {
-      messages.insert(0, ChatMessage(text: userText, isUser: true));
-      isLoading = true;
-    });
-    chatController.clear();
+class _ChatViewState extends State<ChatView> {
+  final TextEditingController _controller = TextEditingController();
 
-    try {
-      final response = await gemini.sendMessage(userText);
-
-      setState(() {
-        messages.insert(0, ChatMessage(text: response, isUser: false));
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        messages.insert(
-          0,
-          ChatMessage(text: "An error occur: $e", isUser: false),
-        );
-        isLoading = false;
-      });
-    }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.watch<ChatCubit>();
+    final state = cubit.state;
+
     return Scaffold(
-      backgroundColor: const Color(0xff111319),
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: const Color(0xff111319),
-        title: Text(
-          'DevMate AI',
-          style: GoogleFonts.geist(
-            fontSize: 32.sp,
-            fontWeight: FontWeight.bold,
-            color: const Color(0xffB5C4FF),
-          ),
-        ),
-      ),
-      body: SafeArea(
-        bottom: true,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  reverse: true,
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    final message = messages[index];
-
-                    return Align(
-                      alignment: message.isUser
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            message.expanded = !message.expanded;
-                          });
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 6),
-                          padding: const EdgeInsets.all(14),
-                          constraints: BoxConstraints(
-                            maxWidth: message.isUser
-                                ? MediaQuery.of(context).size.width * .75
-                                : MediaQuery.of(context).size.width * .90,
-                          ),
-                          decoration: BoxDecoration(
-                            color: message.isUser
-                                ? const Color(0xffB5C4FF)
-                                : const Color(0xff1D1E25),
-                            borderRadius: BorderRadius.circular(18),
-                            border: message.isUser
-                                ? null
-                                : Border.all(color: const Color(0xff2A2D3A)),
-                          ),
-                          child: message.isUser
-                              ? Text(
-                                  message.text,
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                  ),
-                                )
-                              : MarkdownBody(
-                                  data: message.text,
-                                  selectable: true,
-                                  styleSheet: MarkdownStyleSheet(
-                                    // تنسيقات النصوص العادية التي وضعناها مسبقاً
-                                    p: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                    ),
-                                    h1: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    h2: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    h3: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    listBullet: const TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                    strong: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-
-                                    // !! مهم جداً: نخفي خلفية الكود الافتراضية الخاصة بالحزمة لنستخدم تصميمنا !!
-                                    code: const TextStyle(
-                                      backgroundColor: Colors.transparent,
-                                    ),
-                                    codeblockDecoration: const BoxDecoration(
-                                      color: Colors.transparent,
-                                    ),
-                                  ),
-                                  // --- السطر الجديد هنا ---
-                                  builders: {'code': CodeElementBuilder()},
-                                ),
-                        ),
-                      ),
-                    );
+      backgroundColor: AppColors.backgroundColor,
+      appBar: const CustomAppBar(title: 'DevMate AI'),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SafeArea(
+          bottom: true,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    reverse: true,
+                    itemCount: cubit.messages.length,
+                    itemBuilder: (context, index) {
+                      final message = cubit.messages[index];
+                      return CustomUserAndBotMessage(
+                        check: message.isUser,
+                        text: message.text,
+                        onTap: () => cubit.toggleMessageExpansion(index),
+                      );
+                    },
+                  ),
+                ),
+                if (state is ChatLoading) const CustomLoadingProgress(),
+                const SizedBox(height: 10),
+                CustomChatTextField(
+                  chatController: _controller,
+                  onPressed: () {
+                    cubit.sendMessage(_controller.text);
+                    _controller.clear();
                   },
                 ),
-              ),
-
-              if (isLoading) ...[
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: LinearProgressIndicator(
-                    color: Color(0xffB5C4FF),
-                    backgroundColor: Colors.transparent,
-                  ),
-                ),
               ],
-
-              const SizedBox(height: 10),
-
-              CustomTextField(
-                controller: chatController,
-                hintText: "Message DevMate AI...",
-                fillColor: const Color(0xff1D1E25),
-                borderColor: const Color(0xff2A2D3A),
-                cursorColor: const Color(0xffB5C4FF),
-                radius: 20.r,
-                keyBoardType: TextInputType.multiline,
-                textStyle: TextStyle(color: Colors.white, fontSize: 16.sp),
-                hintTextStyle: TextStyle(
-                  color: const Color(0xff686B75),
-                  fontSize: 16.sp,
-                ),
-                prefixIcon: Icon(
-                  Icons.attach_file,
-                  color: const Color(0xffC4C6D0),
-                  size: 24.sp,
-                ),
-                suffixIconWidget: Padding(
-                  padding: EdgeInsets.only(right: 8.w),
-                  child: Container(
-                    margin: const EdgeInsets.all(4),
-                    width: 45.w,
-                    height: 45.h,
-                    decoration: BoxDecoration(
-                      color: const Color(0xffB5C4FF),
-                      borderRadius: BorderRadius.circular(14.r),
-                    ),
-                    child: IconButton(
-                      onPressed: sendMessage,
-                      icon: const Icon(Icons.send, color: Color(0xff001A4B)),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

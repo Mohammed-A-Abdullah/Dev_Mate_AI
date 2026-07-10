@@ -1,4 +1,4 @@
-import 'package:dev_mate_ai/core/widgets/code_builder.dart';
+import 'package:dev_mate_ai/core/widgets/custom_code_element_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,7 +62,7 @@ class ResultModelScreen extends StatelessWidget {
                   ),
                 ),
                 // --- السطر الجديد هنا ---
-                builders: {'code': CodeElementBuilder()},
+                builders: {'code': CustomCodeElementBuilder()},
               ),
             ],
           ),

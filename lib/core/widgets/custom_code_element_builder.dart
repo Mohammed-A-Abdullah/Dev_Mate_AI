@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -6,7 +7,7 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_highlighter/flutter_highlighter.dart';
 import 'package:flutter_highlighter/themes/atom-one-dark.dart';
 
-class CodeElementBuilder extends MarkdownElementBuilder {
+class CustomCodeElementBuilder extends MarkdownElementBuilder {
   @override
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     bool isBlock = element.textContent.contains('\n');
@@ -25,7 +26,7 @@ class CodeElementBuilder extends MarkdownElementBuilder {
         child: Text(
           element.textContent,
           style: const TextStyle(
-            color: Color(0xffB5C4ff),
+            color: AppColors.primaryColor,
             fontFamily: 'monospace',
             fontSize: 14,
           ),
