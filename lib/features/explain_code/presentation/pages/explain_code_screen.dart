@@ -56,7 +56,6 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
       language: LanguageHelper.languageModes[_currentLanguage]!,
     );
 
-    // Sync code changes to cubit
     _codeController.addListener(() {
       final cubit = context.read<ExplainCubit>();
       final currentCode = _codeController.text;
@@ -65,7 +64,6 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
       }
     });
 
-    // Sync instructions changes to cubit
     _instructionsController.addListener(() {
       final cubit = context.read<ExplainCubit>();
       cubit.updateAdditionalInstructions(_instructionsController.text);
@@ -90,14 +88,12 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
           context.read<ExplainCubit>().clearError();
         }
         if (state.explanation != null && !state.isLoading) {
-          // Navigate to result screen
           GoRouter.of(
             context,
           ).pushNamed(RouteName.ansewerEplainCode, extra: state.explanation);
         }
       },
       builder: (context, state) {
-        // Update code controller language if state changed
         if (_currentLanguage != state.language) {
           final newLang = LanguageHelper.languageModes[state.language];
           if (newLang != null) {
