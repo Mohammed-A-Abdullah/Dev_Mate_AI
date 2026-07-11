@@ -20,6 +20,7 @@ class CustomDropdownbuttonfield extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
       menuMaxHeight: 250.h,
+      isExpanded: true,
       decoration: InputDecoration(
         fillColor: Color(0xff1E1F26),
         filled: true,
