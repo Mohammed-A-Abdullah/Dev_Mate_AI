@@ -20,8 +20,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.signOutUseCase,
     required this.googleUseCase,
     required this.githubUseCase,
-    required this.guestUseCase,
-    required this.sendEmailVerificationUseCase,
+    required this.guestUseCase, required this.sendEmailVerificationUseCase,
   }) : super(const AuthInitial());
 
   final CheckAuthStatusUseCase checkAuthStatusUseCase;
@@ -157,15 +156,15 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> resendVerificationEmail() async {
-    try {
-      await sendEmailVerificationUseCase();
+  // Future<void> resendVerificationEmail() async {
+  //   try {
+  //     await sendEmailVerificationUseCase();
 
-      emit(const AuthSuccess("Verification email sent."));
-    } catch (e) {
-      emit(AuthError(e.toString()));
-    }
-  }
+  //     emit(const AuthSuccess("Verification email sent."));
+  //   } catch (e) {
+  //     emit(AuthError(e.toString()));
+  //   }
+  // }
 
   Future<void> signOut() async {
     emit(const AuthLoading());
