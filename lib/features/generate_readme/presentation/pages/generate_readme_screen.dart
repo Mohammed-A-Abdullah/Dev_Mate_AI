@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -74,8 +76,6 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _featureController;
   late final TextEditingController _githubLinkController;
-  late final TextEditingController
-  _projectTypeController; 
 
   @override
   void initState() {
@@ -123,9 +123,32 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
           context.read<ReadmeCubit>().clearError();
         }
         if (state.readmeResult != null && !state.isLoading) {
-          GoRouter.of(
-            context,
-          ).pushNamed(RouteName.readmeResultScreen, extra: state.readmeResult);
+          final navigator = GoRouter.of(context);
+          Future.microtask(() async {
+            final prompt = [
+              'Project Title: ${state.projectTitle}',
+              'Description: ${state.projectDescription}',
+              'Project Type: ${state.projectType}',
+              if (state.features.isNotEmpty) 'Features: ${state.features.join(', ')}',
+              if (state.technologies.isNotEmpty)
+                'Technologies: ${state.technologies.join(', ')}',
+              if (state.githubLink.isNotEmpty) 'GitHub: ${state.githubLink}',
+            ].join('\n');
+
+            try {
+              await FirebaseChatDataSource(
+                firestore: FirebaseFirestore.instance,
+              ).saveQuickToolConversation(
+                title: 'Generate README',
+                type: 'Generate README',
+                prompt: prompt,
+                response: state.readmeResult!,
+              );
+            } catch (_) {}
+
+            if (!mounted) return;
+            navigator.pushNamed(RouteName.readmeResultScreen, extra: state.readmeResult);
+          });
         }
       },
       builder: (context, state) {

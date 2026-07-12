@@ -61,6 +61,7 @@ dependencies:
   flutter_code_editor: ^0.3.5
   equatable: ^2.1.0
   cloud_firestore: ^6.6.0
+  timeago: ^3.7.1
 
 dev_dependencies:
   flutter_test:

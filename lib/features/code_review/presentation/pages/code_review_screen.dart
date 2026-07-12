@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/code_review/domain/usecases/code_review_use_case.dart';
 import 'package:dev_mate_ai/features/code_review/presentation/widgets/custom_reveiw_types_chips.dart';
 import 'package:flutter/material.dart';
@@ -86,10 +88,32 @@ class _CodeReviewViewState extends State<CodeReviewView> {
           context.read<CodeReviewCubit>().clearError();
         }
         if (state.reviewResult != null && !state.isLoading) {
-          // Navigate to result screen
-          GoRouter.of(
-            context,
-          ).pushNamed(RouteName.ansewerEplainCode, extra: state.reviewResult);
+          final navigator = GoRouter.of(context);
+          Future.microtask(() async {
+            final prompt = [
+              'Language: ${state.language}',
+              'Code:',
+              state.code,
+              'Review Types: ${state.reviewTypes.join(', ')}',
+              'Experience: ${state.experienceLevel}',
+              'Depth: ${state.reviewDepth}',
+              if (state.errorLog.isNotEmpty) 'Context: ${state.errorLog}',
+            ].join('\n');
+
+            try {
+              await FirebaseChatDataSource(
+                firestore: FirebaseFirestore.instance,
+              ).saveQuickToolConversation(
+                title: 'Code Review',
+                type: 'Code Review',
+                prompt: prompt,
+                response: state.reviewResult!,
+              );
+            } catch (_) {}
+
+            if (!mounted) return;
+            navigator.pushNamed(RouteName.ansewerEplainCode, extra: state.reviewResult);
+          });
         }
       },
       builder: (context, state) {

@@ -1,12 +1,16 @@
-
 abstract class ChatRepository {
-  Future<String>sendMessage(String prompt);
+  Future<String> sendMessage(String prompt);
   Future<void> saveMessage({
     required String chatId,
     required String text,
     required bool isUser,
+    required String type,
+    String? title,
   });
 
   Future<List<Map<String, dynamic>>> loadMessages(String chatId);
-  Future<String> createConversation();
+  Future<String> createConversation({
+    required String title,
+    required String type,
+  });
 }

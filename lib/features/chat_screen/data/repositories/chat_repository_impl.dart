@@ -8,29 +8,39 @@ class ChatRepositoryImpl implements ChatRepository {
   final FirebaseChatDataSource firebase;
 
   ChatRepositoryImpl({required this.gemnini, required this.firebase});
+
   @override
-  Future<String>sendMessage(String prompt){
+  Future<String> sendMessage(String prompt) {
     return gemnini.sendMessage(prompt);
   }
+
   @override
   Future<void> saveMessage({
     required String chatId,
     required String text,
     required bool isUser,
+    required String type,
+    String? title,
   }) {
     return firebase.saveMessage(
       chatId: chatId,
       text: text,
       isUser: isUser,
+      type: type,
+      title: title,
     );
   }
-@override
-  Future<List<Map<String, dynamic>>> loadMessages(
-      String chatId) {
+
+  @override
+  Future<List<Map<String, dynamic>>> loadMessages(String chatId) {
     return firebase.loadMessages(chatId);
   }
+
   @override
-  Future<String> createConversation() {
-    return firebase.createConversation();
+  Future<String> createConversation({
+    required String title,
+    required String type,
+  }) {
+    return firebase.createConversation(title: title, type: type);
   }
 }

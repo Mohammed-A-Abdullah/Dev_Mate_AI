@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/explain_code/domain/usecase/explain_code_use_case.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_code_cubit.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_code_state.dart';
@@ -88,9 +90,30 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
           context.read<ExplainCubit>().clearError();
         }
         if (state.explanation != null && !state.isLoading) {
-          GoRouter.of(
-            context,
-          ).pushNamed(RouteName.ansewerEplainCode, extra: state.explanation);
+          final navigator = GoRouter.of(context);
+          Future.microtask(() async {
+            final prompt = [
+              'Language: ${state.language}',
+              'Code:',
+              state.code,
+              if (state.additionalInstructions.isNotEmpty)
+                'Instructions: ${state.additionalInstructions}',
+            ].join('\n');
+
+            try {
+              await FirebaseChatDataSource(
+                firestore: FirebaseFirestore.instance,
+              ).saveQuickToolConversation(
+                title: 'Explain Code',
+                type: 'Explain Code',
+                prompt: prompt,
+                response: state.explanation!,
+              );
+            } catch (_) {}
+
+            if (!mounted) return;
+            navigator.pushNamed(RouteName.ansewerEplainCode, extra: state.explanation);
+          });
         }
       },
       builder: (context, state) {

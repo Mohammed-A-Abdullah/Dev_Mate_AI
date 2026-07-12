@@ -5,7 +5,7 @@ class CreateConversationUseCase {
 
   CreateConversationUseCase({required this.repository});
 
-  Future<String> call() {
-    return repository.createConversation();
+  Future<String> call({required String title, required String type}) {
+    return repository.createConversation(title: title, type: type);
   }
 }

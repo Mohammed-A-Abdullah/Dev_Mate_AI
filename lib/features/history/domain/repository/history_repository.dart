@@ -1,5 +1,5 @@
-import 'package:dev_mate_ai/features/history/domain/entity/history_entity.dart';
+import '../entity/history_entity.dart';
 
 abstract class HistoryRepository {
-  Future<HistoryEntity> getHistoryCardContent();
+  Future<List<HistoryEntity>> getHistory();
 }

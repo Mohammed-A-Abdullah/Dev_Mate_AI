@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -85,10 +87,33 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
           context.read<ProjectPlanCubit>().clearError();
         }
         if (state.planResult != null && !state.isLoading) {
-          // Navigate to result screen
-          GoRouter.of(
-            context,
-          ).pushNamed(RouteName.ansewerEplainCode, extra: state.planResult);
+          final navigator = GoRouter.of(context);
+          Future.microtask(() async {
+            final prompt = [
+              'Project Title: ${state.title}',
+              'Description: ${state.description}',
+              'Platform: ${state.platform}',
+              'Language: ${state.programmingLanguage}',
+              'Experience: ${state.experienceLevel}',
+              'Architecture: ${state.architecture}',
+              'Deadline: ${state.deadline}',
+              'Deployment: ${state.deploymentTarget}',
+            ].join('\n');
+
+            try {
+              await FirebaseChatDataSource(
+                firestore: FirebaseFirestore.instance,
+              ).saveQuickToolConversation(
+                title: 'Project Planner',
+                type: 'Project Planner',
+                prompt: prompt,
+                response: state.planResult!,
+              );
+            } catch (_) {}
+
+            if (!mounted) return;
+            navigator.pushNamed(RouteName.ansewerEplainCode, extra: state.planResult);
+          });
         }
       },
       builder: (context, state) {

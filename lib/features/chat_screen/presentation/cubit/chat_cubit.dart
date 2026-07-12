@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/entities/chat_message_model.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/usecases/save_message_usecase.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/usecases/send_message_usecase.dart';
@@ -12,6 +13,7 @@ class ChatCubit extends Cubit<ChatState> {
     required this.saveMessageUsecase,
     required this.createConversationUseCase,
   }) : super(ChatInitial());
+
   final SendMessageUseCase sendMessageUsecase;
   final SaveMessageUsecase saveMessageUsecase;
   final CreateConversationUseCase createConversationUseCase;
@@ -21,12 +23,19 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> sendMessage(String prompt) async {
     if (prompt.trim().isEmpty) return;
 
+    final chatTitle = buildConversationTitle(prompt);
+
     messages.insert(0, ChatMessage(text: prompt, isUser: true));
-    currentChatId ??= await createConversationUseCase();
+    currentChatId ??= await createConversationUseCase(
+      title: chatTitle,
+      type: 'chat',
+    );
     await saveMessageUsecase.saveMessage(
       chatId: currentChatId!,
       text: prompt,
       isUser: true,
+      type: 'chat',
+      title: chatTitle,
     );
 
     emit(ChatLoaded(List.from(messages)));
@@ -41,6 +50,7 @@ class ChatCubit extends Cubit<ChatState> {
         chatId: currentChatId!,
         text: response,
         isUser: false,
+        type: 'chat',
       );
 
       emit(ChatLoaded(List.from(messages)));

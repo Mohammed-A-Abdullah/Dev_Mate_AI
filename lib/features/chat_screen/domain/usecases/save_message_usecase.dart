@@ -4,11 +4,20 @@ class SaveMessageUsecase {
   final ChatRepository repository;
 
   SaveMessageUsecase({required this.repository});
+
   Future<void> saveMessage({
     required String chatId,
     required String text,
     required bool isUser,
-  }){
-    return repository.saveMessage(chatId: chatId, text: text, isUser: isUser);
+    required String type,
+    String? title,
+  }) {
+    return repository.saveMessage(
+      chatId: chatId,
+      text: text,
+      isUser: isUser,
+      type: type,
+      title: title,
+    );
   }
 }

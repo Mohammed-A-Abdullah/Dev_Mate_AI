@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/debug_code/data/repositories/debug_code_repository_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,9 +90,29 @@ class _DebugCodeViewState extends State<DebugCodeView> {
           context.read<DebugCubit>().clearError();
         }
         if (state.debugResult != null && !state.isLoading) {
-          GoRouter.of(
-            context,
-          ).pushNamed(RouteName.ansewerEplainCode, extra: state.debugResult);
+          final navigator = GoRouter.of(context);
+          Future.microtask(() async {
+            final prompt = [
+              'Language: ${state.language}',
+              'Code:',
+              state.code,
+              if (state.errorLog.isNotEmpty) 'Error Log: ${state.errorLog}',
+            ].join('\n');
+
+            try {
+              await FirebaseChatDataSource(
+                firestore: FirebaseFirestore.instance,
+              ).saveQuickToolConversation(
+                title: 'Debug Code',
+                type: 'Debug Code',
+                prompt: prompt,
+                response: state.debugResult!,
+              );
+            } catch (_) {}
+
+            if (!mounted) return;
+            navigator.pushNamed(RouteName.ansewerEplainCode, extra: state.debugResult);
+          });
         }
       },
       builder: (context, state) {
