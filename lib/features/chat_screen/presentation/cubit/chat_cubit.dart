@@ -1,5 +1,6 @@
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/entities/chat_message_model.dart';
+import 'package:dev_mate_ai/features/chat_screen/domain/usecases/load_messages_usecase.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/usecases/save_message_usecase.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/usecases/send_message_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,13 +13,32 @@ class ChatCubit extends Cubit<ChatState> {
     required this.sendMessageUsecase,
     required this.saveMessageUsecase,
     required this.createConversationUseCase,
+    required this.loadMessagesUsecase,
   }) : super(ChatInitial());
 
   final SendMessageUseCase sendMessageUsecase;
   final SaveMessageUsecase saveMessageUsecase;
   final CreateConversationUseCase createConversationUseCase;
+  final LoadMessagesUsecase loadMessagesUsecase;
   final List<ChatMessage> messages = [];
   String? currentChatId;
+
+  Future<void> loadConversation(String chatId, {String? title}) async {
+    currentChatId = chatId;
+    messages.clear();
+
+    final loadedMessages = await loadMessagesUsecase.call(chatId);
+    for (final message in loadedMessages) {
+      messages.add(
+        ChatMessage(
+          text: message['text']?.toString() ?? '',
+          isUser: message['isUser'] == true,
+        ),
+      );
+    }
+
+    emit(ChatLoaded(List.from(messages)));
+  }
 
   Future<void> sendMessage(String prompt) async {
     if (prompt.trim().isEmpty) return;

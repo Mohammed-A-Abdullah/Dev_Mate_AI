@@ -29,7 +29,7 @@ class CodeReviewScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => CodeReviewCubit(
         reviewCodeUseCase: CodeReviewUseCase(
-          repository: CodeReviewRepositoryImpl(geminiService:  GeminiService()),
+          repository: CodeReviewRepositoryImpl(geminiService: GeminiService()),
         ),
       ),
       child: const CodeReviewView(),
@@ -112,7 +112,10 @@ class _CodeReviewViewState extends State<CodeReviewView> {
             } catch (_) {}
 
             if (!mounted) return;
-            navigator.pushNamed(RouteName.ansewerEplainCode, extra: state.reviewResult);
+            navigator.pushNamed(
+              RouteName.ansewerEplainCode,
+              extra: state.reviewResult,
+            );
           });
         }
       },
@@ -213,5 +216,4 @@ class _CodeReviewViewState extends State<CodeReviewView> {
       },
     );
   }
-
 }

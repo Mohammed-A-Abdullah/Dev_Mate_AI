@@ -129,7 +129,8 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
               'Project Title: ${state.projectTitle}',
               'Description: ${state.projectDescription}',
               'Project Type: ${state.projectType}',
-              if (state.features.isNotEmpty) 'Features: ${state.features.join(', ')}',
+              if (state.features.isNotEmpty)
+                'Features: ${state.features.join(', ')}',
               if (state.technologies.isNotEmpty)
                 'Technologies: ${state.technologies.join(', ')}',
               if (state.githubLink.isNotEmpty) 'GitHub: ${state.githubLink}',
@@ -147,7 +148,10 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
             } catch (_) {}
 
             if (!mounted) return;
-            navigator.pushNamed(RouteName.readmeResultScreen, extra: state.readmeResult);
+            navigator.pushNamed(
+              RouteName.readmeResultScreen,
+              extra: state.readmeResult,
+            );
           });
         }
       },

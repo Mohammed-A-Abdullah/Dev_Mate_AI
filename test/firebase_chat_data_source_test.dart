@@ -9,7 +9,10 @@ void main() {
 
     test('returns a trimmed summary when prompt is provided', () {
       expect(
-        buildQuickToolPromptSummary('  Explain this code carefully  ', 'Explain Code'),
+        buildQuickToolPromptSummary(
+          '  Explain this code carefully  ',
+          'Explain Code',
+        ),
         'Explain this code carefully',
       );
     });

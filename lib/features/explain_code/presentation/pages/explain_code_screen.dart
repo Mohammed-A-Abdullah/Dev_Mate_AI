@@ -28,8 +28,8 @@ class ExplainCodeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ExplainCubit(
-        explainCodeUseCase: ExplainCodeUseCase(repository: 
-          ExplainRepositoryImpl(GeminiService()),
+        explainCodeUseCase: ExplainCodeUseCase(
+          repository: ExplainRepositoryImpl(GeminiService()),
         ),
       ),
       child: const ExplainCodeView(),
@@ -112,7 +112,10 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
             } catch (_) {}
 
             if (!mounted) return;
-            navigator.pushNamed(RouteName.ansewerEplainCode, extra: state.explanation);
+            navigator.pushNamed(
+              RouteName.ansewerEplainCode,
+              extra: state.explanation,
+            );
           });
         }
       },

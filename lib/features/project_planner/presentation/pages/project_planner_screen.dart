@@ -112,7 +112,10 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
             } catch (_) {}
 
             if (!mounted) return;
-            navigator.pushNamed(RouteName.ansewerEplainCode, extra: state.planResult);
+            navigator.pushNamed(
+              RouteName.ansewerEplainCode,
+              extra: state.planResult,
+            );
           });
         }
       },

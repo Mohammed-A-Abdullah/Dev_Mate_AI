@@ -28,8 +28,8 @@ class DebugCodeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DebugCubit(
-        debugCodeUseCase: DebugCodeUseCase(repository: 
-          DebugCodeRepositoryImpl(GeminiService()),
+        debugCodeUseCase: DebugCodeUseCase(
+          repository: DebugCodeRepositoryImpl(GeminiService()),
         ),
       ),
       child: const DebugCodeView(),
@@ -111,7 +111,10 @@ class _DebugCodeViewState extends State<DebugCodeView> {
             } catch (_) {}
 
             if (!mounted) return;
-            navigator.pushNamed(RouteName.ansewerEplainCode, extra: state.debugResult);
+            navigator.pushNamed(
+              RouteName.ansewerEplainCode,
+              extra: state.debugResult,
+            );
           });
         }
       },

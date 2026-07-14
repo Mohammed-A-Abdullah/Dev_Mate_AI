@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/constants/app_colors.dart';
+import 'package:dev_mate_ai/core/widgets/custom_ai_model_answer_screen.dart';
+import 'package:dev_mate_ai/features/chat_screen/presentation/pages/chat_screen.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/history/data/datasource/history_remote_data_source_impl.dart';
@@ -130,6 +132,23 @@ class _HistoryViewState extends State<HistoryView> {
                               : item.lastMessage,
                           chipType: item.type,
                           time: item.updatedAt,
+                          onTap: () {
+                            if (item.type.toLowerCase() == 'chat') {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ChatScreen(chatId: item.id),
+                                ),
+                              );
+                            } else {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => CustomAiModelAnswerScreen(
+                                    data: item.lastMessage,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
                         );
                       },
                     );

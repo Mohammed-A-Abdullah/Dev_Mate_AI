@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/usecases/create_conversation_usecase.dart';
+import 'package:dev_mate_ai/features/chat_screen/domain/usecases/load_messages_usecase.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/usecases/save_message_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,13 +18,24 @@ import '../widgets/custom_loading_progress.dart';
 import '../widgets/custom_user_and_bot_message.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+  const ChatScreen({super.key, this.chatId, this.initialMessages});
+
+  final String? chatId;
+  final List<Map<String, dynamic>>? initialMessages;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ChatCubit(
         saveMessageUsecase: SaveMessageUsecase(
+          repository: ChatRepositoryImpl(
+            gemnini: GeminiService(),
+            firebase: FirebaseChatDataSource(
+              firestore: FirebaseFirestore.instance,
+            ),
+          ),
+        ),
+        loadMessagesUsecase: LoadMessagesUsecase(
           repository: ChatRepositoryImpl(
             gemnini: GeminiService(),
             firebase: FirebaseChatDataSource(
@@ -48,13 +60,16 @@ class ChatScreen extends StatelessWidget {
           ),
         ),
       ),
-      child: const ChatView(),
+      child: ChatView(chatId: chatId, initialMessages: initialMessages),
     );
   }
 }
 
 class ChatView extends StatefulWidget {
-  const ChatView({super.key});
+  const ChatView({super.key, this.chatId, this.initialMessages});
+
+  final String? chatId;
+  final List<Map<String, dynamic>>? initialMessages;
 
   @override
   State<ChatView> createState() => _ChatViewState();
@@ -62,6 +77,16 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.chatId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<ChatCubit>().loadConversation(widget.chatId!);
+      });
+    }
+  }
 
   @override
   void dispose() {
