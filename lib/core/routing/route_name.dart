@@ -13,4 +13,6 @@ class RouteName {
   static const String readmeResultScreen = '/readmeResultScreen';
   static const String projectPlannerScreen = '/projectPlannerScreen';
   static const String codeReviewScreen = '/codeReviewScreen';
+  static const String settingsScreen = '/settingsScreen';
+  static const String notificationsScreen = '/notificationsScreen';
 }

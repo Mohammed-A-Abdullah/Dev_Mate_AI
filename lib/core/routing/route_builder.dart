@@ -8,6 +8,8 @@ import 'package:dev_mate_ai/core/widgets/custom_ai_model_answer_screen.dart';
 import 'package:dev_mate_ai/features/generate_readme/presentation/pages/generate_readme_screen.dart';
 import 'package:dev_mate_ai/features/generate_readme/presentation/pages/readme_result_screen.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/pages/navigation_bar.dart';
+import 'package:dev_mate_ai/features/profile/presentation/pages/notifications_screen.dart';
+import 'package:dev_mate_ai/features/profile/presentation/pages/settings_screen.dart';
 import 'package:dev_mate_ai/features/project_planner/presentation/pages/project_planner_screen.dart';
 import 'package:dev_mate_ai/features/splash/presentation/pages/splash_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +18,7 @@ import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 
 class RouteBuilder {
   static GoRouter goRouter = GoRouter(
-    initialLocation: RouteName.navigationBar,
+    initialLocation: RouteName.splashScreen,
     routes: [
       GoRoute(
         name: RouteName.splashScreen,
@@ -52,10 +54,10 @@ class RouteBuilder {
         name: RouteName.ansewerEplainCode,
         path: RouteName.ansewerEplainCode,
 
-        builder: (context, state){
-          final String responsData=state.extra as String;
-          return  CustomAiModelAnswerScreen(data: responsData);
-        }
+        builder: (context, state) {
+          final String responsData = state.extra as String;
+          return CustomAiModelAnswerScreen(data: responsData);
+        },
       ),
       GoRoute(
         name: RouteName.readmeResultScreen,
@@ -86,7 +88,16 @@ class RouteBuilder {
         path: RouteName.codeReviewScreen,
         builder: (context, state) => const CodeReviewScreen(),
       ),
-      
+      GoRoute(
+        name: RouteName.settingsScreen,
+        path: RouteName.settingsScreen,
+        builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        name: RouteName.notificationsScreen,
+        path: RouteName.notificationsScreen,
+        builder: (context, state) => const NotificationsScreen(),
+      ),
     ],
   );
 }

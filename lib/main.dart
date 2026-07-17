@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/routing/route_builder.dart';
 import 'package:dev_mate_ai/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await setupServiceLocator();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
 );

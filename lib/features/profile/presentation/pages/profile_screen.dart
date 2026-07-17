@@ -261,10 +261,7 @@ class ProfileView extends StatelessWidget {
                           title: 'Settings',
                           subtitle: 'Customize your workspace',
                           onTap: () {
-                            CustomSnackBar.show(
-                              context,
-                              message: 'Settings screen will be added soon.',
-                            );
+                            context.pushNamed(RouteName.settingsScreen);
                           },
                         ),
                         SizedBox(height: 10.h),
@@ -273,11 +270,7 @@ class ProfileView extends StatelessWidget {
                           title: 'Notifications',
                           subtitle: 'Stay updated with new insights',
                           onTap: () {
-                            CustomSnackBar.show(
-                              context,
-                              message:
-                                  'Notification preferences are next in line.',
-                            );
+                            context.pushNamed(RouteName.notificationsScreen);
                           },
                         ),
                         SizedBox(height: 10.h),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/usecases/create_conversation_usecase.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/usecases/load_messages_usecase.dart';
@@ -26,40 +27,7 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ChatCubit(
-        saveMessageUsecase: SaveMessageUsecase(
-          repository: ChatRepositoryImpl(
-            gemnini: GeminiService(),
-            firebase: FirebaseChatDataSource(
-              firestore: FirebaseFirestore.instance,
-            ),
-          ),
-        ),
-        loadMessagesUsecase: LoadMessagesUsecase(
-          repository: ChatRepositoryImpl(
-            gemnini: GeminiService(),
-            firebase: FirebaseChatDataSource(
-              firestore: FirebaseFirestore.instance,
-            ),
-          ),
-        ),
-        createConversationUseCase: CreateConversationUseCase(
-          repository: ChatRepositoryImpl(
-            gemnini: GeminiService(),
-            firebase: FirebaseChatDataSource(
-              firestore: FirebaseFirestore.instance,
-            ),
-          ),
-        ),
-        sendMessageUsecase: SendMessageUseCase(
-          repository: ChatRepositoryImpl(
-            gemnini: GeminiService(),
-            firebase: FirebaseChatDataSource(
-              firestore: FirebaseFirestore.instance,
-            ),
-          ),
-        ),
-      ),
+      create: (context) => sl<ChatCubit>(),
       child: ChatView(chatId: chatId, initialMessages: initialMessages),
     );
   }

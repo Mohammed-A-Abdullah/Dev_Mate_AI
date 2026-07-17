@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/debug_code/data/repositories/debug_code_repository_impl.dart';
 import 'package:flutter/material.dart';
@@ -27,11 +28,7 @@ class DebugCodeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DebugCubit(
-        debugCodeUseCase: DebugCodeUseCase(
-          repository: DebugCodeRepositoryImpl(GeminiService()),
-        ),
-      ),
+      create: (context) => sl<DebugCubit>(),
       child: const DebugCodeView(),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/explain_code/domain/usecase/explain_code_use_case.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_code_cubit.dart';
@@ -27,11 +28,7 @@ class ExplainCodeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ExplainCubit(
-        explainCodeUseCase: ExplainCodeUseCase(
-          repository: ExplainRepositoryImpl(GeminiService()),
-        ),
-      ),
+      create: (context) => sl<ExplainCubit>(),
       child: const ExplainCodeView(),
     );
   }

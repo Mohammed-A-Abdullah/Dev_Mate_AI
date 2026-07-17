@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
-import 'package:dev_mate_ai/features/code_review/domain/usecases/code_review_use_case.dart';
 import 'package:dev_mate_ai/features/code_review/presentation/widgets/custom_reveiw_types_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routing/route_name.dart';
-import '../../../../core/services/gemini_service.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_dropdownButtonField.dart';
 import '../../../../core/widgets/custom_feature_button.dart';
@@ -17,7 +16,6 @@ import '../../../../core/widgets/language_helper.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../cubit/code_review_cubit.dart';
 import '../cubit/code_review_state.dart';
-import '../../data/repositories/code_review_repository_impl.dart';
 import '../widgets/custom_code_field.dart';
 import '../widgets/custom_review_text_field.dart';
 
@@ -27,11 +25,7 @@ class CodeReviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CodeReviewCubit(
-        reviewCodeUseCase: CodeReviewUseCase(
-          repository: CodeReviewRepositoryImpl(geminiService: GeminiService()),
-        ),
-      ),
+      create: (context) => sl<CodeReviewCubit>(),
       child: const CodeReviewView(),
     );
   }

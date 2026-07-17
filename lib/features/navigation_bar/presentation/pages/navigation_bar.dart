@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/navigation_bar/navigation_pages.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/cubit/navigation_bar_cubit.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/widgets/custom_bottom_navigation_bar.dart';
@@ -16,7 +17,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => NavigationCubit(),
+      create: (context) => sl<NavigationCubit>(),
       child: BlocBuilder<NavigationCubit, int>(
         builder: (context, state) {
           return Scaffold(

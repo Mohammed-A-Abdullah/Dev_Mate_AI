@@ -1,4 +1,5 @@
 import 'package:dev_mate_ai/core/constants/app_assets.dart';
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/splash/domain/usecases/check_onboarding.dart';
 import 'package:dev_mate_ai/features/splash/presentation/cubit/splash_cubit.dart';
@@ -28,12 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
-        final repository = SplashRepositoryImpl(SplashLocalDataSourceImpl());
 
-        return SplashCubit(
-          CheckOnboarding(repository),
-          SaveOnboardingCompleted(repository),
-        )..start();
+        return sl<SplashCubit>()..start();
       },
 
       child: BlocListener<SplashCubit, SplashState>(

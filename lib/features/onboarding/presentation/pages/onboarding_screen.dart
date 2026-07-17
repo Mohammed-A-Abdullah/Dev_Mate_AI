@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/onboarding/presentation/widgets/skip_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,7 +40,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => OnboardingCubit(OnboardingRepositoryImp()),
+          create: (context) =>sl<OnboardingCubit>(),
         ),
         BlocProvider(
           create: (context) {

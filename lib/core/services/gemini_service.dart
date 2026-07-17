@@ -23,17 +23,22 @@ Rules:
 '''),
   );
 
+  Stream<String> sendMessageStream(String message) async* {
+    final stream = model.generateContentStream([Content.text(message)]);
+
+    String fullResponse = "";
+
+    await for (final chunk in stream) {
+      if (chunk.text != null) {
+        fullResponse += chunk.text!;
+        yield fullResponse;
+      }
+    }
+  }
   Future<String> sendMessage(String message) async {
-    final response = await model.generateContent([
-      Content.text(message),
-    ]);
+    final response = await model.generateContent([Content.text(message)]);
 
     return response.text ?? "No Response";
   }
-  // Future<String> _generate(String prompt) async {
-  //   final response = await model.generateContent([Content.text(prompt)]);
-
-  //   return response.text ?? "No response";
-  // }
 
 }

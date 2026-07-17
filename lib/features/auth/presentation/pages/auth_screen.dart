@@ -1,8 +1,10 @@
+import 'package:dev_mate_ai/features/chat_screen/presentation/cubit/chat_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/routing/route_name.dart';
 import '../../data/datasources/firebase_auth_data_source.dart';
 import '../../data/repositories/auth_repository_impl.dart';
@@ -60,20 +62,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = AuthRepositoryImpl(remote: FirebaseAuthDataSource());
     return BlocProvider(
-      create: (context) => AuthCubit(
-        checkAuthStatusUseCase: CheckAuthStatusUseCase(authRepository),
-        signInUseCase: SignInUseCase(authRepository),
-        signUpUseCase: SignUpUseCase(authRepository),
-        signOutUseCase: SignOutUseCase(authRepository),
-        googleUseCase: SignInGoogleUseCase(authRepository),
-        githubUseCase: SignInGithubUseCase(authRepository),
-        guestUseCase: SignInGuestUseCase(authRepository),
-        sendEmailVerificationUseCase: SendEmailVerificationUseCase(
-          authRepository,
-        ),
-      ),
+      create: (context) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {

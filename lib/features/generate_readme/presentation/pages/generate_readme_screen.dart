@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,11 +55,7 @@ class GenerateReadmeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ReadmeCubit(
-        generateReadmeUseCase: GenerateReadmeUseCase(
-          ReadmeRepositoryImpl(GeminiService()),
-        ),
-      ),
+      create: (context) => sl<ReadmeCubit>(),
       child: const GenerateReadmeView(),
     );
   }

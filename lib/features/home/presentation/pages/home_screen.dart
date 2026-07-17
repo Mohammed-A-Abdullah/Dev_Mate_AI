@@ -1,20 +1,13 @@
-import 'package:dev_mate_ai/core/widgets/custom_text_field.dart';
+import 'package:dev_mate_ai/core/constants/app_colors.dart';
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
-import 'package:dev_mate_ai/features/auth/data/datasources/firebase_auth_data_source.dart';
-import 'package:dev_mate_ai/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/check_auth_status_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/send_email_verification_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_github_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_guest_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_out_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_state.dart';
-import 'package:dev_mate_ai/features/home/data/repository/home_repository_imp.dart';
 import 'package:dev_mate_ai/features/home/presentation/cubit/home_cubit.dart';
 import 'package:dev_mate_ai/features/home/presentation/widgets/custom_new_chat_container.dart';
 import 'package:dev_mate_ai/features/home/presentation/widgets/quick_tool_item.dart';
+import 'package:dev_mate_ai/features/navigation_bar/presentation/cubit/navigation_bar_cubit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/routing/route_name.dart';
-import '../../../auth/domain/usecases/sign_in_google_usecase.dart';
+import '../../../history/presentation/widgets/custom_history_card_widget.dart';
 import '../cubit/home_state.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -30,30 +23,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = AuthRepositoryImpl(remote: FirebaseAuthDataSource());
-
+    final currentUser = FirebaseAuth.instance.currentUser;
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => HomeCubit(HomeRepositoryImp())..loadHomeData(),
-        ),
-        BlocProvider(
-          create: (context) => AuthCubit(
-            checkAuthStatusUseCase: CheckAuthStatusUseCase(authRepository),
-            signInUseCase: SignInUseCase(authRepository),
-            signUpUseCase: SignUpUseCase(authRepository),
-            signOutUseCase: SignOutUseCase(authRepository),
-            googleUseCase: SignInGoogleUseCase(authRepository),
-            githubUseCase: SignInGithubUseCase(authRepository),
-            guestUseCase: SignInGuestUseCase(authRepository),
-            sendEmailVerificationUseCase: SendEmailVerificationUseCase(
-              authRepository,
-            ),
-          )..checkAuthStatus(),
-        ),
+        BlocProvider(create: (context) => sl<HomeCubit>()..loadHomeData()),
+        BlocProvider(create: (context) => sl<AuthCubit>()..checkAuthStatus()),
       ],
       child: Scaffold(
-        backgroundColor: Color(0xff111319),
+        backgroundColor: AppColors.backgroundColor,
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: const Color(0xff111319),
@@ -75,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                       context.goNamed(RouteName.authScreen);
                     }
                   },
-                  icon: const Icon(Icons.logout, color: Color(0xffB5C4FF)),
+                  icon: const Icon(Icons.logout, color: AppColors.primaryColor),
                 );
               },
             ),
@@ -85,7 +62,7 @@ class HomeScreen extends StatelessWidget {
           builder: (context, state) {
             if (state is HomeLoading || state is HomeInitial) {
               return const Center(
-                child: CircularProgressIndicator(color: Color(0xffB5C4FF)),
+                child: CircularProgressIndicator(color: AppColors.primaryColor),
               );
             }
 
@@ -93,7 +70,7 @@ class HomeScreen extends StatelessWidget {
               return Center(
                 child: Text(
                   state.message,
-                  style: const TextStyle(color: Colors.redAccent),
+                  style: TextStyle(color: AppColors.error),
                 ),
               );
             }
@@ -108,27 +85,26 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         HeightSpace(height: 24),
-                        CustomTextField(
-                          borderColor: Color(0xff434654),
-                          fillColor: Color(0xff1E1F26),
-                          hintText: 'Search features or history...',
-                          hintTextStyle: GoogleFonts.inter(
-                            fontSize: 14.sp,
-                            color: Color(0xff434654),
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Color(0xffC3C5D7),
-                            size: 20.sp,
-                          ),
-                          radius: 50.r,
-                        ),
-                        HeightSpace(height: 32),
+                        // CustomTextField(
+                        //   borderColor: AppColors.borderColor,
+                        //   fillColor: AppColors.fillColor,
+                        //   hintText: 'Search features or history...',
+                        //   hintTextStyle: GoogleFonts.inter(
+                        //     fontSize: 14.sp,
+                        //     color: AppColors.hintText,
+                        //   ),
+                        //   prefixIcon: Icon(
+                        //     Icons.search,
+                        //     color: AppColors.iconField,
+                        //     size: 20.sp,
+                        //   ),
+                        //   radius: 50.r,
+                        // ),
                         Text(
-                          'Good morning',
+                          'Good morning, ${currentUser?.displayName ?? "User"} ',
                           style: GoogleFonts.geist(
                             fontSize: 24.sp,
-                            color: Color(0xffE2E2EB),
+                            color: AppColors.primaryText,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -136,7 +112,7 @@ class HomeScreen extends StatelessWidget {
                           'Ready to build something amazing today?',
                           style: GoogleFonts.inter(
                             fontSize: 14.sp,
-                            color: Color(0xffC3C5D7),
+                            color: AppColors.secondaryText,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -148,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                           style: GoogleFonts.inter(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w500,
-                            color: Color(0xffE2E2EB),
+                            color: AppColors.primaryText,
                           ),
                         ),
                         HeightSpace(height: 16),
@@ -176,19 +152,19 @@ class HomeScreen extends StatelessWidget {
                               style: GoogleFonts.inter(
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.w500,
-                                color: Color(0xffE2E2EB),
+                                color: AppColors.primaryText,
                               ),
                             ),
                             GestureDetector(
                               onTap: () {
-                                
+                                context.read<NavigationCubit>().changeIndex(2);
                               },
                               child: Text(
                                 'View All',
                                 style: GoogleFonts.jetBrainsMono(
                                   fontSize: 11.sp,
                                   fontWeight: FontWeight.w500,
-                                  color: Color(0xffB5C4FF),
+                                  color: AppColors.primaryColor,
                                   letterSpacing: 0.55.sp,
                                 ),
                               ),
@@ -196,12 +172,20 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                         HeightSpace(height: 22),
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          height: 80,
-                          width: 100,
-                          color: Colors.amber,
-                          child: Text('data'),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            return CustomHistoryCardWidget(
+                              title: 'New Chat',
+                              description: 'No messages yet',
+
+                              chipType: 'chat',
+                              time: DateTime(2026),
+                              onTap: () {},
+                            );
+                          },
                         ),
                         HeightSpace(height: 40),
                       ],

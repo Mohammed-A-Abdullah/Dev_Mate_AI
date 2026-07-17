@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/core/constants/app_colors.dart';
 import 'package:dev_mate_ai/features/home/domain/entities/home_quick_tool_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,21 +8,20 @@ import '../../../../core/widgets/spacing_widgets.dart';
 
 class QuickToolItem extends StatelessWidget {
   final HomeQuickToolEntity tool;
-  
 
   const QuickToolItem({super.key, required this.tool});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap:() {
+      onTap: () {
         GoRouter.of(context).pushNamed(tool.screen);
       },
       child: Container(
         width: 100.w,
         height: 100.h,
         decoration: BoxDecoration(
-          color: const Color(0xff1A1D26),
+          color: AppColors.homeQuickToolCard,
           borderRadius: BorderRadius.circular(16.r),
         ),
         child: Padding(
@@ -33,13 +33,10 @@ class QuickToolItem extends StatelessWidget {
                 height: 40.h,
                 width: 40.w,
                 decoration: BoxDecoration(
-                  color: const Color(0xff0C0E14),
+                  color: AppColors.homeQuickToolCardenside,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Icon(
-                  tool.icon,
-                  color: tool.iconColor,
-                ),
+                child: Icon(tool.icon, color: tool.iconColor),
               ),
               HeightSpace(height: 5),
               Text(
@@ -47,7 +44,7 @@ class QuickToolItem extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xffE2E2EB),
+                  color: AppColors.primaryText,
                 ),
               ),
               HeightSpace(height: 5),
@@ -56,7 +53,7 @@ class QuickToolItem extends StatelessWidget {
                 style: GoogleFonts.jetBrainsMono(
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w400,
-                  color: const Color(0xffE2E2EB),
+                  color: AppColors.primaryText,
                 ),
               ),
             ],

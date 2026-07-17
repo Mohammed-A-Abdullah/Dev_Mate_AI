@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/constants/app_colors.dart';
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/widgets/custom_ai_model_answer_screen.dart';
 import 'package:dev_mate_ai/features/chat_screen/presentation/pages/chat_screen.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
@@ -25,16 +26,7 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HistoryCubit(
-        GetHistoryUseCase(
-          HistoryRepositoryImpl(
-            HistoryRemoteDataSourceImpl(
-              auth: FirebaseAuth.instance,
-              firestore: FirebaseFirestore.instance,
-            ),
-          ),
-        ),
-      ),
+      create: (context) => sl<HistoryCubit>(),
       child: const HistoryView(),
     );
   }
@@ -140,13 +132,13 @@ class _HistoryViewState extends State<HistoryView> {
                                 ),
                               );
                             } else {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => CustomAiModelAnswerScreen(
-                                    data: item.lastMessage,
-                                  ),
-                                ),
-                              );
+                              // Navigator.of(context).push(
+                              //   MaterialPageRoute(
+                              //     builder: (_) => CustomAiModelAnswerScreen(
+                              //       cubit: item.lastMessage,
+                              //     ),
+                              //   ),
+                              // );
                             }
                           },
                         );
