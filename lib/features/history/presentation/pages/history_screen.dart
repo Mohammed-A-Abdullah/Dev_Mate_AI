@@ -1,17 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/constants/app_colors.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
-import 'package:dev_mate_ai/core/widgets/custom_ai_model_answer_screen.dart';
 import 'package:dev_mate_ai/features/chat_screen/presentation/pages/chat_screen.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
-import 'package:dev_mate_ai/features/history/data/datasource/history_remote_data_source_impl.dart';
-import 'package:dev_mate_ai/features/history/data/repositories/history_repository_impl.dart';
-import 'package:dev_mate_ai/features/history/domain/usecases/get_history_use_case.dart';
 import 'package:dev_mate_ai/features/history/presentation/widgets/custom_history_card_widget.dart';
 import 'package:dev_mate_ai/features/history/presentation/widgets/custom_history_text_field.dart';
 import 'package:dev_mate_ai/features/history/presentation/widgets/custom_tab_bar_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -67,7 +61,7 @@ class _HistoryViewState extends State<HistoryView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(title: 'DevMate AI'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -81,7 +75,7 @@ class _HistoryViewState extends State<HistoryView> {
                 style: GoogleFonts.geist(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w500,
-                  color: const Color(0xffE2E2EB).withValues(alpha: 0.9),
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               HeightSpace(height: 16),
@@ -106,7 +100,7 @@ class _HistoryViewState extends State<HistoryView> {
               BlocBuilder<HistoryCubit, HistoryState>(
                 builder: (context, state) {
                   if (state is HistoryLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return  Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary,));
                   }
 
                   if (state is HistoryLoaded) {

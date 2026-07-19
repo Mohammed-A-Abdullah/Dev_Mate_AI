@@ -1,17 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
-import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
-import 'package:dev_mate_ai/features/chat_screen/domain/usecases/create_conversation_usecase.dart';
-import 'package:dev_mate_ai/features/chat_screen/domain/usecases/load_messages_usecase.dart';
-import 'package:dev_mate_ai/features/chat_screen/domain/usecases/save_message_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/services/gemini_service.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
-import '../../data/repositories/chat_repository_impl.dart';
-import '../../domain/usecases/send_message_usecase.dart';
 import '../cubit/chat_cubit.dart';
 import '../cubit/chat_state.dart';
 import '../widgets/custom_chat_text_field.dart';
@@ -68,8 +59,8 @@ class _ChatViewState extends State<ChatView> {
     final state = cubit.state;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: const CustomAppBar(title: 'DevMate AI'),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: const CustomAppBar(title: 'DevMate AI', needButton: false),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SafeArea(

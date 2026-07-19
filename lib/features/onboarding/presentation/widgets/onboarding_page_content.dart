@@ -16,13 +16,13 @@ class OnboardingPageContent extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           HeightSpace(height: 40),
-          Icon(pageData.icon, size: 100.sp, color: const Color(0xffB5C4FF)),
+          Icon(pageData.icon, size: 100.sp, color: Theme.of(context).colorScheme.primary),
           HeightSpace(height: 60),
           Text(
             pageData.title,
             style: GoogleFonts.geist(
               fontSize: 24.sp,
-              color: const Color(0xffE2E2EB),
+              color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -34,7 +34,7 @@ class OnboardingPageContent extends StatelessWidget {
               style: GoogleFonts.inter(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w300,
-                color: const Color(0xffC3C5D7),
+                color: Theme.of(context).colorScheme.onSecondary,
                 letterSpacing: 0,
               ),
               textAlign: TextAlign.center,

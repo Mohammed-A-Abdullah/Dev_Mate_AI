@@ -1,3 +1,5 @@
+import 'package:dev_mate_ai/core/theme/extensions/history_theme_extension.dart';
+import 'package:dev_mate_ai/core/theme/extensions/home_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,7 +29,9 @@ class CustomHistoryCardWidget extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 15),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Color(0xff1A1D26),
+          color: Theme.of(
+            context,
+          ).extension<HistoryThemeExtension>()!.historyCard,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Padding(
@@ -42,7 +46,7 @@ class CustomHistoryCardWidget extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xffE2E2EB),
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               HeightSpace(height: 8),
@@ -52,7 +56,7 @@ class CustomHistoryCardWidget extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
-                  color: Color(0xffC3C5D7),
+                  color: Theme.of(context).colorScheme.onSecondary,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -65,10 +69,14 @@ class CustomHistoryCardWidget extends StatelessWidget {
                       chipType,
                       style: GoogleFonts.jetBrainsMono(
                         fontSize: 12.sp,
-                        color: const Color(0xff8d90a0),
+                        color: Theme.of(
+                          context,
+                        ).extension<HistoryThemeExtension>()!.chipLableText,
                       ),
                     ),
-                    backgroundColor: const Color(0xff0C0E14),
+                    backgroundColor: Theme.of(
+                      context,
+                    ).extension<HomeThemeExtension>()!.iconCardQuickTool,
                     side: BorderSide(color: Colors.transparent),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: VisualDensity.compact,
@@ -78,7 +86,9 @@ class CustomHistoryCardWidget extends StatelessWidget {
                     timeago.format(time),
                     style: GoogleFonts.inter(
                       fontSize: 14.sp,
-                      color: Color(0xff8d90a0),
+                      color: Theme.of(
+                        context,
+                      ).extension<HistoryThemeExtension>()!.timeago,
                       fontWeight: FontWeight.w400,
                     ),
                   ),

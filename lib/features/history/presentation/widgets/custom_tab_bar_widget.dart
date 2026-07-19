@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/core/theme/extensions/dropdown_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,14 +25,22 @@ class CustomTabBarWidget extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 6.h),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? Color(0xffB5C4FF) : Color(0xff1E1F26),
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(
+                    context,
+                  ).extension<DropdownThemeExtension>()!.dropdownColor,
             borderRadius: BorderRadius.circular(50.r),
           ),
           child: Text(
             text,
             style: GoogleFonts.jetBrainsMono(
               fontSize: 11.sp,
-              color: isSelected ? Color(0xff1E1F26) : Color(0xffB5C4FF),
+              color: isSelected
+                  ? Theme.of(
+                      context,
+                    ).extension<DropdownThemeExtension>()!.dropdownColor
+                  : Theme.of(context).colorScheme.primary,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),

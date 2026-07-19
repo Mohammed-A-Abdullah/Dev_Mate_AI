@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/usecases/check_auth_status_usecase.dart';
+import '../../domain/usecases/reset_password_usecase.dart';
 import '../../domain/usecases/send_email_verification_usecase.dart';
 import '../../domain/usecases/sign_in_google_usecase.dart';
 import '../../domain/usecases/sign_in_guest_usecase.dart';
@@ -20,7 +22,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.signOutUseCase,
     required this.googleUseCase,
     required this.githubUseCase,
-    required this.guestUseCase, required this.sendEmailVerificationUseCase,
+    required this.guestUseCase, required this.sendEmailVerificationUseCase, required this.resetPasswordUsecase,
   }) : super(const AuthInitial());
 
   final CheckAuthStatusUseCase checkAuthStatusUseCase;
@@ -38,6 +40,7 @@ class AuthCubit extends Cubit<AuthState> {
   final SignInGuestUseCase guestUseCase;
 
   final SendEmailVerificationUseCase sendEmailVerificationUseCase;
+  final ResetPasswordUsecase resetPasswordUsecase;
 
   Future<void> checkAuthStatus() async {
     emit(const AuthLoading());
@@ -175,6 +178,35 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(e.toString()));
+    }
+  }
+
+  Future<void> resetPassword(String email) async {
+    emit(const AuthLoading());
+    try {
+      await resetPasswordUsecase.call(email);
+      emit(const AuthSuccess("PASSWORD_RESET_EMAIL_SENT"));
+    } catch (e) {
+      emit(AuthError(e.toString().replaceFirst("Exception: ", "")));
+    }
+  }
+
+  Future<void> changePassword(String newPassword) async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      try {
+        await user.updatePassword(newPassword);
+        print('تم تحديث كلمة المرور بنجاح.');
+      } on FirebaseAuthException catch (e) {
+        // من أهم الأخطاء التي يجب التعامل معها هنا هو الحاجة لإعادة المصادقة
+        if (e.code == 'requires-recent-login') {
+          print('مر وقت طويل على تسجيل الدخول. يجب إعادة المصادقة أولاً.');
+          // ستحتاج إلى طلب كلمة المرور القديمة من المستخدم وتمريرها لدالة reauthenticateWithCredential
+        } else {
+          print('حدث خطأ: ${e.message}');
+        }
+      }
     }
   }
 }

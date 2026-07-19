@@ -29,27 +29,8 @@ final CodeReviewState state;
     ];
     return InputDecorator(
       decoration: InputDecoration(
-        fillColor: const Color(0xff1E1F26),
-        filled: true,
         labelText: 'Review Focus',
         hintText: 'Select focus areas',
-        hintStyle: GoogleFonts.inter(
-          color: const Color(0xff6F7385),
-          fontSize: 14.sp,
-        ),
-        labelStyle: TextStyle(color: const Color(0xff6F7385)),
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xff434654)),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xff434654)),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white, width: 2.0),
-          borderRadius: BorderRadius.circular(16),
-        ),
       ),
       child: Wrap(
         spacing: 8,

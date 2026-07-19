@@ -67,25 +67,26 @@ class AuthLocalDataSource implements AuthRemoteDataSource {
   
   @override
   Future<void> sendEmailVerification() {
-    // TODO: implement sendEmailVerification
     throw UnimplementedError();
   }
   
   @override
   Future<AuthUserEntity?> signInAnonymously() {
-    // TODO: implement signInAnonymously
     throw UnimplementedError();
   }
   
   @override
   Future<AuthUserEntity?> signInWithGithub() {
-    // TODO: implement signInWithGithub
     throw UnimplementedError();
   }
   
   @override
   Future<AuthUserEntity?> signInWithGoogle() {
-    // TODO: implement signInWithGoogle
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> resetPassword({required String email}) {
     throw UnimplementedError();
   }
 }

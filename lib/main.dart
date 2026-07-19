@@ -1,5 +1,6 @@
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/routing/route_builder.dart';
+import 'package:dev_mate_ai/core/theme/app_theme.dart';
 import 'package:dev_mate_ai/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: ThemeMode.system,
           debugShowCheckedModeBanner: false,
           routerConfig: RouteBuilder.goRouter,
         );

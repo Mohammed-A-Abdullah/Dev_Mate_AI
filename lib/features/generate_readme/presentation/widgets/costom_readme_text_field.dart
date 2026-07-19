@@ -15,21 +15,10 @@ final IconData? icon;
     return CustomTextField(
                 controller: controller,
                 label: title,
-                labelStyle: GoogleFonts.inter(color: const Color(0xff6F7385)),
-                cursorColor: Color(0xffC3C5D7),
                 keyBoardType: TextInputType.multiline,
                 hintText: description,
                 prefixIcon:  Icon(
                   icon ??Icons.edit_note,
-                  color: Color(0xffC3C5D7),
-                ),
-                fillColor: const Color(0xff1E1F26),
-                borderColor: const Color(0xff434654),
-                radius: 18.r,
-                textStyle: GoogleFonts.inter(color: Colors.white),
-                hintTextStyle: GoogleFonts.inter(
-                  color: const Color(0xff6F7385),
-                  fontSize: 14.sp,
                 ),
               );
   }

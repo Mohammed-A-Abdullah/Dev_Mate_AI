@@ -1,23 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
-import 'package:dev_mate_ai/features/debug_code/data/repositories/debug_code_repository_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routing/route_name.dart';
-import '../../../../core/services/gemini_service.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
-import '../../../../core/widgets/custom_dropdownButtonField.dart';
+import '../../../../core/widgets/custom_dropdown_button_field.dart';
 import '../../../../core/widgets/custom_feature_button.dart';
 import '../../../../core/widgets/language_helper.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../code_review/presentation/widgets/custom_code_field.dart';
-import '../../domain/usecase/debug_code_use_case.dart';
 import '../cubit/debug_code_cubit.dart';
 import '../cubit/debug_code_state.dart';
 import '../widgets/custom_debug_code_text_field.dart';
@@ -125,7 +121,7 @@ class _DebugCodeViewState extends State<DebugCodeView> {
         }
 
         return Scaffold(
-          backgroundColor: AppColors.backgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: const CustomAppBar(title: 'Explain Code'),
           body: SingleChildScrollView(
             child: Padding(

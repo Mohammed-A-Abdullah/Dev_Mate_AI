@@ -1,7 +1,7 @@
 import 'package:dev_mate_ai/core/constants/app_assets.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
+import 'package:dev_mate_ai/core/theme/extensions/splash_theme_extension.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
-import 'package:dev_mate_ai/features/splash/domain/usecases/check_onboarding.dart';
 import 'package:dev_mate_ai/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:dev_mate_ai/features/splash/presentation/widgets/custom_linear_progress_widget.dart';
 import 'package:dev_mate_ai/features/splash/presentation/widgets/custom_logo_with_shadow_widget.dart';
@@ -12,9 +12,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/routing/route_name.dart';
-import '../../data/datasources/splash_local_data_source.dart';
-import '../../data/repositories/splash_repository_impl.dart';
-import '../../domain/usecases/save_onboarding_completed.dart';
 import '../cubit/splash_state.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -71,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     Text(
                       'POWERED BY ADVANCED LLMS',
                       style: GoogleFonts.jetBrainsMono(
-                        color: Color(0xff8D90A0),
+                        color: Theme.of(context).extension<SplashThemeExtension>()!.splashText,
                         fontSize: 11.sp,
                         letterSpacing: 1.1.sp,
                       ),

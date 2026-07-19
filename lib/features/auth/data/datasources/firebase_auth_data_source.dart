@@ -171,4 +171,9 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
         return e.message ?? 'Authentication failed.';
     }
   }
+  
+  @override
+  Future<void> resetPassword({required String email})async {
+    final user= await _auth.sendPasswordResetEmail(email: email);
+  }
 }

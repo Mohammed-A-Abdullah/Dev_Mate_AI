@@ -14,7 +14,6 @@ import '../../../splash/domain/usecases/check_onboarding.dart';
 import '../../../splash/domain/usecases/save_onboarding_completed.dart';
 import '../../../splash/presentation/cubit/splash_cubit.dart';
 import '../../../splash/presentation/cubit/splash_state.dart';
-import '../../data/repositories/onboarding_repository_imp.dart';
 import '../cubit/onboarding_cubit.dart';
 import '../cubit/onboarding_state.dart';
 import '../widgets/onboarding_page_content.dart';
@@ -75,7 +74,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               }
             },
             child: Scaffold(
-              backgroundColor: const Color(0xff111319),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               body: SafeArea(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -87,7 +86,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
                       HeightSpace(height: 90),
 
-                      // PAGE VIEW
                       Expanded(
                         child: PageView.builder(
                           controller: _pageController,
@@ -101,21 +99,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
 
-                      // INDICATOR
                       SmoothPageIndicator(
                         controller: _pageController,
                         count: cubit.onboardingPages.length,
                         effect: ExpandingDotsEffect(
-                          activeDotColor: const Color(0xffB5C4FF),
+                          activeDotColor: Theme.of(context).colorScheme.primary,
                           dotHeight: 8.h,
                           dotWidth: 8.w,
-                          dotColor: const Color(0xff33343B),
+                          dotColor: Theme.of(context).colorScheme.onSecondary,
                         ),
                       ),
 
                       HeightSpace(height: 40),
 
-                      // NEXT BUTTON (Wrapped in BlocBuilder to react to state changes)
                       BlocBuilder<OnboardingCubit, OnboardingState>(
                         builder: (context, state) {
                           return GestureDetector(
@@ -135,7 +131,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               width: double.infinity,
                               height: 48.h,
                               decoration: BoxDecoration(
-                                color: const Color(0xffB5C4FF),
+                                color: Theme.of(context).colorScheme.primary,
                                 borderRadius: BorderRadius.circular(50.r),
                               ),
                               child: Row(
@@ -144,7 +140,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   Text(
                                     state.isLastPage ? 'Get Started' : 'NEXT',
                                     style: GoogleFonts.jetBrainsMono(
-                                      color: const Color(0xff00297B),
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w500,
                                       letterSpacing: 0.55.sp,
@@ -156,7 +154,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         ? Icons.rocket_launch
                                         : Icons.arrow_forward,
                                     size: 16.sp,
-                                    color: const Color(0xff00297B),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
                                   ),
                                 ],
                               ),

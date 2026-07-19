@@ -4,6 +4,7 @@ import 'package:dev_mate_ai/features/auth/data/datasources/auth_remote_data_sour
 import 'package:dev_mate_ai/features/auth/data/datasources/firebase_auth_data_source.dart';
 import 'package:dev_mate_ai/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/check_auth_status_usecase.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/send_email_verification_usecase.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_github_usecase.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_google_usecase.dart';
@@ -105,6 +106,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<SendEmailVerificationUseCase>(
     () => SendEmailVerificationUseCase(sl()),
   );
+  sl.registerLazySingleton<ResetPasswordUsecase>(()=>ResetPasswordUsecase(repository: sl()));
 
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(
@@ -116,6 +118,7 @@ Future<void> setupServiceLocator() async {
       githubUseCase: sl(),
       guestUseCase: sl(),
       sendEmailVerificationUseCase: sl(),
+      resetPasswordUsecase: sl(),
     ),
   );
 

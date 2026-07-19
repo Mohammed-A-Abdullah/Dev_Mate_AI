@@ -22,13 +22,13 @@ class CustomFeatureButton extends StatelessWidget {
         width: double.infinity,
         height: 55.h,
         decoration: BoxDecoration(
-          color: const Color(0xffB5C4FF),
+          color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(50.r),
         ),
         child: isLoading
             ? Center(
                 child: CircularProgressIndicator(
-                  color: AppColors.textButtonColor,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               )
             : Row(
@@ -37,7 +37,7 @@ class CustomFeatureButton extends StatelessWidget {
                   Text(
                     text,
                     style: GoogleFonts.inter(
-                      color: AppColors.textButtonColor,
+                      color: Theme.of(context).colorScheme.onPrimary,
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.55.sp,
@@ -46,7 +46,7 @@ class CustomFeatureButton extends StatelessWidget {
                   const SizedBox(width: 4),
                   Icon(
                     Icons.auto_awesome_rounded,
-                    color: AppColors.textButtonColor,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ],
               ),

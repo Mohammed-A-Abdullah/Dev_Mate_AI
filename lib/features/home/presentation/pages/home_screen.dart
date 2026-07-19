@@ -1,8 +1,10 @@
 import 'package:dev_mate_ai/core/constants/app_colors.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
+import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_state.dart';
+import 'package:dev_mate_ai/features/history/presentation/cubit/history_cubit.dart';
 import 'package:dev_mate_ai/features/home/presentation/cubit/home_cubit.dart';
 import 'package:dev_mate_ai/features/home/presentation/widgets/custom_new_chat_container.dart';
 import 'package:dev_mate_ai/features/home/presentation/widgets/quick_tool_item.dart';
@@ -15,6 +17,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/routing/route_name.dart';
+import '../../../chat_screen/presentation/pages/chat_screen.dart';
+import '../../../history/presentation/cubit/history_state.dart';
 import '../../../history/presentation/widgets/custom_history_card_widget.dart';
 import '../cubit/home_state.dart';
 
@@ -28,41 +32,18 @@ class HomeScreen extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => sl<HomeCubit>()..loadHomeData()),
         BlocProvider(create: (context) => sl<AuthCubit>()..checkAuthStatus()),
+        BlocProvider(create: (context) => sl<HistoryCubit>()..loadHistory()),
       ],
       child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: const Color(0xff111319),
-          title: Text(
-            'DevMate AI',
-            style: GoogleFonts.geist(
-              fontSize: 40.sp,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xffB5C4FF),
-            ),
-          ),
-          actions: [
-            BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) {
-                return IconButton(
-                  onPressed: () async {
-                    await context.read<AuthCubit>().signOut();
-                    if (context.mounted) {
-                      context.goNamed(RouteName.authScreen);
-                    }
-                  },
-                  icon: const Icon(Icons.logout, color: AppColors.primaryColor),
-                );
-              },
-            ),
-          ],
-        ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: CustomAppBar(title: 'DevMate AI', needButton: false),
         body: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
             if (state is HomeLoading || state is HomeInitial) {
-              return const Center(
-                child: CircularProgressIndicator(color: AppColors.primaryColor),
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               );
             }
 
@@ -70,7 +51,7 @@ class HomeScreen extends StatelessWidget {
               return Center(
                 child: Text(
                   state.message,
-                  style: TextStyle(color: AppColors.error),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               );
             }
@@ -85,26 +66,12 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         HeightSpace(height: 24),
-                        // CustomTextField(
-                        //   borderColor: AppColors.borderColor,
-                        //   fillColor: AppColors.fillColor,
-                        //   hintText: 'Search features or history...',
-                        //   hintTextStyle: GoogleFonts.inter(
-                        //     fontSize: 14.sp,
-                        //     color: AppColors.hintText,
-                        //   ),
-                        //   prefixIcon: Icon(
-                        //     Icons.search,
-                        //     color: AppColors.iconField,
-                        //     size: 20.sp,
-                        //   ),
-                        //   radius: 50.r,
-                        // ),
+
                         Text(
                           'Good morning, ${currentUser?.displayName ?? "User"} ',
                           style: GoogleFonts.geist(
                             fontSize: 24.sp,
-                            color: AppColors.primaryText,
+                            color: Theme.of(context).colorScheme.secondary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -112,7 +79,7 @@ class HomeScreen extends StatelessWidget {
                           'Ready to build something amazing today?',
                           style: GoogleFonts.inter(
                             fontSize: 14.sp,
-                            color: AppColors.secondaryText,
+                            color: Theme.of(context).colorScheme.onSecondary,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -124,7 +91,7 @@ class HomeScreen extends StatelessWidget {
                           style: GoogleFonts.inter(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.primaryText,
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
                         ),
                         HeightSpace(height: 16),
@@ -152,7 +119,7 @@ class HomeScreen extends StatelessWidget {
                               style: GoogleFonts.inter(
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.w500,
-                                color: AppColors.primaryText,
+                                color: Theme.of(context).colorScheme.secondary,
                               ),
                             ),
                             GestureDetector(
@@ -164,7 +131,7 @@ class HomeScreen extends StatelessWidget {
                                 style: GoogleFonts.jetBrainsMono(
                                   fontSize: 11.sp,
                                   fontWeight: FontWeight.w500,
-                                  color: AppColors.primaryColor,
+                                  color: Theme.of(context).colorScheme.primary,
                                   letterSpacing: 0.55.sp,
                                 ),
                               ),
@@ -172,21 +139,56 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                         HeightSpace(height: 22),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 3,
-                          itemBuilder: (context, index) {
-                            return CustomHistoryCardWidget(
-                              title: 'New Chat',
-                              description: 'No messages yet',
+                        BlocBuilder<HistoryCubit, HistoryState>(
+                          builder: (context, state) {
+                            if (state is HistoryLoading) {
+                              return  Center(
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              );
+                            }
 
-                              chipType: 'chat',
-                              time: DateTime(2026),
-                              onTap: () {},
-                            );
+                            if (state is HistoryLoaded) {
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: 3,
+                                itemBuilder: (context, index) {
+                                  final item = state.history[index];
+
+                                  return CustomHistoryCardWidget(
+                                    title: item.title.isEmpty
+                                        ? 'New Chat'
+                                        : item.title,
+                                    description: item.lastMessage.isEmpty
+                                        ? 'No messages yet'
+                                        : item.lastMessage,
+                                    chipType: item.type,
+                                    time: item.updatedAt,
+                                    onTap: () {
+                                      if (item.type.toLowerCase() == 'chat') {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                ChatScreen(chatId: item.id),
+                                          ),
+                                        );
+                                      } else {}
+                                    },
+                                  );
+                                },
+                              );
+                            }
+
+                            if (state is HistoryError) {
+                              return Center(child: Text(state.message));
+                            }
+
+                            return const SizedBox();
                           },
                         ),
+
                         HeightSpace(height: 40),
                       ],
                     ),

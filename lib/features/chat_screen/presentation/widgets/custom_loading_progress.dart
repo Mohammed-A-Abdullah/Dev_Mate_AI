@@ -5,12 +5,12 @@ class CustomLoadingProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const  Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: LinearProgressIndicator(
-                    color: Color(0xffB5C4FF),
-                    backgroundColor: Colors.transparent,
-                  ),
-                );
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: LinearProgressIndicator(
+        color: Theme.of(context).colorScheme.primary,
+        backgroundColor: Colors.transparent,
+      ),
+    );
   }
 }

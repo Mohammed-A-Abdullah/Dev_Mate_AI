@@ -21,6 +21,7 @@ abstract class AuthRepository {
   Future<AuthUserEntity?> signInAnonymously();
 
   Future<void> sendEmailVerification();
+  Future<void> resetPassword(String email);
 
   Future<void> signOut();
 }

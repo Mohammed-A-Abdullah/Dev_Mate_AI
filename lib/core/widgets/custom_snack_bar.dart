@@ -1,5 +1,7 @@
+import 'package:dev_mate_ai/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomSnackBar {
   static void show(
@@ -26,13 +28,7 @@ class CustomSnackBar {
         ),
         backgroundColor: backgroundColor ?? Colors.red,
         content: Text(
-          message,
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontFamily: "Poppins",
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
+          message,style: GoogleFonts.inter(color: AppColors.primaryText,fontSize: 14.sp,fontWeight: FontWeight.w500),
         ),
       ),
     );

@@ -21,6 +21,7 @@ abstract class AuthRemoteDataSource {
   Future<AuthUserEntity?> signInAnonymously();
 
   Future<void> sendEmailVerification();
+  Future<void> resetPassword({required String email});
 
   Future<void> signOut();
 }

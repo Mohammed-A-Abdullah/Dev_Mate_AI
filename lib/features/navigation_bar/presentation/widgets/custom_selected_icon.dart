@@ -14,8 +14,8 @@ final IconData iconData;
         Container(
           width: 5.w,
           height: 5.h,
-          decoration: const BoxDecoration(
-            color: Color(0xffB5C4FF),
+          decoration:  BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
             shape: BoxShape.circle,
           ),
         ),

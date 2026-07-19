@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/core/theme/extensions/dropdown_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,40 +23,24 @@ class CustomDropdownbuttonfield extends StatelessWidget {
       menuMaxHeight: 250.h,
       isExpanded: true,
       decoration: InputDecoration(
-        fillColor: Color(0xff1E1F26),
-        filled: true,
         labelText: labelText,
         hintText: hintText,
-        hintStyle: GoogleFonts.inter(
-          color: const Color(0xff6F7385),
-          fontSize: 14.sp,
-        ),
-        labelStyle: TextStyle(color: Color(0xff6F7385)),
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xff434654)),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xff434654)),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white, width: 2.0),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        prefixIcon: const Icon(Icons.code, color: Color(0xffC3C5D7)),
+
+        prefixIcon: const Icon(Icons.code),
       ),
-      icon: const Icon(
-        Icons.keyboard_arrow_down_rounded,
-        color: Color(0xffC3C5D7),
-      ),
-      borderRadius: BorderRadius.circular(16),
+      icon: const Icon(Icons.keyboard_arrow_down_rounded),
       itemHeight: 48.0,
       isDense: true,
-      dropdownColor: Color(0xff1E1F26),
+      dropdownColor: Theme.of(
+        context,
+      ).extension<DropdownThemeExtension>()!.dropdownColor,
       elevation: 2,
 
-      style: GoogleFonts.inter(color: Colors.white),
+      style: GoogleFonts.inter(
+        color: Theme.of(
+          context,
+        ).extension<DropdownThemeExtension>()!.textDropdown,
+      ),
       initialValue: initialValue,
 
       items: items
@@ -64,7 +49,12 @@ class CustomDropdownbuttonfield extends StatelessWidget {
               value: e,
               child: Text(
                 e,
-                style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                style: TextStyle(
+                  color: Theme.of(
+                    context,
+                  ).extension<DropdownThemeExtension>()!.textDropdown,
+                  fontSize: 16.sp,
+                ),
               ),
             ),
           )

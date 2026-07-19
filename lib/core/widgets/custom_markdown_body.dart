@@ -8,34 +8,35 @@ class CustomMarkdownBody extends StatelessWidget {
   final String inputData;
   @override
   Widget build(BuildContext context) {
+    final colorTheme=Theme.of(context).colorScheme;
     return MarkdownBody(
                                   data: inputData,
                                   selectable: true,
                                   styleSheet: MarkdownStyleSheet(
-                                    p: const TextStyle(
-                                      color: Colors.white,
+                                    p:  TextStyle(
+                                      color: colorTheme.surface,
                                       fontSize: 15,
                                     ),
-                                    h1: const TextStyle(
-                                      color: Colors.white,
+                                    h1:  TextStyle(
+                                      color: colorTheme.surface,
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    h2: const TextStyle(
-                                      color: Colors.white,
+                                    h2:  TextStyle(
+                                      color: colorTheme.surface,
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    h3: const TextStyle(
-                                      color: Colors.white,
+                                    h3:  TextStyle(
+                                      color: colorTheme.surface,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    listBullet: const TextStyle(
-                                      color: Colors.white,
+                                    listBullet:  TextStyle(
+                                      color: colorTheme.surface,
                                     ),
-                                    strong: const TextStyle(
-                                      color: Colors.white,
+                                    strong:  TextStyle(
+                                      color: colorTheme.surface,
                                       fontWeight: FontWeight.bold,
                                     ),
 

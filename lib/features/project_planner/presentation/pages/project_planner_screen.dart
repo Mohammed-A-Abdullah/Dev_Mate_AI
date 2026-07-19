@@ -8,18 +8,15 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routing/route_name.dart';
-import '../../../../core/services/gemini_service.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
-import '../../../../core/widgets/custom_dropdownButtonField.dart';
+import '../../../../core/widgets/custom_dropdown_button_field.dart';
 import '../../../../core/widgets/custom_feature_button.dart';
 import '../../../../core/widgets/language_helper.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../cubit/project_plan_cubit.dart';
 import '../cubit/project_plan_state.dart';
-import '../../domain/usecases/generate_plan_usecase.dart';
-import '../../data/repositories/project_plan_repository_impl.dart';
 import '../widgets/custom_project_planner_text_field.dart';
-import 'project_planner_constant.dart'; // Existing constants file
+import 'project_planner_constant.dart';
 
 class ProjectPlannerScreen extends StatelessWidget {
   const ProjectPlannerScreen({super.key});
@@ -50,12 +47,10 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
     _titleController = TextEditingController();
     _descriptionController = TextEditingController();
 
-    // Sync initial state with controllers (if any pre-filled)
     final state = context.read<ProjectPlanCubit>().state;
     _titleController.text = state.title;
     _descriptionController.text = state.description;
 
-    // Listen to changes and update cubit
     _titleController.addListener(() {
       context.read<ProjectPlanCubit>().updateTitle(_titleController.text);
     });
@@ -118,7 +113,7 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: AppColors.backgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: const CustomAppBar(title: 'Project Planner'),
           body: SingleChildScrollView(
             child: Padding(

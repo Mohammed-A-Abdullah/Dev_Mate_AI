@@ -1,5 +1,7 @@
 import 'package:dev_mate_ai/core/routing/route_name.dart';
 import 'package:dev_mate_ai/features/auth/presentation/pages/auth_screen.dart';
+import 'package:dev_mate_ai/features/auth/presentation/widgets/check_email_screen.dart';
+import 'package:dev_mate_ai/features/auth/presentation/widgets/send_email_for_password.dart';
 import 'package:dev_mate_ai/features/chat_screen/presentation/pages/chat_screen.dart';
 import 'package:dev_mate_ai/features/code_review/presentation/pages/code_review_screen.dart';
 import 'package:dev_mate_ai/features/debug_code/presentation/pages/debug_code_screen.dart';
@@ -97,6 +99,20 @@ class RouteBuilder {
         name: RouteName.notificationsScreen,
         path: RouteName.notificationsScreen,
         builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        name: RouteName.sendEmailForPassword,
+        path: RouteName.sendEmailForPassword,
+        builder: (context, state) =>  SendEmailForPassword(),
+      ),
+      GoRoute(
+        name: RouteName.checkEmailScreen,
+        path: RouteName.checkEmailScreen,
+        
+        builder: (context, state) {
+          final String email =state.extra as String;
+          return  CheckEmailScreen(email:email ,);
+        } ,
       ),
     ],
   );

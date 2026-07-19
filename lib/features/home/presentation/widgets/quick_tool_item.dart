@@ -1,4 +1,5 @@
 import 'package:dev_mate_ai/core/constants/app_colors.dart';
+import 'package:dev_mate_ai/core/theme/extensions/home_theme_extension.dart';
 import 'package:dev_mate_ai/features/home/domain/entities/home_quick_tool_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,7 +22,7 @@ class QuickToolItem extends StatelessWidget {
         width: 100.w,
         height: 100.h,
         decoration: BoxDecoration(
-          color: AppColors.homeQuickToolCard,
+          color: Theme.of(context).extension<HomeThemeExtension>()!.homeCard,
           borderRadius: BorderRadius.circular(16.r),
         ),
         child: Padding(
@@ -33,7 +34,9 @@ class QuickToolItem extends StatelessWidget {
                 height: 40.h,
                 width: 40.w,
                 decoration: BoxDecoration(
-                  color: AppColors.homeQuickToolCardenside,
+                  color: Theme.of(
+                    context,
+                  ).extension<HomeThemeExtension>()!.iconCardQuickTool,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(tool.icon, color: tool.iconColor),
@@ -44,7 +47,7 @@ class QuickToolItem extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.primaryText,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               HeightSpace(height: 5),
@@ -53,7 +56,7 @@ class QuickToolItem extends StatelessWidget {
                 style: GoogleFonts.jetBrainsMono(
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w400,
-                  color: AppColors.primaryText,
+                  color: Theme.of(context).colorScheme.onSecondary,
                 ),
               ),
             ],

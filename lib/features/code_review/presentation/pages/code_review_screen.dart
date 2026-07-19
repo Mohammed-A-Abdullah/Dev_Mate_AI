@@ -7,10 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routing/route_name.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
-import '../../../../core/widgets/custom_dropdownButtonField.dart';
+import '../../../../core/widgets/custom_dropdown_button_field.dart';
 import '../../../../core/widgets/custom_feature_button.dart';
 import '../../../../core/widgets/language_helper.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
@@ -114,7 +113,6 @@ class _CodeReviewViewState extends State<CodeReviewView> {
         }
       },
       builder: (context, state) {
-        // Update code controller language if language changed
         if (_currentLanguage != state.language) {
           final newLang = LanguageHelper.languageModes[state.language];
           if (newLang != null) {
@@ -124,7 +122,7 @@ class _CodeReviewViewState extends State<CodeReviewView> {
         }
 
         return Scaffold(
-          backgroundColor: AppColors.backgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: const CustomAppBar(title: 'Code Review'),
           body: SingleChildScrollView(
             child: Padding(

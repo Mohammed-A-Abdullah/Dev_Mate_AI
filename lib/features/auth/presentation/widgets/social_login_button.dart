@@ -1,4 +1,6 @@
 import 'package:dev_mate_ai/core/constants/app_assets.dart';
+import 'package:dev_mate_ai/core/theme/extensions/auth_theme_extension.dart';
+import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,16 +11,12 @@ class SocialLoginButton extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.onTap,
-    this.backgroundColor = const Color(0xff1A1E27),
-    this.borderColor = const Color(0xff2B313D),
   });
 
   final String title;
   final Widget icon;
   final VoidCallback onTap;
 
-  final Color backgroundColor;
-  final Color borderColor;
 
   factory SocialLoginButton.google({required VoidCallback onTap}) {
     return SocialLoginButton(
@@ -54,13 +52,13 @@ class SocialLoginButton extends StatelessWidget {
         child: Ink(
           height: 58.h,
           decoration: BoxDecoration(
-            color: backgroundColor,
+            color: Theme.of(context).extension<AuthThemeExtension>()!.socialBackground,
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: borderColor),
+            border: Border.all(color: Theme.of(context).colorScheme.outline),
           ),
           child: Row(
             children: [
-              SizedBox(width: 18.w),
+              WidthSpace(width: 18.w),
 
               SizedBox(
                 width: 26.w,
@@ -72,7 +70,7 @@ class SocialLoginButton extends StatelessWidget {
                   child: Text(
                     title,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.w600,
                       fontSize: 15.sp,
                     ),

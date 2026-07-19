@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
-import 'package:dev_mate_ai/features/explain_code/domain/usecase/explain_code_use_case.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_code_cubit.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_code_state.dart';
 import 'package:flutter/material.dart';
@@ -10,16 +9,13 @@ import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routing/route_name.dart';
-import '../../../../core/services/gemini_service.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
-import '../../../../core/widgets/custom_dropdownButtonField.dart';
+import '../../../../core/widgets/custom_dropdown_button_field.dart';
 import '../../../../core/widgets/custom_feature_button.dart';
 import '../../../../core/widgets/language_helper.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../code_review/presentation/widgets/custom_code_field.dart';
-import '../../data/repositories/explain_code_repository_impl.dart';
 import '../widgets/custom_explain_code_text_field.dart';
 
 class ExplainCodeScreen extends StatelessWidget {
@@ -126,7 +122,7 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
         }
 
         return Scaffold(
-          backgroundColor: AppColors.backgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: const CustomAppBar(title: 'Explain Code'),
           body: SingleChildScrollView(
             child: Padding(

@@ -19,8 +19,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
       backgroundColor: Colors.transparent,
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: const Color(0xffB5C4FF),
-      unselectedItemColor: const Color(0xffC4C6D0),
+      selectedItemColor: Theme.of(context).colorScheme.primary,
+      unselectedItemColor: Theme.of(context).colorScheme.onSecondary,
       selectedLabelStyle: GoogleFonts.jetBrainsMono(
         fontSize: 11.sp,
         fontWeight: FontWeight.w500,

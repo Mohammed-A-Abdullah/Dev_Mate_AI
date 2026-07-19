@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/routing/route_name.dart';
 import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
 import 'package:dev_mate_ai/features/auth/data/datasources/firebase_auth_data_source.dart';
@@ -36,18 +37,7 @@ class ProfileScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => AuthCubit(
-            checkAuthStatusUseCase: CheckAuthStatusUseCase(authRepository),
-            signInUseCase: SignInUseCase(authRepository),
-            signUpUseCase: SignUpUseCase(authRepository),
-            signOutUseCase: SignOutUseCase(authRepository),
-            googleUseCase: SignInGoogleUseCase(authRepository),
-            githubUseCase: SignInGithubUseCase(authRepository),
-            guestUseCase: SignInGuestUseCase(authRepository),
-            sendEmailVerificationUseCase: SendEmailVerificationUseCase(
-              authRepository,
-            ),
-          )..checkAuthStatus(),
+          create: (context) => sl<AuthCubit>()..checkAuthStatus(),
         ),
         BlocProvider(
           create: (context) => HistoryCubit(
@@ -102,12 +92,13 @@ class ProfileView extends StatelessWidget {
         final displayName = currentUser?.displayName?.trim().isNotEmpty == true
             ? currentUser!.displayName!
             : (isAuthenticated ? 'DevMate User' : 'Guest User');
-        final email = currentUser?.email?.trim().isNotEmpty == true
-            ? currentUser!.email!
-            : (isAuthenticated ? 'No email linked yet' : 'welcome@devmate.ai');
+        final photoUrl = currentUser?.photoURL;
         final isGuest =
             currentUser?.isAnonymous == true ||
             (currentUser?.email?.contains('guest') ?? false);
+        // Placeholder role label — swap for a real field once you store
+        // a job title / role on the user's Firestore profile document.
+        final roleLabel = isGuest ? 'Guest Explorer' : 'AI Developer';
 
         return Scaffold(
           backgroundColor: const Color(0xff111319),
@@ -134,46 +125,82 @@ class ProfileView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 12.h),
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(20.w),
-                          decoration: BoxDecoration(
-                            color: const Color(0xff1C1E28),
-                            borderRadius: BorderRadius.circular(24.r),
-                            border: Border.all(
-                              color: const Color(0xff2A2D3A),
-                              width: 1,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.15),
-                                blurRadius: 18,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
+                        SizedBox(height: 20.h),
+
+                        // ---- Avatar + name + role chip ----
+                        Center(
                           child: Column(
                             children: [
-                              Container(
-                                width: 72.w,
-                                height: 72.w,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xffB5C4FF),
-                                      Color(0xff7C8DFF),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Container(
+                                    width: 96.w,
+                                    height: 96.w,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xffB5C4FF),
+                                          Color(0xff7C8DFF),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      border: Border.all(
+                                        color: const Color(0xff2A2D3A),
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: ClipOval(
+                                      child: photoUrl != null
+                                          ? Image.network(
+                                              photoUrl,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) =>
+                                                  Icon(
+                                                    Icons.person,
+                                                    size: 44.sp,
+                                                    color: Colors.white,
+                                                  ),
+                                            )
+                                          : Icon(
+                                              Icons.person,
+                                              size: 44.sp,
+                                              color: Colors.white,
+                                            ),
+                                    ),
                                   ),
-                                ),
-                                child: Icon(
-                                  Icons.person,
-                                  size: 36.sp,
-                                  color: Colors.white,
-                                ),
+                                  Positioned(
+                                    bottom: -2,
+                                    right: -2,
+                                    child: InkWell(
+                                      onTap: () {
+                                        // TODO: hook up avatar edit / image
+                                        // picker flow here.
+                                      },
+                                      borderRadius: BorderRadius.circular(
+                                        999.r,
+                                      ),
+                                      child: Container(
+                                        padding: EdgeInsets.all(7.w),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: const Color(0xff1C1E28),
+                                          border: Border.all(
+                                            color: const Color(0xff111319),
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.edit,
+                                          size: 14.sp,
+                                          color: const Color(0xffE2E2EB),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               SizedBox(height: 14.h),
                               Text(
@@ -184,148 +211,107 @@ class ProfileView extends StatelessWidget {
                                   color: const Color(0xffE2E2EB),
                                 ),
                               ),
-                              SizedBox(height: 6.h),
-                              Text(
-                                email,
-                                style: GoogleFonts.inter(
-                                  fontSize: 13.sp,
-                                  color: const Color(0xffC3C5D7),
+                              SizedBox(height: 8.h),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 14.w,
+                                  vertical: 6.h,
                                 ),
-                              ),
-                              SizedBox(height: 16.h),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _ProfileChip(
-                                      icon: Icons.auto_awesome,
-                                      label: isGuest
-                                          ? 'Guest Mode'
-                                          : 'AI Dev Mode',
-                                    ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff1C1E28),
+                                  borderRadius: BorderRadius.circular(999.r),
+                                  border: Border.all(
+                                    color: const Color(0xff2A2D3A),
                                   ),
-                                  SizedBox(width: 10.w),
-                                  Expanded(
-                                    child: _ProfileChip(
-                                      icon: Icons.workspace_premium,
-                                      label: isGuest ? 'Free Plan' : 'Pro Plan',
-                                    ),
+                                ),
+                                child: Text(
+                                  roleLabel,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13.sp,
+                                    color: const Color(0xffC3C5D7),
                                   ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(height: 24.h),
-                        Text(
-                          'Your workspace',
-                          style: GoogleFonts.inter(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xffE2E2EB),
-                          ),
-                        ),
-                        SizedBox(height: 12.h),
+
+                        SizedBox(height: 28.h),
+
+                        // ---- Stat cards ----
                         BlocBuilder<HistoryCubit, HistoryState>(
                           builder: (context, historyState) {
-                            final int count = historyState is HistoryLoaded
+                            final int chatCount = historyState is HistoryLoaded
                                 ? historyState.history.length
                                 : 0;
-                            final int projectCount = count > 0
-                                ? (count ~/ 2) + 1
+                            // Placeholder derivations — replace with real
+                            // Firestore-backed counts when available.
+                            final int projectCount = chatCount > 0
+                                ? (chatCount ~/ 3) + 1
+                                : 0;
+                            final int analysisCount = chatCount > 0
+                                ? (chatCount ~/ 4)
                                 : 0;
 
                             return Row(
                               children: [
                                 Expanded(
                                   child: _StatCard(
-                                    title: 'Projects',
-                                    value: projectCount.toString(),
-                                    icon: Icons.folder_open,
+                                    value: chatCount.toString(),
+                                    label: 'Chats',
+                                    valueColor: const Color(0xffB5C4FF),
                                   ),
                                 ),
-                                SizedBox(width: 12.w),
+                                SizedBox(width: 10.w),
                                 Expanded(
                                   child: _StatCard(
-                                    title: 'Chats',
-                                    value: count.toString(),
-                                    icon: Icons.chat_bubble_outline,
+                                    value: projectCount.toString(),
+                                    label: 'READMEs',
+                                    valueColor: const Color(0xffC79DFF),
+                                  ),
+                                ),
+                                SizedBox(width: 10.w),
+                                Expanded(
+                                  child: _StatCard(
+                                    value: analysisCount.toString(),
+                                    label: 'Analysis',
+                                    valueColor: const Color(0xff6EE7B7),
                                   ),
                                 ),
                               ],
                             );
                           },
                         ),
-                        SizedBox(height: 12.h),
-                        _SettingRow(
-                          icon: Icons.tune,
-                          title: 'Settings',
-                          subtitle: 'Customize your workspace',
-                          onTap: () {
+
+                        SizedBox(height: 24.h),
+
+                        // ---- Grouped settings list ----
+                        _SettingsGroup(
+                          onAccountSettingsTap: () {
                             context.pushNamed(RouteName.settingsScreen);
                           },
-                        ),
-                        SizedBox(height: 10.h),
-                        _SettingRow(
-                          icon: Icons.notifications_none,
-                          title: 'Notifications',
-                          subtitle: 'Stay updated with new insights',
-                          onTap: () {
+                          onNotificationsTap: () {
                             context.pushNamed(RouteName.notificationsScreen);
                           },
-                        ),
-                        SizedBox(height: 10.h),
-                        _SettingRow(
-                          icon: Icons.lock_outline,
-                          title: 'Privacy',
-                          subtitle: 'Secure your account and data',
-                          onTap: () async {
+                          onAppPreferencesTap: () {
+                            // TODO: add an appPreferencesScreen route name
+                            // and push it here.
+                          },
+                          onAboutTap: () async {
                             await _launchExternalUrl(
                               context,
                               'https://firebase.google.com/support/privacy',
                             );
                           },
-                        ),
-                        SizedBox(height: 10.h),
-                        _SettingRow(
-                          icon: Icons.help_outline,
-                          title: 'Help & Support',
-                          subtitle: 'Contact us for assistance',
-                          onTap: () async {
-                            await _launchExternalUrl(
-                              context,
-                              'https://support.google.com',
-                            );
+                          onLogoutTap: () async {
+                            await context.read<AuthCubit>().signOut();
+                            if (context.mounted) {
+                              context.goNamed(RouteName.authScreen);
+                            }
                           },
                         ),
+
                         SizedBox(height: 24.h),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: () async {
-                              await context.read<AuthCubit>().signOut();
-                              if (context.mounted) {
-                                context.goNamed(RouteName.authScreen);
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xffB5C4FF),
-                              foregroundColor: const Color(0xff111319),
-                              padding: EdgeInsets.symmetric(vertical: 14.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.r),
-                              ),
-                            ),
-                            icon: const Icon(Icons.logout),
-                            label: Text(
-                              'Sign out',
-                              style: GoogleFonts.inter(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20.h),
                       ],
                     ),
                   ),
@@ -336,75 +322,39 @@ class ProfileView extends StatelessWidget {
   }
 }
 
-class _ProfileChip extends StatelessWidget {
-  const _ProfileChip({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: const Color(0xff242734),
-        borderRadius: BorderRadius.circular(999.r),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 15.sp, color: const Color(0xffB5C4FF)),
-          SizedBox(width: 6.w),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xffE2E2EB),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _StatCard extends StatelessWidget {
   const _StatCard({
-    required this.title,
     required this.value,
-    required this.icon,
+    required this.label,
+    required this.valueColor,
   });
 
-  final String title;
   final String value;
-  final IconData icon;
+  final String label;
+  final Color valueColor;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
       decoration: BoxDecoration(
         color: const Color(0xff1C1E28),
-        borderRadius: BorderRadius.circular(18.r),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: const Color(0xff2A2D3A)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: const Color(0xffB5C4FF), size: 20.sp),
-          SizedBox(height: 14.h),
           Text(
             value,
             style: GoogleFonts.geist(
               fontSize: 22.sp,
               fontWeight: FontWeight.w700,
-              color: const Color(0xffE2E2EB),
+              color: valueColor,
             ),
           ),
           SizedBox(height: 4.h),
           Text(
-            title,
+            label,
             style: GoogleFonts.inter(
               fontSize: 12.sp,
               color: const Color(0xffC3C5D7),
@@ -416,71 +366,174 @@ class _StatCard extends StatelessWidget {
   }
 }
 
+/// Grouped, card-style settings list matching the reference design:
+/// rows separated by dividers inside a single rounded container, with
+/// a switch row for theme and a red logout row at the bottom.
+class _SettingsGroup extends StatefulWidget {
+  const _SettingsGroup({
+    required this.onAccountSettingsTap,
+    required this.onNotificationsTap,
+    required this.onAppPreferencesTap,
+    required this.onAboutTap,
+    required this.onLogoutTap,
+  });
+
+  final VoidCallback onAccountSettingsTap;
+  final VoidCallback onNotificationsTap;
+  final VoidCallback onAppPreferencesTap;
+  final VoidCallback onAboutTap;
+  final VoidCallback onLogoutTap;
+
+  @override
+  State<_SettingsGroup> createState() => _SettingsGroupState();
+}
+
+class _SettingsGroupState extends State<_SettingsGroup> {
+  // Local placeholder state — wire this to a real ThemeCubit /
+  // ThemeMode.system persistence layer when you build one.
+  bool _isDarkMode = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xff1C1E28),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: const Color(0xff2A2D3A)),
+      ),
+      child: Column(
+        children: [
+          _SettingRow(
+            icon: Icons.manage_accounts_outlined,
+            title: 'Account Settings',
+            onTap: widget.onAccountSettingsTap,
+          ),
+          const _RowDivider(),
+          _SettingRow(
+            icon: Icons.dark_mode_outlined,
+            title: 'Theme',
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _isDarkMode ? 'Dark' : 'Light',
+                  style: GoogleFonts.inter(
+                    fontSize: 13.sp,
+                    color: const Color(0xffC3C5D7),
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                Switch(
+                  value: _isDarkMode,
+                  activeColor: const Color(0xffB5C4FF),
+                  onChanged: (value) {
+                    setState(() => _isDarkMode = value);
+                    // TODO: call context.read<ThemeCubit>().toggle()
+                    // once a ThemeCubit exists in the app.
+                  },
+                ),
+              ],
+            ),
+          ),
+          const _RowDivider(),
+          _SettingRow(
+            icon: Icons.notifications_none,
+            title: 'Notifications',
+            onTap: widget.onNotificationsTap,
+          ),
+          const _RowDivider(),
+          _SettingRow(
+            icon: Icons.tune,
+            title: 'App Preferences',
+            onTap: widget.onAppPreferencesTap,
+          ),
+          const _RowDivider(),
+          _SettingRow(
+            icon: Icons.info_outline,
+            title: 'About DevMate AI',
+            onTap: widget.onAboutTap,
+          ),
+          const _RowDivider(),
+          _SettingRow(
+            icon: Icons.logout,
+            title: 'Logout',
+            titleColor: const Color(0xffFF8A8A),
+            iconColor: const Color(0xffFF8A8A),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 15.sp,
+              color: const Color(0xffFF8A8A),
+            ),
+            onTap: widget.onLogoutTap,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RowDivider extends StatelessWidget {
+  const _RowDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Divider(
+      height: 1,
+      thickness: 1,
+      color: const Color(0xff2A2D3A),
+      indent: 14.w,
+      endIndent: 14.w,
+    );
+  }
+}
+
 class _SettingRow extends StatelessWidget {
   const _SettingRow({
     required this.icon,
     required this.title,
-    required this.subtitle,
-    required this.onTap,
+    this.onTap,
+    this.trailing,
+    this.titleColor,
+    this.iconColor,
   });
 
   final IconData icon;
   final String title;
-  final String subtitle;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final Widget? trailing;
+  final Color? titleColor;
+  final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16.r),
-      child: Container(
+      child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
-        decoration: BoxDecoration(
-          color: const Color(0xff1C1E28),
-          borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(color: const Color(0xff2A2D3A)),
-        ),
         child: Row(
           children: [
-            Container(
-              width: 42.w,
-              height: 42.w,
-              decoration: BoxDecoration(
-                color: const Color(0xff242734),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Icon(icon, color: const Color(0xffB5C4FF)),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.inter(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xffE2E2EB),
-                    ),
-                  ),
-                  SizedBox(height: 3.h),
-                  Text(
-                    subtitle,
-                    style: GoogleFonts.inter(
-                      fontSize: 12.sp,
-                      color: const Color(0xffC3C5D7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             Icon(
-              Icons.arrow_forward_ios,
-              size: 16.sp,
-              color: const Color(0xffC3C5D7),
+              icon,
+              size: 22.sp,
+              color: iconColor ?? const Color(0xffB5C4FF),
             ),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w600,
+                  color: titleColor ?? const Color(0xffE2E2EB),
+                ),
+              ),
+            ),
+            trailing ??
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 15.sp,
+                  color: const Color(0xffC3C5D7),
+                ),
           ],
         ),
       ),

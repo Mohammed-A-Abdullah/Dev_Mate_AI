@@ -24,7 +24,7 @@ final CodeController codeController;
                   controller: codeController,
                   textStyle: GoogleFonts.sourceCodePro(
                     fontSize: 14.sp,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
               );

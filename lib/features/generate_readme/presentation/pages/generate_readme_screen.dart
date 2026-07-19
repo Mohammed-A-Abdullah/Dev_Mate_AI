@@ -6,16 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routing/route_name.dart';
-import '../../../../core/services/gemini_service.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
-import '../../../../core/widgets/custom_dropdownButtonField.dart';
+import '../../../../core/widgets/custom_dropdown_button_field.dart';
 import '../../../../core/widgets/custom_feature_button.dart';
 import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
-import '../../data/repositories/generate_readme_repository_impl.dart';
-import '../../domain/usecases/generate_readme_use_case.dart';
 import '../cubit/readme_cubit.dart';
 import '../cubit/readme_state.dart';
 import '../widgets/costom_readme_text_field.dart';
@@ -154,7 +150,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: AppColors.backgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: const CustomAppBar(title: 'Generate README'),
           body: SingleChildScrollView(
             child: Padding(
@@ -222,8 +218,6 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
       controller: _featureController,
       label: 'Feature',
       hintText: 'Add feature',
-      labelStyle: GoogleFonts.inter(color: const Color(0xff6F7385)),
-      cursorColor: const Color(0xffC3C5D7),
       keyBoardType: TextInputType.multiline,
       suffixIconWidget: IconButton(
         icon: const Icon(Icons.add),
@@ -234,14 +228,6 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
             _featureController.clear();
           }
         },
-      ),
-      fillColor: const Color(0xff1E1F26),
-      borderColor: const Color(0xff434654),
-      radius: 18.r,
-      textStyle: GoogleFonts.inter(color: Colors.white),
-      hintTextStyle: GoogleFonts.inter(
-        color: const Color(0xff6F7385),
-        fontSize: 14.sp,
       ),
       onFieldSubmitted: (value) {
         final text = value.trim();

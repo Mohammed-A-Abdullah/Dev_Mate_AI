@@ -87,23 +87,32 @@ class _CustomTextFieldState extends State<CustomTextField> {
           onFieldSubmitted: widget.onFieldSubmitted,
           obscureText: widget.isPassword && !isPasswordVisible,
           obscuringCharacter: '●',
-          cursorColor: widget.cursorColor ?? Color(0xff94A3B8),
+
+          // Remove the hardcoded Color(0xff94A3B8). If null, it uses textSelectionTheme
+          cursorColor: widget.cursorColor,
           cursorWidth: 2.w,
           cursorErrorColor: Colors.red,
-          style: widget.textStyle,
+          style:
+              widget.textStyle ??
+              TextStyle(color: Colors.white, fontSize: 16.sp),
+
           decoration: InputDecoration(
             labelText: widget.label,
             labelStyle: widget.labelStyle,
             hintText: widget.hintText ?? '',
             hintStyle: widget.hintTextStyle,
+
             contentPadding: EdgeInsets.symmetric(
               horizontal: 18.w,
               vertical: 18.h,
             ),
+
             filled: true,
-            fillColor: widget.fillColor ?? Colors.white,
+            // Remove Colors.white fallback. If null, uses the theme's fillColor
+            fillColor: widget.fillColor,
             prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.suffixIconWidget ??
+            suffixIcon:
+                widget.suffixIconWidget ??
                 (widget.isPassword
                     ? GestureDetector(
                         onTap: () {
@@ -124,34 +133,29 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         child: Image.asset(widget.suffixIcon!),
                       )
                     : null),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.radius?.r ?? 18.r),
-              borderSide: BorderSide(
-                color: widget.borderColor ?? Colors.black,
-                width: 1,
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.radius?.r ?? 18.r),
-              borderSide: BorderSide(
-                color: widget.borderColor??Colors.white,
-                width: 2,
-              ),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.radius?.r ?? 18.r),
-              borderSide: const BorderSide(color: Colors.red, width: 1),
-            ),
-            errorStyle: TextStyle(
-              color: Colors.red,
-              fontSize: 10.sp,
-              fontFamily: "Poppins",
-              fontWeight: FontWeight.w600,
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.radius?.r ?? 18.r),
-              borderSide: const BorderSide(color: Colors.red, width: 2),
-            ),
+
+            // Note: If you want to use ScreenUtil (.r) for borders per-widget,
+            // you can keep these. Otherwise, remove them entirely to let the theme handle borders.
+            enabledBorder: widget.borderColor != null || widget.radius != null
+                ? OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                      widget.radius?.r ?? 20.r,
+                    ),
+                    borderSide: BorderSide(
+                      color: widget.borderColor ?? const Color(0xff2A2D3A),
+                      width: 1,
+                    ),
+                  )
+                : null, // Passing null forces it to use DarkTheme
+
+            focusedBorder: widget.borderColor != null || widget.radius != null
+                ? OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                      widget.radius?.r ?? 20.r,
+                    ),
+                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                  )
+                : null,
           ),
         ),
       ],

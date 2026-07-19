@@ -20,7 +20,7 @@ class SkipButton extends StatelessWidget {
           "SKIP",
           style: GoogleFonts.jetBrainsMono(
             fontSize: 11.sp,
-            color: const Color(0xffC3C5D7),
+            color: Theme.of(context).colorScheme.onSecondary,
           ),
         ),
       ),
