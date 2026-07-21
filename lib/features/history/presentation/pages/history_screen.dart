@@ -1,4 +1,3 @@
-import 'package:dev_mate_ai/core/constants/app_colors.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/presentation/pages/chat_screen.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';

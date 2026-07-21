@@ -64,6 +64,7 @@ dependencies:
   timeago: ^3.7.1
   url_launcher: ^6.3.1
   get_it: ^9.2.1
+  image_picker: ^1.2.3
 
 dev_dependencies:
   flutter_test:

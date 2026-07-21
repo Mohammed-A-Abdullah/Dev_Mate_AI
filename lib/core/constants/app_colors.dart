@@ -72,7 +72,7 @@ static const Color outline = Color(0xff2A2D3A);
   
 
   //test color
-  final color=Color(0xff1E1F26);
+  final color=Color(0xff1C1E28);
 
 
 

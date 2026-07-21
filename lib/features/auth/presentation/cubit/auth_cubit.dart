@@ -49,7 +49,18 @@ class AuthCubit extends Cubit<AuthState> {
       final authenticated = await checkAuthStatusUseCase();
 
       if (authenticated) {
-        emit(AuthAuthenticated(const AuthUserEntity(uid: '', email: '')));
+        final firebaseUser = FirebaseAuth.instance.currentUser;
+
+        emit(
+          AuthAuthenticated(
+            AuthUserEntity(
+              uid: firebaseUser?.uid ?? '',
+              email: firebaseUser?.email ?? '',
+              displayName: firebaseUser?.displayName,
+              isAnonymous: firebaseUser?.isAnonymous ?? false,
+            ),
+          ),
+        );
       } else {
         emit(const AuthUnauthenticated());
       }
@@ -72,6 +83,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthAuthenticated(user));
     } catch (e) {
       emit(AuthError(e.toString().replaceFirst("Exception: ", "")));
+      print(e);
     }
   }
 
@@ -105,6 +117,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(e.toString().replaceFirst("Exception: ", "")));
+      print(e);
     }
   }
 

@@ -56,7 +56,7 @@ class _AuthScreenState extends State<AuthScreen> {
           if (state is AuthError) {
             CustomSnackBar.show(
               context,
-              message: "Authentication failed.",
+              message: state.message,
               backgroundColor: Theme.of(context).colorScheme.error,
             );
           }
@@ -65,7 +65,7 @@ class _AuthScreenState extends State<AuthScreen> {
             
             CustomSnackBar.show(
               context,
-              message: "Authentication successful!",
+              message: state.message,
               backgroundColor: AppColors.success,
             );
           }

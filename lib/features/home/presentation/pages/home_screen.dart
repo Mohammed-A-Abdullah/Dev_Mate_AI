@@ -1,9 +1,8 @@
-import 'package:dev_mate_ai/core/constants/app_colors.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
+import 'package:dev_mate_ai/core/routing/route_name.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_state.dart';
 import 'package:dev_mate_ai/features/history/presentation/cubit/history_cubit.dart';
 import 'package:dev_mate_ai/features/home/presentation/cubit/home_cubit.dart';
 import 'package:dev_mate_ai/features/home/presentation/widgets/custom_new_chat_container.dart';
@@ -16,7 +15,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/routing/route_name.dart';
 import '../../../chat_screen/presentation/pages/chat_screen.dart';
 import '../../../history/presentation/cubit/history_state.dart';
 import '../../../history/presentation/widgets/custom_history_card_widget.dart';
@@ -142,7 +140,7 @@ class HomeScreen extends StatelessWidget {
                         BlocBuilder<HistoryCubit, HistoryState>(
                           builder: (context, state) {
                             if (state is HistoryLoading) {
-                              return  Center(
+                              return Center(
                                 child: CircularProgressIndicator(
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
@@ -150,35 +148,57 @@ class HomeScreen extends StatelessWidget {
                             }
 
                             if (state is HistoryLoaded) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: 3,
-                                itemBuilder: (context, index) {
-                                  final item = state.history[index];
-
-                                  return CustomHistoryCardWidget(
-                                    title: item.title.isEmpty
-                                        ? 'New Chat'
-                                        : item.title,
-                                    description: item.lastMessage.isEmpty
-                                        ? 'No messages yet'
-                                        : item.lastMessage,
-                                    chipType: item.type,
-                                    time: item.updatedAt,
-                                    onTap: () {
-                                      if (item.type.toLowerCase() == 'chat') {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                ChatScreen(chatId: item.id),
+                              state.history.isEmpty
+                                  ? Padding(
+                                      padding: EdgeInsets.all(16.0),
+                                      child: Center(
+                                        child: Text(
+                                          'No elements',
+                                          style: GoogleFonts.inter(
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.secondary,
                                           ),
+                                        ),
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      // Safely show up to 3 items, or the actual length if it's less than 3
+                                      itemCount: state.history.length > 3
+                                          ? 3
+                                          : state.history.length,
+                                      itemBuilder: (context, index) {
+                                        final item = state.history[index];
+
+                                        return CustomHistoryCardWidget(
+                                          title: item.title.isEmpty
+                                              ? 'New Chat'
+                                              : item.title,
+                                          description: item.lastMessage.isEmpty
+                                              ? 'No messages yet'
+                                              : item.lastMessage,
+                                          chipType: item.type,
+                                          time: item.updatedAt,
+                                          onTap: () {
+                                            if (item.type.toLowerCase() ==
+                                                'chat') {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (_) => ChatScreen(
+                                                    chatId: item.id,
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              // Handle other types here
+                                            }
+                                          },
                                         );
-                                      } else {}
-                                    },
-                                  );
-                                },
-                              );
+                                      },
+                                    );
                             }
 
                             if (state is HistoryError) {

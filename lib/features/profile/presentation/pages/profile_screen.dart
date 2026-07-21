@@ -1,17 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/routing/route_name.dart';
+import 'package:dev_mate_ai/core/theme/extensions/profile_theme_extension.dart';
+import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
 import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
-import 'package:dev_mate_ai/features/auth/data/datasources/firebase_auth_data_source.dart';
-import 'package:dev_mate_ai/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/check_auth_status_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/send_email_verification_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_github_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_guest_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_google_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_out_usecase.dart';
-import 'package:dev_mate_ai/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_state.dart';
 import 'package:dev_mate_ai/features/history/data/datasource/history_remote_data_source_impl.dart';
@@ -27,33 +19,18 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../cubit/profile_cubit.dart';
+import '../cubit/profile_state.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = AuthRepositoryImpl(remote: FirebaseAuthDataSource());
-
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => sl<AuthCubit>()..checkAuthStatus(),
-        ),
-        BlocProvider(
-          create: (context) => HistoryCubit(
-            GetHistoryUseCase(
-              HistoryRepositoryImpl(
-                HistoryRemoteDataSourceImpl(
-                  firestore: FirebaseFirestore.instance,
-                  auth: FirebaseAuth.instance,
-                ),
-              ),
-            ),
-          )..loadHistory(),
-        ),
-      ],
-      child: const ProfileView(),
-    );
+    return BlocProvider(
+  create: (_) => sl<ProfileCubit>()..loadProfile(),
+  child: const ProfileView(),
+);
   }
 }
 
@@ -83,51 +60,40 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthCubit, AuthState>(
-      builder: (context, state) {
-        final isLoading = state is AuthLoading;
-        final currentUser = FirebaseAuth.instance.currentUser;
-        final isAuthenticated =
-            state is AuthAuthenticated || currentUser != null;
-        final displayName = currentUser?.displayName?.trim().isNotEmpty == true
-            ? currentUser!.displayName!
-            : (isAuthenticated ? 'DevMate User' : 'Guest User');
-        final photoUrl = currentUser?.photoURL;
-        final isGuest =
-            currentUser?.isAnonymous == true ||
-            (currentUser?.email?.contains('guest') ?? false);
-        // Placeholder role label — swap for a real field once you store
-        // a job title / role on the user's Firestore profile document.
-        final roleLabel = isGuest ? 'Guest Explorer' : 'AI Developer';
+    return BlocConsumer<ProfileCubit, ProfileState>(
+      listener: (context, state) {
+        if (state is ProfileLoggedOut) {
+          context.goNamed(RouteName.authScreen);
+        }
 
+        if (state is ProfileError) {
+          print('================================================');
+          print(state.message);
+          CustomSnackBar.show(context, message: state.message);
+        }
+      },
+      builder: (context, state) {
+        
+          if (state is ProfileLoading || state is ProfileInitial) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        if (state is ProfileLoaded) {
+        final profile = state.profile;
+          final displayName = profile.name;
+          final photoUrl = profile.imageUrl;
+          final roleLabel = profile.isGuest ? "Guest Explorer" : "AI Developer";
         return Scaffold(
-          backgroundColor: const Color(0xff111319),
-          appBar: AppBar(
-            backgroundColor: const Color(0xff111319),
-            elevation: 0,
-            title: Text(
-              'Profile',
-              style: GoogleFonts.geist(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xffE2E2EB),
-              ),
-            ),
-            centerTitle: true,
-          ),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: CustomAppBar(title: "Profile", needButton: false),
           body: SafeArea(
-            child: isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(color: Color(0xffB5C4FF)),
-                  )
-                : SingleChildScrollView(
+            child: SingleChildScrollView(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 20.h),
-
-                        // ---- Avatar + name + role chip ----
                         Center(
                           child: Column(
                             children: [
@@ -139,16 +105,26 @@ class ProfileView extends StatelessWidget {
                                     height: 96.w,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      gradient: const LinearGradient(
+                                      gradient: LinearGradient(
                                         colors: [
-                                          Color(0xffB5C4FF),
-                                          Color(0xff7C8DFF),
+                                          Theme.of(context)
+                                              .extension<
+                                                ProfileThemeExtension
+                                              >()!
+                                              .profilCardGradient,
+                                          Theme.of(context)
+                                              .extension<
+                                                ProfileThemeExtension
+                                              >()!
+                                              .secondprofilCardGradient,
                                         ],
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
                                       ),
                                       border: Border.all(
-                                        color: const Color(0xff2A2D3A),
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.outline,
                                         width: 2,
                                       ),
                                     ),
@@ -175,10 +151,7 @@ class ProfileView extends StatelessWidget {
                                     bottom: -2,
                                     right: -2,
                                     child: InkWell(
-                                      onTap: () {
-                                        // TODO: hook up avatar edit / image
-                                        // picker flow here.
-                                      },
+                                      onTap: () {},
                                       borderRadius: BorderRadius.circular(
                                         999.r,
                                       ),
@@ -186,17 +159,19 @@ class ProfileView extends StatelessWidget {
                                         padding: EdgeInsets.all(7.w),
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: const Color(0xff1C1E28),
+                                          color: Theme.of(context)
+                                              .extension<
+                                                ProfileThemeExtension
+                                              >()!
+                                              .profilCard,
                                           border: Border.all(
-                                            color: const Color(0xff111319),
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.outline,
                                             width: 2,
                                           ),
                                         ),
-                                        child: Icon(
-                                          Icons.edit,
-                                          size: 14.sp,
-                                          color: const Color(0xffE2E2EB),
-                                        ),
+                                        child: Icon(Icons.edit, size: 14.sp),
                                       ),
                                     ),
                                   ),
@@ -208,7 +183,9 @@ class ProfileView extends StatelessWidget {
                                 style: GoogleFonts.geist(
                                   fontSize: 22.sp,
                                   fontWeight: FontWeight.w700,
-                                  color: const Color(0xffE2E2EB),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
                                 ),
                               ),
                               SizedBox(height: 8.h),
@@ -218,17 +195,23 @@ class ProfileView extends StatelessWidget {
                                   vertical: 6.h,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xff1C1E28),
+                                  color: Theme.of(context)
+                                      .extension<ProfileThemeExtension>()!
+                                      .profilCard,
                                   borderRadius: BorderRadius.circular(999.r),
                                   border: Border.all(
-                                    color: const Color(0xff2A2D3A),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outline,
                                   ),
                                 ),
                                 child: Text(
                                   roleLabel,
                                   style: GoogleFonts.inter(
                                     fontSize: 13.sp,
-                                    color: const Color(0xffC3C5D7),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSecondary,
                                   ),
                                 ),
                               ),
@@ -238,54 +221,36 @@ class ProfileView extends StatelessWidget {
 
                         SizedBox(height: 28.h),
 
-                        // ---- Stat cards ----
-                        BlocBuilder<HistoryCubit, HistoryState>(
-                          builder: (context, historyState) {
-                            final int chatCount = historyState is HistoryLoaded
-                                ? historyState.history.length
-                                : 0;
-                            // Placeholder derivations — replace with real
-                            // Firestore-backed counts when available.
-                            final int projectCount = chatCount > 0
-                                ? (chatCount ~/ 3) + 1
-                                : 0;
-                            final int analysisCount = chatCount > 0
-                                ? (chatCount ~/ 4)
-                                : 0;
-
-                            return Row(
-                              children: [
-                                Expanded(
-                                  child: _StatCard(
-                                    value: chatCount.toString(),
-                                    label: 'Chats',
-                                    valueColor: const Color(0xffB5C4FF),
-                                  ),
-                                ),
-                                SizedBox(width: 10.w),
-                                Expanded(
-                                  child: _StatCard(
-                                    value: projectCount.toString(),
-                                    label: 'READMEs',
-                                    valueColor: const Color(0xffC79DFF),
-                                  ),
-                                ),
-                                SizedBox(width: 10.w),
-                                Expanded(
-                                  child: _StatCard(
-                                    value: analysisCount.toString(),
-                                    label: 'Analysis',
-                                    valueColor: const Color(0xff6EE7B7),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
+                        Row(
+  children: [
+    Expanded(
+      child: _StatCard(
+        value: profile.chats.toString(),
+        label: "Chats",
+        valueColor: const Color(0xffB5C4FF),
+      ),
+    ),
+    SizedBox(width: 10.w),
+    Expanded(
+      child: _StatCard(
+        value: profile.readmes.toString(),
+        label: "READMEs",
+        valueColor: const Color(0xffC79DFF),
+      ),
+    ),
+    SizedBox(width: 10.w),
+    Expanded(
+      child: _StatCard(
+        value: profile.analysis.toString(),
+        label: "Analysis",
+        valueColor: const Color(0xff6EE7B7),
+      ),
+    ),
+  ],
+),
 
                         SizedBox(height: 24.h),
 
-                        // ---- Grouped settings list ----
                         _SettingsGroup(
                           onAccountSettingsTap: () {
                             context.pushNamed(RouteName.settingsScreen);
@@ -304,7 +269,7 @@ class ProfileView extends StatelessWidget {
                             );
                           },
                           onLogoutTap: () async {
-                            await context.read<AuthCubit>().signOut();
+                            context.read<ProfileCubit>().logout();
                             if (context.mounted) {
                               context.goNamed(RouteName.authScreen);
                             }
@@ -317,6 +282,8 @@ class ProfileView extends StatelessWidget {
                   ),
           ),
         );
+        }
+        return const SizedBox.shrink();
       },
     );
   }

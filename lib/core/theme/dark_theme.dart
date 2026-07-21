@@ -4,6 +4,7 @@ import 'package:dev_mate_ai/core/theme/extensions/chat_theme_extension.dart';
 import 'package:dev_mate_ai/core/theme/extensions/dropdown_theme_extension.dart';
 import 'package:dev_mate_ai/core/theme/extensions/history_theme_extension.dart';
 import 'package:dev_mate_ai/core/theme/extensions/home_theme_extension.dart';
+import 'package:dev_mate_ai/core/theme/extensions/profile_theme_extension.dart';
 import 'package:dev_mate_ai/core/theme/extensions/splash_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -85,7 +86,8 @@ class DarkTheme {
       ),
       AuthThemeExtension(socialBackground: Color(0xff1A1E27)),
       SplashThemeExtension(splashText: Color(0xff8D90A0)),
-      DropdownThemeExtension(dropdownColor: Color(0xff1E1F26),textDropdown: AppColors.secondary)
+      DropdownThemeExtension(dropdownColor: Color(0xff1E1F26),textDropdown: AppColors.secondary),
+      ProfileThemeExtension(profilCardGradient: Color(0xffB5C4FF), secondprofilCardGradient: Color(0xff7C8DFF),profilCard: Color(0xff1C1E28)),
     ],
   );
 }

@@ -1,4 +1,3 @@
-import 'package:dev_mate_ai/core/constants/app_colors.dart';
 import 'package:dev_mate_ai/core/theme/extensions/home_theme_extension.dart';
 import 'package:dev_mate_ai/features/home/domain/entities/home_quick_tool_entity.dart';
 import 'package:flutter/material.dart';

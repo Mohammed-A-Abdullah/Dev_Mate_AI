@@ -50,6 +50,9 @@ import 'package:dev_mate_ai/features/navigation_bar/presentation/cubit/navigatio
 import 'package:dev_mate_ai/features/onboarding/data/repositories/onboarding_repository_imp.dart';
 import 'package:dev_mate_ai/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:dev_mate_ai/features/onboarding/presentation/cubit/onboarding_cubit.dart';
+import 'package:dev_mate_ai/features/profile/data/datasource/profile_remote_data_source.dart';
+import 'package:dev_mate_ai/features/profile/data/datasource/profile_remote_data_source_impl.dart';
+import 'package:dev_mate_ai/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:dev_mate_ai/features/project_planner/data/repositories/project_plan_repository_impl.dart';
 import 'package:dev_mate_ai/features/project_planner/domain/repositories/i_project_plan_repository.dart';
 import 'package:dev_mate_ai/features/project_planner/domain/usecases/generate_plan_usecase.dart';
@@ -65,6 +68,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../features/auth/domain/repository/auth_repository.dart';
+import '../../features/profile/domain/repositories/profile_repository.dart';
+import '../../features/profile/domain/useccases/get_profile_use_case.dart';
+import '../../features/profile/domain/useccases/logout_use_case.dart';
+import '../../features/profile/presentation/cubit/profile_cubit.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -194,5 +201,12 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<CheckOnboarding>(()=>CheckOnboarding(sl()));
   sl.registerLazySingleton<SaveOnboardingCompleted>(()=>SaveOnboardingCompleted(sl()));
   sl.registerFactory<SplashCubit>(()=>SplashCubit(sl(), sl()));
+
+  //profile page
+  sl.registerLazySingleton<ProfileRemoteDataSource>(()=>ProfileRemoteDataSourceImpl(auth: sl(), firestore: sl()));
+  sl.registerLazySingleton<ProfileRepository>(()=>ProfileRepositoryImpl(sl()));
+  sl.registerLazySingleton<GetProfileUseCase>(()=>GetProfileUseCase(repository: sl()));
+  sl.registerLazySingleton<LogoutUseCase>(()=>LogoutUseCase(repository: sl()));
+  sl.registerFactory<ProfileCubit>(()=>ProfileCubit(sl(), sl()));
 
 }
