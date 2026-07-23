@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dev_mate_ai/features/profile/domain/entities/profile_entity.dart';
 
 import '../../domain/repositories/profile_repository.dart';
@@ -19,7 +21,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<void> updatePhoto() {
-    return remote.updatePhoto();
+  Future<String> updatePhoto(File imageFile) {
+    return remote.updatePhoto(imageFile);
+  }
+  
+  @override
+  Future<void> changePassword(String newPassword) {
+    return remote.changePassword(newPassword);
+  }
+  
+  @override
+  Future<void> deleteAccount() {
+    return remote.deleteAccount();
   }
 }

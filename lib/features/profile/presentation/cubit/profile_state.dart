@@ -20,3 +20,8 @@ class ProfileError extends ProfileState {
 }
 class ProfileLoggedOut extends ProfileState {
 }
+class ChangePasswordLoading extends ProfileState {}
+
+class ChangePasswordSuccess extends ProfileState {}
+
+class AccountDeleted extends ProfileState {}

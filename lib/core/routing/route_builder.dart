@@ -10,8 +10,9 @@ import 'package:dev_mate_ai/core/widgets/custom_ai_model_answer_screen.dart';
 import 'package:dev_mate_ai/features/generate_readme/presentation/pages/generate_readme_screen.dart';
 import 'package:dev_mate_ai/features/generate_readme/presentation/pages/readme_result_screen.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/pages/navigation_bar.dart';
+import 'package:dev_mate_ai/features/profile/presentation/pages/about_screen.dart';
+import 'package:dev_mate_ai/features/profile/presentation/pages/account_settings_screen.dart';
 import 'package:dev_mate_ai/features/profile/presentation/pages/notifications_screen.dart';
-import 'package:dev_mate_ai/features/profile/presentation/pages/settings_screen.dart';
 import 'package:dev_mate_ai/features/project_planner/presentation/pages/project_planner_screen.dart';
 import 'package:dev_mate_ai/features/splash/presentation/pages/splash_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -91,9 +92,14 @@ class RouteBuilder {
         builder: (context, state) => const CodeReviewScreen(),
       ),
       GoRoute(
-        name: RouteName.settingsScreen,
-        path: RouteName.settingsScreen,
-        builder: (context, state) => const SettingsScreen(),
+        name: RouteName.aboutScreen,
+        path: RouteName.aboutScreen,
+        builder: (context, state) => const AboutScreen(),
+      ),
+      GoRoute(
+        name: RouteName.accountStettingsScreen,
+        path: RouteName.accountStettingsScreen,
+        builder: (context, state) => const AccountSettingsScreen(),
       ),
       GoRoute(
         name: RouteName.notificationsScreen,

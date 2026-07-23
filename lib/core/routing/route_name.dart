@@ -13,8 +13,9 @@ class RouteName {
   static const String readmeResultScreen = '/readmeResultScreen';
   static const String projectPlannerScreen = '/projectPlannerScreen';
   static const String codeReviewScreen = '/codeReviewScreen';
-  static const String settingsScreen = '/settingsScreen';
+  static const String accountStettingsScreen = '/accountStettingsScreen';
   static const String notificationsScreen = '/notificationsScreen';
   static const String checkEmailScreen= '/checkEmailScreen';
   static const String sendEmailForPassword = '/sendEmailForPassword';
+  static const String aboutScreen = '/aboutScreen';
 }

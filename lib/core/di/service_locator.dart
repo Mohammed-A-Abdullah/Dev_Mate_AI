@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/services/gemini_service.dart';
+import 'package:dev_mate_ai/core/services/url_launcher_service.dart';
 import 'package:dev_mate_ai/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:dev_mate_ai/features/auth/data/datasources/firebase_auth_data_source.dart';
 import 'package:dev_mate_ai/features/auth/data/repositories/auth_repository_impl.dart';
@@ -53,6 +54,9 @@ import 'package:dev_mate_ai/features/onboarding/presentation/cubit/onboarding_cu
 import 'package:dev_mate_ai/features/profile/data/datasource/profile_remote_data_source.dart';
 import 'package:dev_mate_ai/features/profile/data/datasource/profile_remote_data_source_impl.dart';
 import 'package:dev_mate_ai/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:dev_mate_ai/features/profile/domain/useccases/change_password_use_case.dart';
+import 'package:dev_mate_ai/features/profile/domain/useccases/delete_account_use_case.dart';
+import 'package:dev_mate_ai/features/profile/domain/useccases/update_photo_use_case.dart';
 import 'package:dev_mate_ai/features/project_planner/data/repositories/project_plan_repository_impl.dart';
 import 'package:dev_mate_ai/features/project_planner/domain/repositories/i_project_plan_repository.dart';
 import 'package:dev_mate_ai/features/project_planner/domain/usecases/generate_plan_usecase.dart';
@@ -76,14 +80,12 @@ import '../../features/profile/presentation/cubit/profile_cubit.dart';
 final GetIt sl = GetIt.instance;
 
 Future<void> setupServiceLocator() async {
-
   //gemini service
   sl.registerLazySingleton<GeminiService>(() => GeminiService());
   //firestore
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
   //fire_auth
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-
 
   //home page sl
   sl.registerLazySingleton<HomeRepositoryImp>(() => HomeRepositoryImp());
@@ -113,7 +115,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<SendEmailVerificationUseCase>(
     () => SendEmailVerificationUseCase(sl()),
   );
-  sl.registerLazySingleton<ResetPasswordUsecase>(()=>ResetPasswordUsecase(repository: sl()));
+  sl.registerLazySingleton<ResetPasswordUsecase>(
+    () => ResetPasswordUsecase(repository: sl()),
+  );
 
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(
@@ -130,9 +134,11 @@ Future<void> setupServiceLocator() async {
   );
 
   //chat page sl
-  
-  sl.registerLazySingleton<FirebaseChatDataSource>(() => FirebaseChatDataSource(firestore: sl()));
-  
+
+  sl.registerLazySingleton<FirebaseChatDataSource>(
+    () => FirebaseChatDataSource(firestore: sl()),
+  );
+
   sl.registerLazySingleton<ChatRepository>(
     () => ChatRepositoryImpl(gemnini: sl(), firebase: sl()),
   );
@@ -158,55 +164,118 @@ Future<void> setupServiceLocator() async {
   );
 
   // code review
-  sl.registerLazySingleton<CodeReviewRepository>(()=>CodeReviewRepositoryImpl(geminiService: sl()));
-  sl.registerLazySingleton<CodeReviewUseCase>(()=>CodeReviewUseCase(repository: sl()));
-  sl.registerFactory<CodeReviewCubit>(()=>CodeReviewCubit(reviewCodeUseCase: sl()));
+  sl.registerLazySingleton<CodeReviewRepository>(
+    () => CodeReviewRepositoryImpl(geminiService: sl()),
+  );
+  sl.registerLazySingleton<CodeReviewUseCase>(
+    () => CodeReviewUseCase(repository: sl()),
+  );
+  sl.registerFactory<CodeReviewCubit>(
+    () => CodeReviewCubit(reviewCodeUseCase: sl()),
+  );
 
   // debug code
-  sl.registerLazySingleton<DebugCodeRepository>(()=>DebugCodeRepositoryImpl(sl()));
-  sl.registerLazySingleton<DebugCodeUseCase>(()=>DebugCodeUseCase(repository: sl()));
-  sl.registerFactory<DebugCubit>(()=>DebugCubit(debugCodeUseCase: sl()));
+  sl.registerLazySingleton<DebugCodeRepository>(
+    () => DebugCodeRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<DebugCodeUseCase>(
+    () => DebugCodeUseCase(repository: sl()),
+  );
+  sl.registerFactory<DebugCubit>(() => DebugCubit(debugCodeUseCase: sl()));
 
   // explain code
-  sl.registerLazySingleton<ExplainCodeRepository>(()=>ExplainRepositoryImpl(sl()));
-  sl.registerLazySingleton<ExplainCodeUseCase>(()=>ExplainCodeUseCase(repository: sl()));
-  sl.registerFactory<ExplainCubit>(()=>ExplainCubit(explainCodeUseCase: sl()));
+  sl.registerLazySingleton<ExplainCodeRepository>(
+    () => ExplainRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<ExplainCodeUseCase>(
+    () => ExplainCodeUseCase(repository: sl()),
+  );
+  sl.registerFactory<ExplainCubit>(
+    () => ExplainCubit(explainCodeUseCase: sl()),
+  );
 
   // generate README
-  sl.registerLazySingleton<GenerateReadmeRepository>(()=>ReadmeRepositoryImpl(sl()));
-  sl.registerLazySingleton<GenerateReadmeUseCase>(()=>GenerateReadmeUseCase(sl()));
-  sl.registerFactory<ReadmeCubit>(()=>ReadmeCubit(generateReadmeUseCase: sl()));
+  sl.registerLazySingleton<GenerateReadmeRepository>(
+    () => ReadmeRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<GenerateReadmeUseCase>(
+    () => GenerateReadmeUseCase(sl()),
+  );
+  sl.registerFactory<ReadmeCubit>(
+    () => ReadmeCubit(generateReadmeUseCase: sl()),
+  );
 
   //project planner
-  sl.registerLazySingleton<IProjectPlanRepository>(()=>ProjectPlanRepositoryImpl(sl()));
-  sl.registerLazySingleton<GeneratePlanUseCase>(()=>GeneratePlanUseCase(sl()));
-  sl.registerFactory<ProjectPlanCubit>(()=>ProjectPlanCubit(generatePlanUseCase: sl()));
+  sl.registerLazySingleton<IProjectPlanRepository>(
+    () => ProjectPlanRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<GeneratePlanUseCase>(
+    () => GeneratePlanUseCase(sl()),
+  );
+  sl.registerFactory<ProjectPlanCubit>(
+    () => ProjectPlanCubit(generatePlanUseCase: sl()),
+  );
 
   // history page
-  sl.registerLazySingleton<HistoryRemoteDataSource>(()=>HistoryRemoteDataSourceImpl(firestore: sl(), auth: sl()));
-  sl.registerLazySingleton<HistoryRepository>(()=>HistoryRepositoryImpl(sl()));
-  sl.registerLazySingleton<GetHistoryUseCase>(()=>GetHistoryUseCase(sl()));
-  sl.registerFactory<HistoryCubit>(()=>HistoryCubit(sl()));
+  sl.registerLazySingleton<HistoryRemoteDataSource>(
+    () => HistoryRemoteDataSourceImpl(firestore: sl(), auth: sl()),
+  );
+  sl.registerLazySingleton<HistoryRepository>(
+    () => HistoryRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<GetHistoryUseCase>(() => GetHistoryUseCase(sl()));
+  sl.registerFactory<HistoryCubit>(() => HistoryCubit(sl()));
 
   //navigation bar
-  sl.registerFactory<NavigationCubit>(()=>NavigationCubit());
+  sl.registerFactory<NavigationCubit>(() => NavigationCubit());
 
   // onboarding
-  sl.registerLazySingleton<OnboardingRepository>(()=>OnboardingRepositoryImp());
-  sl.registerFactory<OnboardingCubit>(()=>OnboardingCubit(sl()));
+  sl.registerLazySingleton<OnboardingRepository>(
+    () => OnboardingRepositoryImp(),
+  );
+  sl.registerFactory<OnboardingCubit>(() => OnboardingCubit(sl()));
 
   //splash page
-  sl.registerLazySingleton<SplashLocalDataSource>(()=>SplashLocalDataSourceImpl());
-  sl.registerLazySingleton<SplashRepository>(()=>SplashRepositoryImpl(sl()));
-  sl.registerLazySingleton<CheckOnboarding>(()=>CheckOnboarding(sl()));
-  sl.registerLazySingleton<SaveOnboardingCompleted>(()=>SaveOnboardingCompleted(sl()));
-  sl.registerFactory<SplashCubit>(()=>SplashCubit(sl(), sl()));
+  sl.registerLazySingleton<SplashLocalDataSource>(
+    () => SplashLocalDataSourceImpl(),
+  );
+  sl.registerLazySingleton<SplashRepository>(() => SplashRepositoryImpl(sl()));
+  sl.registerLazySingleton<CheckOnboarding>(() => CheckOnboarding(sl()));
+  sl.registerLazySingleton<SaveOnboardingCompleted>(
+    () => SaveOnboardingCompleted(sl()),
+  );
+  sl.registerFactory<SplashCubit>(() => SplashCubit(sl(), sl()));
 
   //profile page
-  sl.registerLazySingleton<ProfileRemoteDataSource>(()=>ProfileRemoteDataSourceImpl(auth: sl(), firestore: sl()));
-  sl.registerLazySingleton<ProfileRepository>(()=>ProfileRepositoryImpl(sl()));
-  sl.registerLazySingleton<GetProfileUseCase>(()=>GetProfileUseCase(repository: sl()));
-  sl.registerLazySingleton<LogoutUseCase>(()=>LogoutUseCase(repository: sl()));
-  sl.registerFactory<ProfileCubit>(()=>ProfileCubit(sl(), sl()));
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(auth: sl(), firestore: sl()),
+  );
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<GetProfileUseCase>(
+    () => GetProfileUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<LogoutUseCase>(
+    () => LogoutUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<UpdatePhotoUseCase>(() => UpdatePhotoUseCase(sl()));
+  sl.registerLazySingleton<ChangePasswordUseCase>(
+    () => ChangePasswordUseCase(sl()),
+  );
+  sl.registerLazySingleton<DeleteAccountUseCase>(
+    () => DeleteAccountUseCase(sl()),
+  );
+  sl.registerFactory<ProfileCubit>(
+    () => ProfileCubit(
+      sl(),
+      sl(),
+      updatePhotoUseCase: sl(),
+      deleteAccountUseCase: sl(),
+      changePasswordUseCase: sl(),
+    ),
+  );
 
+  //url launcher
+  sl.registerLazySingleton<UrlLauncherService>(() => UrlLauncherService());
 }

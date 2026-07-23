@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../models/profile_model.dart';
 
 abstract class ProfileRemoteDataSource {
@@ -5,5 +7,9 @@ abstract class ProfileRemoteDataSource {
 
   Future<void> logout();
 
-  Future<void> updatePhoto();
+  Future<String> updatePhoto(File imageFile);
+
+  Future<void> deleteAccount();
+
+   Future<void> changePassword(String newPassword);
 }

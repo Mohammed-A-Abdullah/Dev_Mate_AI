@@ -55,7 +55,7 @@ class DarkTheme {
         borderSide: const BorderSide(color: Colors.red, width: 2),
       ),
     ),
-
+    dialogTheme: DialogThemeData(backgroundColor: Color(0xff171923)),
     colorScheme: ColorScheme(
       brightness: Brightness.dark,
       primary: AppColors.primary,
@@ -86,8 +86,15 @@ class DarkTheme {
       ),
       AuthThemeExtension(socialBackground: Color(0xff1A1E27)),
       SplashThemeExtension(splashText: Color(0xff8D90A0)),
-      DropdownThemeExtension(dropdownColor: Color(0xff1E1F26),textDropdown: AppColors.secondary),
-      ProfileThemeExtension(profilCardGradient: Color(0xffB5C4FF), secondprofilCardGradient: Color(0xff7C8DFF),profilCard: Color(0xff1C1E28)),
+      DropdownThemeExtension(
+        dropdownColor: Color(0xff1E1F26),
+        textDropdown: AppColors.secondary,
+      ),
+      ProfileThemeExtension(
+        profilCardGradient: Color(0xffB5C4FF),
+        secondprofilCardGradient: Color(0xff7C8DFF),
+        profilCard: Color(0xff1C1E28),
+      ),
     ],
   );
 }
