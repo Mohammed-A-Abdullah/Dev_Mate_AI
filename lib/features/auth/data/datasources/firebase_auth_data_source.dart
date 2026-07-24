@@ -63,11 +63,9 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
         password: password,
       );
 
-      await credential.user?.reload();
+      await credential.user!.reload();
 
-      final user = _auth.currentUser;
-
-      if (user == null) return null;
+      final user = _auth.currentUser!;
 
       if (!user.emailVerified) {
         throw Exception('Please verify your email before signing in.');
@@ -176,5 +174,20 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
   Future<void> resetPassword({required String email})async {
     return await _auth.sendPasswordResetEmail(email: email);
     
+  }
+  
+  @override
+  Future<AuthUserEntity?> getCurrentUser()async {
+    return  _mapUser(_auth.currentUser!);
+  }
+  
+  @override
+  Future<void> updatePassword(String password)async {
+    final user = _auth.currentUser;
+
+    if (user == null) {
+      throw Exception("User not found");
+    }
+    return await _auth.currentUser!.updatePassword(password);
   }
 }

@@ -13,7 +13,7 @@ class SignUpForm extends StatelessWidget {
     required this.passwordController,
     required this.confirmPasswordController,
     required this.formKey,
-    required this.onSubmit,
+    required this.onSubmit, required this.isLoading,
   });
 
   final TextEditingController nameController;
@@ -22,6 +22,7 @@ class SignUpForm extends StatelessWidget {
   final TextEditingController confirmPasswordController;
   final GlobalKey<FormState> formKey;
   final VoidCallback onSubmit;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +88,7 @@ class SignUpForm extends StatelessWidget {
           width: double.infinity,
           height: 50.h,
           child: ElevatedButton(
-            onPressed: onSubmit,
+            onPressed:  isLoading ? null : onSubmit,
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -95,7 +96,16 @@ class SignUpForm extends StatelessWidget {
                 borderRadius: BorderRadius.circular(50.r),
               ),
             ),
-            child: Text(
+            child: isLoading
+                ? SizedBox(
+                    width: 20.w,
+                    height: 20.h,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  )
+                : Text(
               local.createAccount,
               style: GoogleFonts.jetBrainsMono(
                 fontSize: 11.sp,

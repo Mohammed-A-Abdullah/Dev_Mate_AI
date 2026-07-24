@@ -5,6 +5,7 @@ import 'package:dev_mate_ai/features/auth/data/datasources/auth_remote_data_sour
 import 'package:dev_mate_ai/features/auth/data/datasources/firebase_auth_data_source.dart';
 import 'package:dev_mate_ai/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/check_auth_status_usecase.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/get_current_user_use_case.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/send_email_verification_usecase.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_github_usecase.dart';
@@ -13,6 +14,7 @@ import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_guest_usecase.
 import 'package:dev_mate_ai/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:dev_mate_ai/features/auth/domain/usecases/sign_up_usecase.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/update_password_use_case.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/repositories/chat_repository_impl.dart';
@@ -119,6 +121,8 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<ResetPasswordUsecase>(
     () => ResetPasswordUsecase(repository: sl()),
   );
+  sl.registerLazySingleton<GetCurrentUserUseCase>(()=>GetCurrentUserUseCase(repository: sl()));
+  sl.registerLazySingleton<UpdatePasswordUseCase>(()=>UpdatePasswordUseCase(repository: sl()));
 
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(
@@ -131,6 +135,8 @@ Future<void> setupServiceLocator() async {
       guestUseCase: sl(),
       sendEmailVerificationUseCase: sl(),
       resetPasswordUsecase: sl(),
+      getCurrentUserUseCase: sl(),
+      updatePasswordUseCase: sl(),
     ),
   );
 

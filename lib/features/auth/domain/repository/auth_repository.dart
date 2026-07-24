@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../entities/auth_user_entity.dart';
 
 abstract class AuthRepository {
@@ -22,6 +24,8 @@ abstract class AuthRepository {
 
   Future<void> sendEmailVerification();
   Future<void> resetPassword(String email);
+  Future<AuthUserEntity?>getCurrentUser();
+  Future<void>updatePassword(String password);
 
   Future<void> signOut();
 }

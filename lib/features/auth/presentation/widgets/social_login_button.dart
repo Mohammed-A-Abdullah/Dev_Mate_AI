@@ -11,31 +11,40 @@ class SocialLoginButton extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.onTap,
+    this.isLoading = false,
   });
 
   final String title;
   final Widget icon;
   final VoidCallback onTap;
+  final bool isLoading;
 
 
-  factory SocialLoginButton.google({required VoidCallback onTap}) {
+  factory SocialLoginButton.google({required VoidCallback onTap,required bool isLoading}) {
     return SocialLoginButton(
+      isLoading: isLoading,
       title: "Continue with Google",
       onTap: onTap,
       icon: SvgPicture.asset(AppAssets.google, width: 24.w),
     );
   }
 
-  factory SocialLoginButton.github({required VoidCallback onTap}) {
+  factory SocialLoginButton.github({required VoidCallback onTap,
+    required bool isLoading,
+  }) {
     return SocialLoginButton(
+      isLoading: isLoading,
       title: "Continue with GitHub",
       onTap: onTap,
       icon: SvgPicture.asset(AppAssets.gitHub, width: 24.w),
     );
   }
 
-  factory SocialLoginButton.guest({required VoidCallback onTap}) {
+  factory SocialLoginButton.guest({required VoidCallback onTap,
+    required bool isLoading,
+  }) {
     return SocialLoginButton(
+      isLoading: isLoading,
       title: "Continue as Guest",
       onTap: onTap,
       icon: const Icon(Icons.person_outline, color: Colors.white),
@@ -48,7 +57,7 @@ class SocialLoginButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(16.r),
-        onTap: onTap,
+        onTap:  isLoading ? null : onTap,
         child: Ink(
           height: 58.h,
           decoration: BoxDecoration(
@@ -67,14 +76,20 @@ class SocialLoginButton extends StatelessWidget {
 
               Expanded(
                 child: Center(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15.sp,
-                    ),
-                  ),
+                  child: isLoading
+                      ? SizedBox(
+                          width: 20.w,
+                          height: 20.h,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(
+                          title,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15.sp,
+                          ),
+                        ),
                 ),
               ),
 

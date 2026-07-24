@@ -9,8 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../core/routing/route_name.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
-import '../../../splash/presentation/cubit/splash_cubit.dart';
-import '../../../splash/presentation/cubit/splash_state.dart';
 import '../cubit/onboarding_cubit.dart';
 import '../cubit/onboarding_state.dart';
 import '../widgets/onboarding_page_content.dart';

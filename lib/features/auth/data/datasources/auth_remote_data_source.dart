@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../domain/entities/auth_user_entity.dart';
 
 abstract class AuthRemoteDataSource {
@@ -19,9 +21,11 @@ abstract class AuthRemoteDataSource {
   Future<AuthUserEntity?> signInWithGithub();
 
   Future<AuthUserEntity?> signInAnonymously();
+  Future<AuthUserEntity?>getCurrentUser();
 
   Future<void> sendEmailVerification();
   Future<void> resetPassword({required String email});
+  Future<void> updatePassword(String password);
 
   Future<void> signOut();
 }

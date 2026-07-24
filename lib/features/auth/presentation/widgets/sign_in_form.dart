@@ -11,13 +11,14 @@ class SignInForm extends StatelessWidget {
     required this.emailController,
     required this.passwordController,
     required this.formKey,
-    required this.onSubmit,
+    required this.onSubmit, required this.isLoading,
   });
 
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final GlobalKey<FormState> formKey;
   final VoidCallback onSubmit;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +58,7 @@ class SignInForm extends StatelessWidget {
           width: double.infinity,
           height: 50.h,
           child: ElevatedButton(
-            onPressed: onSubmit,
+            onPressed: isLoading ? null : onSubmit,
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -65,15 +66,22 @@ class SignInForm extends StatelessWidget {
                 borderRadius: BorderRadius.circular(50.r),
               ),
             ),
-            child: Text(
-              local.signin,
-              style: GoogleFonts.jetBrainsMono(
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.55.sp,
-              ),
-            ),
-          ),
+            child: isLoading
+                ? Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                )
+                : Text(
+                    local.signin,
+                    style: GoogleFonts.jetBrainsMono(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.55.sp,
+                    ),
+                  ),
+          )
         ),
       ],
     );

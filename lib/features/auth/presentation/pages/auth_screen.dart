@@ -127,6 +127,8 @@ class _AuthScreenState extends State<AuthScreen> {
                             child: isSignUp
                                 ? SignUpForm(
                                     key: const ValueKey(1),
+                                    isLoading: state is AuthLoading &&
+    state.action == AuthAction.signUp,
                                     formKey: _formKey,
                                     nameController: _nameController,
                                     emailController: _emailController,
@@ -145,6 +147,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                   )
                                 : SignInForm(
                                     key: const ValueKey(2),
+                                    isLoading: state is AuthLoading &&
+                                        state.action == AuthAction.signIn,
                                     formKey: _formKey,
                                     emailController: _emailController,
                                     passwordController: _passwordController,
@@ -210,15 +214,18 @@ class _AuthScreenState extends State<AuthScreen> {
 
                         HeightSpace(height: 30.h),
 
-                        SocialLoginButton.google(onTap: cubit.googleSignIn),
+                        SocialLoginButton.google(onTap: cubit.googleSignIn,isLoading:state is AuthLoading &&
+    state.action == AuthAction.google,),
 
                         HeightSpace(height: 16.h),
 
-                        SocialLoginButton.github(onTap: cubit.githubSignIn),
+                        SocialLoginButton.github(onTap: cubit.githubSignIn,isLoading: state is AuthLoading &&
+                              state.action == AuthAction.github,),
 
                         HeightSpace(height: 16.h),
 
-                        SocialLoginButton.guest(onTap: cubit.guestSignIn),
+                        SocialLoginButton.guest(onTap: cubit.guestSignIn,isLoading: state is AuthLoading &&
+                              state.action == AuthAction.guest,),
 
                         HeightSpace(height: 35.h),
 
@@ -261,13 +268,6 @@ class _AuthScreenState extends State<AuthScreen> {
                       ],
                     ),
                   ),
-
-                  if (state is AuthLoading)
-                    Center(
-                      child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
                 ],
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:dev_mate_ai/core/services/app_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../domain/entities/auth_user_entity.dart';
 import 'auth_remote_data_source.dart';
@@ -87,6 +88,17 @@ class AuthLocalDataSource implements AuthRemoteDataSource {
   
   @override
   Future<void> resetPassword({required String email}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<AuthUserEntity?> getCurrentUser() {
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> updatePassword(String password) {
+    // TODO: implement updatePassword
     throw UnimplementedError();
   }
 }

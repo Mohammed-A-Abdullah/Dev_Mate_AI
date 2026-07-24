@@ -1,5 +1,17 @@
 import '../../domain/entities/auth_user_entity.dart';
 
+enum AuthAction {
+  signIn,
+  signUp,
+  google,
+  github,
+  guest,
+  resetPassword,
+  checkStatus,
+  signOut,
+  updatePassword,
+}
+
 abstract class AuthState {
   const AuthState();
 }
@@ -9,7 +21,9 @@ class AuthInitial extends AuthState {
 }
 
 class AuthLoading extends AuthState {
-  const AuthLoading();
+  final AuthAction action;
+
+  const AuthLoading(this.action);
 }
 
 class AuthAuthenticated extends AuthState {

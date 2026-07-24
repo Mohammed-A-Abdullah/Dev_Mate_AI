@@ -1,7 +1,7 @@
+import 'package:dev_mate_ai/features/auth/domain/usecases/get_current_user_use_case.dart';
+import 'package:dev_mate_ai/features/auth/domain/usecases/update_password_use_case.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/usecases/check_auth_status_usecase.dart';
 import '../../domain/usecases/reset_password_usecase.dart';
 import '../../domain/usecases/send_email_verification_usecase.dart';
@@ -22,12 +22,14 @@ class AuthCubit extends Cubit<AuthState> {
     required this.signOutUseCase,
     required this.googleUseCase,
     required this.githubUseCase,
-    required this.guestUseCase, required this.sendEmailVerificationUseCase, required this.resetPasswordUsecase,
+    required this.guestUseCase, required this.sendEmailVerificationUseCase, required this.resetPasswordUsecase, required this.getCurrentUserUseCase, required this.updatePasswordUseCase,
   }) : super(const AuthInitial());
 
   final CheckAuthStatusUseCase checkAuthStatusUseCase;
 
   final SignInUseCase signInUseCase;
+  final GetCurrentUserUseCase getCurrentUserUseCase;
+  final UpdatePasswordUseCase updatePasswordUseCase;
 
   final SignUpUseCase signUpUseCase;
 
@@ -43,24 +45,15 @@ class AuthCubit extends Cubit<AuthState> {
   final ResetPasswordUsecase resetPasswordUsecase;
 
   Future<void> checkAuthStatus() async {
-    emit(const AuthLoading());
+    emit(const AuthLoading(AuthAction.checkStatus));
 
     try {
-      final authenticated = await checkAuthStatusUseCase();
+      final user = await getCurrentUserUseCase();
 
-      if (authenticated) {
-        final firebaseUser = FirebaseAuth.instance.currentUser;
-
-        emit(
-          AuthAuthenticated(
-            AuthUserEntity(
-              uid: firebaseUser?.uid ?? '',
-              email: firebaseUser?.email ?? '',
-              displayName: firebaseUser?.displayName,
-              isAnonymous: firebaseUser?.isAnonymous ?? false,
-            ),
-          ),
-        );
+      if (user != null) {
+        
+          emit(AuthAuthenticated(user));
+        
       } else {
         emit(const AuthUnauthenticated());
       }
@@ -70,7 +63,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> signIn({required String email, required String password}) async {
-    emit(const AuthLoading());
+    emit(const AuthLoading(AuthAction.signIn));
 
     try {
       final user = await signInUseCase(email: email, password: password);
@@ -91,7 +84,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String email,
     required String password,
   }) async {
-    emit(const AuthLoading());
+    emit(const AuthLoading(AuthAction.signUp));
 
     try {
       final user = await signUpUseCase(
@@ -120,7 +113,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> googleSignIn() async {
-    emit(const AuthLoading());
+    emit(const AuthLoading(AuthAction.google));
 
     try {
       final user = await googleUseCase();
@@ -137,7 +130,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> githubSignIn() async {
-    emit(const AuthLoading());
+    emit(const AuthLoading(AuthAction.github));
 
     try {
       final user = await githubUseCase();
@@ -154,7 +147,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> guestSignIn() async {
-    emit(const AuthLoading());
+    emit(const AuthLoading(AuthAction.guest));
 
     try {
       final user = await guestUseCase();
@@ -181,7 +174,7 @@ class AuthCubit extends Cubit<AuthState> {
   // }
 
   Future<void> signOut() async {
-    emit(const AuthLoading());
+    emit(const AuthLoading(AuthAction.signOut));
 
     try {
       await signOutUseCase();
@@ -193,7 +186,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> resetPassword(String email) async {
-    emit(const AuthLoading());
+    emit(const AuthLoading(AuthAction.resetPassword));
     try {
       await resetPasswordUsecase.call(email);
       emit(const AuthSuccess("PASSWORD_RESET_EMAIL_SENT"));
@@ -202,17 +195,17 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> changePassword(String newPassword) async {
-    User? user = FirebaseAuth.instance.currentUser;
+  Future<void> changePassword(String password) async {
+    emit(const AuthLoading(AuthAction.updatePassword));
 
-    if (user != null) {
-      try {
-        await user.updatePassword(newPassword);
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'requires-recent-login') {
-        } else {
-        }
-      }
+    try {
+      await updatePasswordUseCase(password);
+
+      emit(const AuthSuccess("Password updated successfully."));
+    } on FirebaseAuthException catch (e) {
+      emit(AuthError(e.message ?? "Failed"));
+    } catch (e) {
+      emit(AuthError(e.toString()));
     }
   }
 }

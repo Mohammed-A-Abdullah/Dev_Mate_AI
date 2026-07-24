@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/repository/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
@@ -57,5 +59,15 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> resetPassword(String email) {
     return remote.resetPassword(email: email);
+  }
+
+  @override
+  Future<AuthUserEntity?> getCurrentUser() {
+    return remote.getCurrentUser();
+  }
+  
+  @override
+  Future<void> updatePassword(String password) {
+    throw UnimplementedError();
   }
 }
