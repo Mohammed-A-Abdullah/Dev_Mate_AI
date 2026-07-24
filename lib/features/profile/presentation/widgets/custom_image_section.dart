@@ -38,7 +38,7 @@ class CustomImageSection extends StatelessWidget {
                 ? Image.network(
                     photoUrl!,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) =>
+                    errorBuilder: (_, _, _) =>
                         Icon(Icons.person, size: 44.sp, color: Colors.white),
                   )
                 : Icon(Icons.person, size: 44.sp, color: Colors.white),

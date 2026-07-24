@@ -13,12 +13,8 @@ class HistoryCubit extends Cubit<HistoryState> {
 
     try {
       final history = await getHistoryUseCase();
-      //=========================================================
-      print(history);
-
       emit(HistoryLoaded(history));
     } catch (e) {
-      print("❌ Error loading history: $e");
       emit(HistoryError(e.toString()));
     }
   }

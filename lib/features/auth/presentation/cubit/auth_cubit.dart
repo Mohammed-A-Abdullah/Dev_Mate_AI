@@ -83,7 +83,6 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthAuthenticated(user));
     } catch (e) {
       emit(AuthError(e.toString().replaceFirst("Exception: ", "")));
-      print(e);
     }
   }
 
@@ -117,7 +116,6 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(e.toString().replaceFirst("Exception: ", "")));
-      print(e);
     }
   }
 
@@ -210,14 +208,9 @@ class AuthCubit extends Cubit<AuthState> {
     if (user != null) {
       try {
         await user.updatePassword(newPassword);
-        print('تم تحديث كلمة المرور بنجاح.');
       } on FirebaseAuthException catch (e) {
-        // من أهم الأخطاء التي يجب التعامل معها هنا هو الحاجة لإعادة المصادقة
         if (e.code == 'requires-recent-login') {
-          print('مر وقت طويل على تسجيل الدخول. يجب إعادة المصادقة أولاً.');
-          // ستحتاج إلى طلب كلمة المرور القديمة من المستخدم وتمريرها لدالة reauthenticateWithCredential
         } else {
-          print('حدث خطأ: ${e.message}');
         }
       }
     }
