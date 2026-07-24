@@ -9,10 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../core/routing/route_name.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
-import '../../../splash/data/datasources/splash_local_data_source.dart';
-import '../../../splash/data/repositories/splash_repository_impl.dart';
-import '../../../splash/domain/usecases/check_onboarding.dart';
-import '../../../splash/domain/usecases/save_onboarding_completed.dart';
 import '../../../splash/presentation/cubit/splash_cubit.dart';
 import '../../../splash/presentation/cubit/splash_state.dart';
 import '../cubit/onboarding_cubit.dart';
@@ -37,43 +33,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) =>sl<OnboardingCubit>(),
-        ),
-        BlocProvider(
-          create: (context) {
-            final repository = SplashRepositoryImpl(
-              SplashLocalDataSourceImpl(),
-            );
-            return SplashCubit(
-              CheckOnboarding(repository),
-              SaveOnboardingCompleted(repository),
-            );
-          },
-        ),
-      ],
+    return BlocProvider(
+  create: (_) => sl<OnboardingCubit>(),
       child: Builder(
         builder: (context) {
           final cubit = context.read<OnboardingCubit>();
 
-          return BlocListener<SplashCubit, SplashState>(
+          return BlocListener<OnboardingCubit, OnboardingState>(
             listener: (context, state) {
-              if (state is SplashGoToOnboarding) {
-                context.goNamed(RouteName.onboardingScreen);
-                return;
-              }
-
-              if (state is SplashGoToAuth) {
-                context.goNamed(RouteName.authScreen);
-                return;
-              }
-
-              if (state is SplashGoToChat) {
-                context.goNamed(RouteName.navigationBar);
-              }
-            },
+    if (state is OnboardingCompleted) {
+      context.goNamed(RouteName.authScreen);
+    }
+  },
             child: Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               body: SafeArea(
@@ -119,7 +90,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             onTap: () async {
                               if (state.isLastPage) {
                                 await context
-                                    .read<SplashCubit>()
+                                    .read<OnboardingCubit>()
                                     .finishOnboarding();
                               } else {
                                 _pageController.nextPage(

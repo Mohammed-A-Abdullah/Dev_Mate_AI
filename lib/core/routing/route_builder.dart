@@ -20,7 +20,7 @@ import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 
 class RouteBuilder {
   static GoRouter goRouter = GoRouter(
-    initialLocation: RouteName.splashScreen,
+    initialLocation: RouteName.onboardingScreen,
     routes: [
       GoRoute(
         name: RouteName.splashScreen,

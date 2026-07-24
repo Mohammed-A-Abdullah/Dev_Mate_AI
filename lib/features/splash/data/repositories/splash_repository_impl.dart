@@ -1,5 +1,5 @@
 import '../../domain/repositories/splash_repository.dart';
-import '../datasources/splash_local_data_source_impl.dart';
+import '../datasources/splash_local_data_source.dart';
 
 class SplashRepositoryImpl implements SplashRepository {
   final SplashLocalDataSource local;
@@ -14,5 +14,10 @@ class SplashRepositoryImpl implements SplashRepository {
   @override
   Future<bool> saveOnboardingCompleted() {
     return local.saveOnboardingCompleted();
+  }
+  
+  @override
+  Future<bool> isAuthenticated() {
+    return local.isAuthenticated();
   }
 }

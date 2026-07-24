@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../../splash/presentation/cubit/splash_cubit.dart';
+import '../cubit/onboarding_cubit.dart';
 
 class SkipButton extends StatelessWidget {
   const SkipButton({super.key});
@@ -15,7 +14,8 @@ class SkipButton extends StatelessWidget {
       alignment: Alignment.topRight,
       child: TextButton(
         onPressed: () async {
-          await context.read<SplashCubit>().finishOnboarding();
+          context.read<OnboardingCubit>().finishOnboarding();
+          
         },
         child: Text(
           S.of(context).skip,

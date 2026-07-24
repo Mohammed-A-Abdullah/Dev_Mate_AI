@@ -48,8 +48,7 @@ import 'package:dev_mate_ai/features/home/data/repository/home_repository_imp.da
 import 'package:dev_mate_ai/features/home/domain/repository/home_quick_tools_repository.dart';
 import 'package:dev_mate_ai/features/home/presentation/cubit/home_cubit.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/cubit/navigation_bar_cubit.dart';
-import 'package:dev_mate_ai/features/onboarding/data/repositories/onboarding_repository_imp.dart';
-import 'package:dev_mate_ai/features/onboarding/domain/repository/onboarding_repository.dart';
+import 'package:dev_mate_ai/features/onboarding/presentation/constant/onboarding_const_data.dart';
 import 'package:dev_mate_ai/features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'package:dev_mate_ai/features/profile/data/datasource/profile_remote_data_source.dart';
 import 'package:dev_mate_ai/features/profile/data/datasource/profile_remote_data_source_impl.dart';
@@ -67,6 +66,7 @@ import 'package:dev_mate_ai/features/splash/data/datasources/splash_local_data_s
 import 'package:dev_mate_ai/features/splash/data/repositories/splash_repository_impl.dart';
 import 'package:dev_mate_ai/features/splash/domain/repositories/splash_repository.dart';
 import 'package:dev_mate_ai/features/splash/domain/usecases/check_onboarding.dart';
+import 'package:dev_mate_ai/features/splash/domain/usecases/is_authentecated_use_case.dart';
 import 'package:dev_mate_ai/features/splash/domain/usecases/save_onboarding_completed.dart';
 import 'package:dev_mate_ai/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -231,10 +231,9 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory<NavigationCubit>(() => NavigationCubit());
 
   // onboarding
-  sl.registerLazySingleton<OnboardingRepository>(
-    () => OnboardingRepositoryImp(),
-  );
-  sl.registerFactory<OnboardingCubit>(() => OnboardingCubit(sl()));
+  sl.registerLazySingleton<SaveOnboardingCompleted>(()=>SaveOnboardingCompleted(sl()));
+  sl.registerLazySingleton<OnboardingConstData>(()=>OnboardingConstData());
+  sl.registerFactory<OnboardingCubit>(() => OnboardingCubit(sl(),sl()));
 
   //splash page
   sl.registerLazySingleton<SplashLocalDataSource>(
@@ -242,10 +241,8 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerLazySingleton<SplashRepository>(() => SplashRepositoryImpl(sl()));
   sl.registerLazySingleton<CheckOnboarding>(() => CheckOnboarding(sl()));
-  sl.registerLazySingleton<SaveOnboardingCompleted>(
-    () => SaveOnboardingCompleted(sl()),
-  );
-  sl.registerFactory<SplashCubit>(() => SplashCubit(sl(), sl()));
+  sl.registerLazySingleton<IsAuthentecatedUseCase>(()=>IsAuthentecatedUseCase(repository: sl()));
+  sl.registerFactory<SplashCubit>(() => SplashCubit(sl(), sl(),isAuthentecatedUseCase:sl() ));
 
   //profile page
   sl.registerLazySingleton<ProfileRemoteDataSource>(

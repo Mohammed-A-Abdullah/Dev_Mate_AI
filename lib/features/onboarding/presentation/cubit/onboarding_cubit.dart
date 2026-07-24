@@ -1,14 +1,23 @@
-import 'package:dev_mate_ai/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../splash/domain/usecases/save_onboarding_completed.dart';
 import '../../domain/entities/onboarding_entity.dart';
+import '../constant/onboarding_const_data.dart';
 import 'onboarding_state.dart';
 
 class OnboardingCubit extends Cubit<OnboardingState> {
-  final OnboardingRepository _repository;
+  final SaveOnboardingCompleted _saveOnboardingCompleted;
+  final OnboardingConstData _data;
+
   late final List<OnboardingEntity> onboardingPages;
 
-  OnboardingCubit(this._repository) : super(const OnboardingState()) {
-    onboardingPages = _repository.getOnboardingPages();
+  OnboardingCubit(this._saveOnboardingCompleted, this._data)
+    : super(const OnboardingState()) {
+    onboardingPages = _data.getOnboardingPages();
+  }
+
+  Future<void> finishOnboarding() async {
+    await _saveOnboardingCompleted();
+    emit(OnboardingCompleted());
   }
 
   void onPageChanged(int index) {

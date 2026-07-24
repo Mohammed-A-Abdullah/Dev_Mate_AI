@@ -11,3 +11,7 @@ class OnboardingState {
     );
   }
 }
+
+class OnboardingCompleted extends OnboardingState {
+  const OnboardingCompleted();
+}

@@ -1,14 +1,5 @@
-import '../../../../core/services/app_preferences.dart';
-import 'splash_local_data_source_impl.dart';
-
-class SplashLocalDataSourceImpl implements SplashLocalDataSource {
-  @override
-  Future<bool> isOnboardingCompleted() {
-    return AppPreferences.isOnboardingCompleted();
-  }
-  
-  @override
-  Future<bool> saveOnboardingCompleted() {
-    return AppPreferences.completedOnboarding();
-  }
+abstract class SplashLocalDataSource {
+  Future<bool> isOnboardingCompleted();
+  Future<bool> saveOnboardingCompleted();
+  Future<bool>isAuthenticated();
 }
