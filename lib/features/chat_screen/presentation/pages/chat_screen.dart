@@ -1,4 +1,5 @@
 import 'package:dev_mate_ai/core/di/service_locator.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,6 +18,7 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return BlocProvider(
       create: (context) => sl<ChatCubit>(),
       child: ChatView(chatId: chatId, initialMessages: initialMessages),
@@ -55,12 +57,13 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     final cubit = context.watch<ChatCubit>();
     final state = cubit.state;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: const CustomAppBar(title: 'DevMate AI', needButton: false),
+      appBar:  CustomAppBar(title: local.appName, needButton: false),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SafeArea(

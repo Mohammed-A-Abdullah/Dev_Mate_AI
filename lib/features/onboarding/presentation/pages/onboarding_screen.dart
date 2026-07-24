@@ -1,5 +1,6 @@
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/onboarding/presentation/widgets/skip_button.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -138,7 +139,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    state.isLastPage ? 'Get Started' : 'NEXT',
+                                    state.isLastPage ? S.of(context).getStarted : S.of(context).next,
                                     style: GoogleFonts.jetBrainsMono(
                                       color: Theme.of(
                                         context,

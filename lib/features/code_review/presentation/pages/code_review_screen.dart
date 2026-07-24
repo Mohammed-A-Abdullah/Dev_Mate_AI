@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/code_review/presentation/widgets/custom_reveiw_types_chips.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
@@ -72,6 +73,7 @@ class _CodeReviewViewState extends State<CodeReviewView> {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return BlocConsumer<CodeReviewCubit, CodeReviewState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
@@ -123,7 +125,7 @@ class _CodeReviewViewState extends State<CodeReviewView> {
 
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: const CustomAppBar(title: 'Code Review'),
+          appBar:  CustomAppBar(title: local.codeReview),
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(16.sp),
@@ -134,8 +136,8 @@ class _CodeReviewViewState extends State<CodeReviewView> {
                   SizedBox(
                     width: 250.w,
                     child: CustomDropdownbuttonfield(
-                      labelText: 'Language',
-                      hintText: 'Select language',
+                      labelText: local.language,
+                      hintText: local.selectProgrammingLang,
                       initialValue: state.language,
                       items: LanguageHelper.languages,
                       onChanged: (value) {
@@ -149,8 +151,8 @@ class _CodeReviewViewState extends State<CodeReviewView> {
                   CustomCodeField(codeController: _codeController),
                   const HeightSpace(height: 20),
                   CustomDropdownbuttonfield(
-                    labelText: 'Experience Level',
-                    hintText: 'Select experience level',
+                    labelText: local.experienceLevel,
+                    hintText: local.selectExperienceLevel,
                     items: const [
                       'Beginner',
                       'Intermediate',
@@ -168,8 +170,8 @@ class _CodeReviewViewState extends State<CodeReviewView> {
                   ),
                   const HeightSpace(height: 20),
                   CustomDropdownbuttonfield(
-                    labelText: 'Review Depth',
-                    hintText: 'Select review depth',
+                    labelText: local.reveiwDepth,
+                    hintText: local.reviewDepthDes,
                     items: const [
                       'Quick Review',
                       'Detailed Review',
@@ -193,7 +195,7 @@ class _CodeReviewViewState extends State<CodeReviewView> {
                   const HeightSpace(height: 20),
                   CustomFeatureButton(
                     isLoading: state.isLoading,
-                    text: 'Debug Code',
+                    text: local.codeReview,
                     onTap: state.isLoading
                         ? null
                         : () {

@@ -1,5 +1,6 @@
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:dev_mate_ai/features/auth/presentation/cubit/auth_state.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,6 +23,7 @@ class SendEmailForPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return BlocProvider(
       create: (context) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
@@ -58,7 +60,7 @@ class SendEmailForPassword extends StatelessWidget {
                     HeightSpace(height: 25.h),
                     HeightSpace(height: 20),
                     Text(
-                      "Forget password email",
+                      local.forgetpasswordEmail,
                       style: GoogleFonts.inter(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.bold,
@@ -67,7 +69,7 @@ class SendEmailForPassword extends StatelessWidget {
                     ),
                     HeightSpace(height: 10),
                     Text(
-                      "Enter your email to send reset password email",
+                      local.sendEmailPassword,
                       style: GoogleFonts.inter(
                         fontSize: 13.sp,
                         color: Theme.of(context).colorScheme.secondary,
@@ -77,7 +79,7 @@ class SendEmailForPassword extends StatelessWidget {
                     CustomTextField(
                       controller: emailController,
                       isPassword: false,
-                      hintText: "Email",
+                      hintText: local.email,
                       prefixIcon: const Icon(Icons.email_outlined),
                     ),
                     HeightSpace(height: 28),
@@ -105,7 +107,7 @@ class SendEmailForPassword extends StatelessWidget {
                                   CustomSnackBar.show(
                                     context,
                                     message:
-                                        "Please enter your email address first.",
+                                        local.showDialogSendEmail,
                                     backgroundColor: Theme.of(
                                       context,
                                     ).colorScheme.error,
@@ -124,7 +126,7 @@ class SendEmailForPassword extends StatelessWidget {
                                 ),
                               )
                             : Text(
-                                "Check email",
+                                local.checkEmail,
                                 style: GoogleFonts.jetBrainsMono(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12.sp,

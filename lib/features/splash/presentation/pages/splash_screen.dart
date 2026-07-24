@@ -6,6 +6,7 @@ import 'package:dev_mate_ai/features/splash/presentation/cubit/splash_cubit.dart
 import 'package:dev_mate_ai/features/splash/presentation/widgets/custom_linear_progress_widget.dart';
 import 'package:dev_mate_ai/features/splash/presentation/widgets/custom_logo_with_shadow_widget.dart';
 import 'package:dev_mate_ai/features/splash/presentation/widgets/custom_title_description.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -66,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     CustomLinearProgressWidget(),
                     HeightSpace(height: 24),
                     Text(
-                      'POWERED BY ADVANCED LLMS',
+                      S.of(context).POWERED_BY_ADVANCED_LLMS,
                       style: GoogleFonts.jetBrainsMono(
                         color: Theme.of(context).extension<SplashThemeExtension>()!.splashText,
                         fontSize: 11.sp,

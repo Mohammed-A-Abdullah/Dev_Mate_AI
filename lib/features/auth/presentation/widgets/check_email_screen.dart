@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +14,7 @@ class CheckEmailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -29,7 +31,7 @@ class CheckEmailScreen extends StatelessWidget {
               HeightSpace(height: 30),
 
               Text(
-                "Check your email",
+                local.checkYourEmail,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.jetBrainsMono(
                   fontSize: 24.sp,
@@ -41,7 +43,7 @@ class CheckEmailScreen extends StatelessWidget {
               HeightSpace(height: 16),
 
               Text(
-                "We've sent a password reset link to:",
+                local.checkYourEmailText,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.jetBrainsMono(
                   fontSize: 13.sp,
@@ -63,7 +65,7 @@ class CheckEmailScreen extends StatelessWidget {
               HeightSpace(height: 20),
 
               Text(
-                "Open your inbox and click the reset link to create a new password.",
+                local.checkYourEmailOpenBox,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.jetBrainsMono(
                   fontSize: 13.sp,
@@ -88,7 +90,7 @@ class CheckEmailScreen extends StatelessWidget {
                     context.goNamed(RouteName.authScreen);
                   },
                   child: Text(
-                    "Back to Sign In",
+                    local.backToSignIn,
                     style: GoogleFonts.jetBrainsMono(
                       fontWeight: FontWeight.w600,
                       fontSize: 12.sp,
@@ -104,7 +106,7 @@ class CheckEmailScreen extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  "Didn't receive the email?",
+                  local.dontRevieveEmail,
                   style: GoogleFonts.jetBrainsMono(fontSize: 12.sp),
                 ),
               ),

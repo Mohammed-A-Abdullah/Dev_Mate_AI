@@ -26,7 +26,7 @@ class CustomCodeElementBuilder extends MarkdownElementBuilder {
         child: Text(
           element.textContent,
           style: const TextStyle(
-            color: AppColors.primaryColor,
+            color: AppColors.primary,
             fontFamily: 'monospace',
             fontSize: 14,
           ),

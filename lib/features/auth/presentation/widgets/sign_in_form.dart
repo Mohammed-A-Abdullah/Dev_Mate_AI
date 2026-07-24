@@ -1,5 +1,6 @@
 import 'package:dev_mate_ai/core/widgets/custom_text_field.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,13 +21,14 @@ class SignInForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomTextField(
           controller: emailController,
           keyBoardType: TextInputType.emailAddress,
-          hintText: 'Email address',
+          hintText: local.emailAddress,
           prefixIcon: const Icon(
             Icons.email_outlined,
           ),
@@ -41,11 +43,11 @@ class SignInForm extends StatelessWidget {
         CustomTextField(
           controller: passwordController,
           isPassword: true,
-          hintText: 'Password',
+          hintText: local.password,
           prefixIcon: const Icon(Icons.lock_outline,),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Password is required';
+              return local.passValidate;
             }
             return null;
           },
@@ -64,7 +66,7 @@ class SignInForm extends StatelessWidget {
               ),
             ),
             child: Text(
-              'Sign in',
+              local.signin,
               style: GoogleFonts.jetBrainsMono(
                 fontSize: 11.sp,
                 fontWeight: FontWeight.w600,

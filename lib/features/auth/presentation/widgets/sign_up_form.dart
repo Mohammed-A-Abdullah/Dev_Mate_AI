@@ -1,5 +1,6 @@
 import 'package:dev_mate_ai/core/widgets/custom_text_field.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,12 +25,13 @@ class SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomTextField(
           controller: nameController,
-          hintText: "Full name",
+          hintText: local.fullName,
           prefixIcon: const Icon(Icons.person_outline),
           keyBoardType: TextInputType.text,
         ),
@@ -37,7 +39,7 @@ class SignUpForm extends StatelessWidget {
         CustomTextField(
           controller: emailController,
           keyBoardType: TextInputType.emailAddress,
-          hintText: 'Email address',
+          hintText: local.emailAddress,
           prefixIcon: const Icon(Icons.email_outlined),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
@@ -50,7 +52,7 @@ class SignUpForm extends StatelessWidget {
         CustomTextField(
           controller: passwordController,
           isPassword: true,
-          hintText: 'Password',
+          hintText: local.password,
           prefixIcon: const Icon(Icons.lock_outline),
 
           validator: (value) {
@@ -67,7 +69,7 @@ class SignUpForm extends StatelessWidget {
         CustomTextField(
           controller: confirmPasswordController,
           isPassword: true,
-          hintText: 'Confirm password',
+          hintText: local.comfirmPass,
           prefixIcon: const Icon(Icons.lock_outline),
 
           validator: (value) {
@@ -94,7 +96,7 @@ class SignUpForm extends StatelessWidget {
               ),
             ),
             child: Text(
-              'Create account',
+              local.createAccount,
               style: GoogleFonts.jetBrainsMono(
                 fontSize: 11.sp,
                 fontWeight: FontWeight.w600,

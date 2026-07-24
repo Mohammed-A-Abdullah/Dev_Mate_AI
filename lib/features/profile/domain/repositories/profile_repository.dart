@@ -11,4 +11,6 @@ abstract class ProfileRepository {
   Future<void> deleteAccount();
 
   Future<void> changePassword(String newPassword);
+     Future<void> updateProfileDetails(String name);
+
 }

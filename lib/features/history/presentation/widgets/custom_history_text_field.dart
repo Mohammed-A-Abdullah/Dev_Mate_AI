@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,9 +9,10 @@ class CustomHistoryTextField extends StatelessWidget {
   final TextEditingController controller;
   @override
   Widget build(BuildContext context) {
+    
     return CustomTextField(
       controller: controller,
-      hintText: 'Search history...',
+      hintText: S.of(context).searchHistory,
 
       prefixIcon: Icon(Icons.search, size: 20.sp),
       radius: 50.r,

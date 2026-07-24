@@ -3,6 +3,7 @@ import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_code_cubit.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_code_state.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
@@ -74,6 +75,7 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return BlocConsumer<ExplainCubit, ExplainCodeState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
@@ -123,7 +125,7 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
 
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: const CustomAppBar(title: 'Explain Code'),
+          appBar:  CustomAppBar(title: local.explainCode),
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(16.sp),
@@ -132,8 +134,8 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
                 children: [
                   const HeightSpace(height: 35),
                   CustomDropdownbuttonfield(
-                    labelText: 'Language',
-                    hintText: 'Select language',
+                    labelText: local.language,
+                    hintText: local.selectProgrammingLang,
                     items: LanguageHelper.languages,
                     initialValue: state.language,
                     onChanged: (value) {
@@ -150,7 +152,7 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
                   ),
                   const HeightSpace(height: 20),
                   CustomFeatureButton(
-                    text: 'Explain Code',
+                    text: local.explainCode,
                     isLoading: state.isLoading,
                     onTap: state.isLoading
                         ? null

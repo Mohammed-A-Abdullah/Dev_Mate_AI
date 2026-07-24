@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,12 +10,13 @@ final List<String>reviewOptions;
   final List<String> selectedReviewOptions;
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return InputDecorator(
                 decoration: InputDecoration(
                   fillColor: Color(0xff1E1F26),
                   filled: true,
-                  labelText: 'Language',
-                  hintText: 'Select language',
+                  labelText: local.language,
+                  hintText: local.programmingLang,
                   hintStyle: GoogleFonts.inter(
                     color: const Color(0xff6F7385),
                     fontSize: 14.sp,

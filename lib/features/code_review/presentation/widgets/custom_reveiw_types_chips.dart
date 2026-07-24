@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,6 +10,7 @@ class CustomReveiwTypesChips extends StatelessWidget {
 final CodeReviewState state;
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     final reviewOptions = const [
       'Code Quality',
       'Performance',
@@ -27,8 +29,8 @@ final CodeReviewState state;
     ];
     return InputDecorator(
       decoration: InputDecoration(
-        labelText: 'Review Focus',
-        hintText: 'Select focus areas',
+        labelText: local.reviewFocus,
+        hintText: local.reviewFocusDes,
       ),
       child: Wrap(
         spacing: 8,

@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -13,9 +14,10 @@ class CustomChatTextField extends StatelessWidget {
   final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return CustomTextField(
       controller: chatController,
-      hintText: "Message DevMate AI...",
+      hintText: local.chatHintText,
       radius: 20.r,
       keyBoardType: TextInputType.multiline,
       prefixIcon: Icon(

@@ -1,10 +1,16 @@
+import 'package:dev_mate_ai/core/theme/extensions/profile_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomStateCard extends StatelessWidget {
-  const CustomStateCard({super.key, required this.value, required this.label, required this.valueColor});
-final String value;
+  const CustomStateCard({
+    super.key,
+    required this.value,
+    required this.label,
+    required this.valueColor,
+  });
+  final String value;
   final String label;
   final Color valueColor;
   @override
@@ -12,9 +18,9 @@ final String value;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
       decoration: BoxDecoration(
-        color: const Color(0xff1C1E28),
+        color: Theme.of(context).extension<ProfileThemeExtension>()!.profilCard,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: const Color(0xff2A2D3A)),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
       ),
       child: Column(
         children: [
@@ -31,7 +37,8 @@ final String value;
             label,
             style: GoogleFonts.inter(
               fontSize: 12.sp,
-              color: const Color(0xffC3C5D7),
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
         ],

@@ -1,28 +1,29 @@
 import 'package:dev_mate_ai/features/onboarding/domain/repository/onboarding_repository.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import '../../domain/entities/onboarding_entity.dart';
 
 class OnboardingRepositoryImp  implements OnboardingRepository{
   @override
   List<OnboardingEntity> getOnboardingPages() {
-    return const [
+    return  [
       OnboardingEntity(
         icon: Icons.auto_awesome_outlined,
-        title: "AI Coding Assistant",
+        title: S.current.onboardingTitle1,
         description:
-            "Your 24/7 pair programmer. Get help with code completion, refactoring, and logical breakthroughs.",
+            S.current.onboardingDesc1,
       ),
       OnboardingEntity(
         icon: Icons.code_rounded,
-        title: "Refactor Instantly",
+        title: S.current.onboardingTitle2,
         description:
-            "Clean your architecture and optimize functions with a single click inside your editor.",
+            S.current.onboardingDesc2,
       ),
       OnboardingEntity(
         icon: Icons.speed_rounded,
-        title: "Boost Productivity",
+        title: S.current.onboardingTitle3,
         description:
-            "Ship features faster without losing quality. Your personalized AI companion is ready.",
+            S.current.onboardingDesc3,
       ),
     ];
   }

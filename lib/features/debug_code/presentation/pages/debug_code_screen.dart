@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
@@ -74,6 +75,7 @@ class _DebugCodeViewState extends State<DebugCodeView> {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return BlocConsumer<DebugCubit, DebugState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
@@ -122,7 +124,7 @@ class _DebugCodeViewState extends State<DebugCodeView> {
 
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: const CustomAppBar(title: 'Explain Code'),
+          appBar:  CustomAppBar(title: local.debugCode),
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(16.sp),
@@ -131,8 +133,8 @@ class _DebugCodeViewState extends State<DebugCodeView> {
                 children: [
                   const HeightSpace(height: 35),
                   CustomDropdownbuttonfield(
-                    labelText: 'Language',
-                    hintText: 'Select language',
+                    labelText: local.language,
+                    hintText: local.selectProgrammingLang,
                     items: LanguageHelper.languages,
                     initialValue: state.language,
                     onChanged: (value) {
@@ -149,7 +151,7 @@ class _DebugCodeViewState extends State<DebugCodeView> {
                   ),
                   const HeightSpace(height: 20),
                   CustomFeatureButton(
-                    text: 'Debug Code',
+                    text: local.debugCode,
                     isLoading: state.isLoading,
                     onTap: state.isLoading
                         ? null

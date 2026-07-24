@@ -12,4 +12,5 @@ abstract class ProfileRemoteDataSource {
   Future<void> deleteAccount();
 
    Future<void> changePassword(String newPassword);
+   Future<void> updateProfileDetails(String name);
 }

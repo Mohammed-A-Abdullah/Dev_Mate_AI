@@ -7,16 +7,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/useccases/logout_use_case.dart';
 import '../../domain/useccases/get_profile_use_case.dart';
 import '../../domain/useccases/update_photo_use_case.dart';
+import '../../domain/useccases/update_profile_details_use_case.dart';
 import 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final GetProfileUseCase getProfileUseCase;
   final LogoutUseCase logoutUseCase;
-    final UpdatePhotoUseCase updatePhotoUseCase;
-    final DeleteAccountUseCase deleteAccountUseCase;
-    final ChangePasswordUseCase changePasswordUseCase;
-  ProfileCubit(this.getProfileUseCase, this.logoutUseCase, {required this.updatePhotoUseCase, required this.deleteAccountUseCase, required this.changePasswordUseCase})
-    : super(ProfileInitial());
+  final UpdatePhotoUseCase updatePhotoUseCase;
+  final DeleteAccountUseCase deleteAccountUseCase;
+  final ChangePasswordUseCase changePasswordUseCase;
+  final UpdateProfileDetailsUseCase updateProfileDetailsUseCase;
+  ProfileCubit(
+    this.getProfileUseCase,
+    this.logoutUseCase, {
+    required this.updatePhotoUseCase,
+    required this.deleteAccountUseCase,
+    required this.changePasswordUseCase,
+    required this.updateProfileDetailsUseCase,
+  }) : super(ProfileInitial());
 
   Future<void> loadProfile() async {
     emit(ProfileLoading());
@@ -61,12 +69,20 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  Future<void> updateProfileDetails(String name) async {
+    emit(ProfileLoading());
+    try {
+      await updateProfileDetailsUseCase(name);
+      await loadProfile();
+    } catch (e) {
+      emit(ProfileError(e.toString().replaceAll('Exception: ', '')));
+      await loadProfile();
+    }
+  }
+
   Future<void> logout() async {
     await logoutUseCase();
     emit(ProfileLoggedOut());
   }
 
-  
 }
-
-

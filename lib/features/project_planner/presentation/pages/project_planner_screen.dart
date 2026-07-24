@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -66,9 +67,9 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
     _descriptionController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
+    final local =S.of(context);
     return BlocConsumer<ProjectPlanCubit, ProjectPlanState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
@@ -113,7 +114,7 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: const CustomAppBar(title: 'Project Planner'),
+          appBar:  CustomAppBar(title: local.projectPlanner),
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(16.sp),
@@ -123,19 +124,19 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                   const HeightSpace(height: 35),
                   CustomProjectPlannerTextField(
                     controller: _titleController,
-                    title: 'Project Title',
-                    description: 'Enter your project name here...',
+                    title: local.projectTitle,
+                    description: local.enterProjectName,
                   ),
                   const HeightSpace(height: 20),
                   CustomProjectPlannerTextField(
                     controller: _descriptionController,
-                    title: 'Project Description',
-                    description: 'Enter a brief description of your project...',
+                    title: local.projectDes,
+                    description: local.enterProjectDes,
                   ),
                   const HeightSpace(height: 20),
                   CustomDropdownbuttonfield(
-                    labelText: 'Platform',
-                    hintText: 'Select platform',
+                    labelText: local.platform,
+                    hintText: local.selectPlatform,
                     items: ProjectPlannerConstant.platforms,
                     initialValue: state.platform,
                     onChanged: (value) {
@@ -146,8 +147,8 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                   ),
                   const HeightSpace(height: 20),
                   CustomDropdownbuttonfield(
-                    labelText: 'Programming Language',
-                    hintText: 'Select programming language',
+                    labelText: local.programmingLang,
+                    hintText: local.selectProgrammingLang,
                     items: LanguageHelper.languages,
                     initialValue: state.programmingLanguage,
                     onChanged: (value) {
@@ -160,8 +161,8 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                   ),
                   const HeightSpace(height: 20),
                   CustomDropdownbuttonfield(
-                    labelText: 'Experience Level',
-                    hintText: 'Select experience level',
+                    labelText: local.experienceLevel,
+                    hintText: local.selectExperienceLevel,
                     items: ProjectPlannerConstant.experienceLevel,
                     initialValue: state.experienceLevel,
                     onChanged: (value) {
@@ -174,8 +175,8 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                   ),
                   const HeightSpace(height: 20),
                   CustomDropdownbuttonfield(
-                    labelText: 'Architecture',
-                    hintText: 'Select architecture',
+                    labelText: local.architecture,
+                    hintText: local.selectArchitecture,
                     items: ProjectPlannerConstant.architectures,
                     initialValue: state.architecture,
                     onChanged: (value) {
@@ -188,8 +189,8 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                   ),
                   const HeightSpace(height: 20),
                   CustomDropdownbuttonfield(
-                    labelText: 'Deadline',
-                    hintText: 'Select deadline',
+                    labelText: local.deadline,
+                    hintText: local.selectDeadline,
                     items: ProjectPlannerConstant.deadline,
                     initialValue: state.deadline,
                     onChanged: (value) {
@@ -200,8 +201,8 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                   ),
                   const HeightSpace(height: 20),
                   CustomDropdownbuttonfield(
-                    labelText: 'Deployment Target',
-                    hintText: 'Select deployment target',
+                    labelText: local.deploymentTarget,
+                    hintText: local.selectDeploymentTarget,
                     items: ProjectPlannerConstant.deploymentTarget,
                     initialValue: state.deploymentTarget,
                     onChanged: (value) {
@@ -214,7 +215,7 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                   ),
                   const HeightSpace(height: 20),
                   CustomFeatureButton(
-                    text: 'Plan Project',
+                    text: local.planProject,
                     isLoading: state.isLoading,
                     onTap: state.isLoading
                         ? null

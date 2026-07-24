@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/widgets/custom_text_field.dart';
@@ -7,14 +8,15 @@ class CustomReviewTextField extends StatelessWidget {
 final TextEditingController errorLogController;
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return CustomTextField(
                 controller: errorLogController,
-                label: 'Project Context (Optional)',
+                label: local.projectContext,
                 minLine: 1,
                 maxLines: 3,
                 keyBoardType: TextInputType.multiline,
                 hintText:
-                    'ex: This is a login screen using Firebase Authentication....',
+                    local.projectContextDes,
                 prefixIcon: const Icon(
                   Icons.edit_note,
                 ),

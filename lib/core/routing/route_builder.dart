@@ -12,7 +12,6 @@ import 'package:dev_mate_ai/features/generate_readme/presentation/pages/readme_r
 import 'package:dev_mate_ai/features/navigation_bar/presentation/pages/navigation_bar.dart';
 import 'package:dev_mate_ai/features/profile/presentation/pages/about_screen.dart';
 import 'package:dev_mate_ai/features/profile/presentation/pages/account_settings_screen.dart';
-import 'package:dev_mate_ai/features/profile/presentation/pages/notifications_screen.dart';
 import 'package:dev_mate_ai/features/project_planner/presentation/pages/project_planner_screen.dart';
 import 'package:dev_mate_ai/features/splash/presentation/pages/splash_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -100,11 +99,6 @@ class RouteBuilder {
         name: RouteName.accountStettingsScreen,
         path: RouteName.accountStettingsScreen,
         builder: (context, state) => const AccountSettingsScreen(),
-      ),
-      GoRoute(
-        name: RouteName.notificationsScreen,
-        path: RouteName.notificationsScreen,
-        builder: (context, state) => const NotificationsScreen(),
       ),
       GoRoute(
         name: RouteName.sendEmailForPassword,

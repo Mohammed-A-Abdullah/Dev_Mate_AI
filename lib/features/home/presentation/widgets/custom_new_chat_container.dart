@@ -1,6 +1,7 @@
 import 'package:dev_mate_ai/core/theme/extensions/home_theme_extension.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/cubit/navigation_bar_cubit.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +13,7 @@ class CustomNewChatContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeTheme = Theme.of(context).extension<HomeThemeExtension>()!;
+    final local=S.of(context);
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(24.w),
@@ -40,7 +42,7 @@ class CustomNewChatContainer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'What can I help you build today?',
+            local.homeWhatCanIHelp,
             style: GoogleFonts.inter(
               fontSize: 20.sp,
               fontWeight: FontWeight.w500,
@@ -69,7 +71,7 @@ class CustomNewChatContainer extends StatelessWidget {
                   ),
                   WidthSpace(width: 4),
                   Text(
-                    'New Chat',
+                    local.newChat,
                     style: GoogleFonts.inter(
                       color: Theme.of(context).colorScheme.onPrimary,
                       fontSize: 14.sp,

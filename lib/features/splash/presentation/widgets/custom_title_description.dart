@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +13,7 @@ class CustomTitleDescription extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'DevMate AI',
+          S.of(context).appName,
           style: GoogleFonts.geist(
             fontSize: 40.sp,
             color: Color(0xffE2E2EB),
@@ -23,7 +24,7 @@ class CustomTitleDescription extends StatelessWidget {
         SizedBox(
           width: 211.w,
           child: Text(
-            'Your AI-Powered Developer Assistant',
+            S.of(context).Your_AI_Powered_Developer_Assistant,
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
               color: Color(0xffC3C5D7),

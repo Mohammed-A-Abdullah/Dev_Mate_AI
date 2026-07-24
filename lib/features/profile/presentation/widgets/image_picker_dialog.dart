@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +10,7 @@ class ImagePickerDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       child: Padding(
@@ -18,7 +20,7 @@ class ImagePickerDialog extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.camera_alt),
               title: Text(
-                "Camera",
+                local.camera,
                 style: GoogleFonts.inter(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.bold,
@@ -30,7 +32,7 @@ class ImagePickerDialog extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.photo_library),
               title: Text(
-                "Gallery",
+                local.gallary,
                 style: GoogleFonts.inter(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.bold,
@@ -42,7 +44,7 @@ class ImagePickerDialog extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.delete, color: Colors.redAccent),
               title: Text(
-                "Delete",
+                local.delete,
                 style: GoogleFonts.inter(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.bold,

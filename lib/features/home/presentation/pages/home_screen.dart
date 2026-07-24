@@ -7,6 +7,7 @@ import 'package:dev_mate_ai/features/home/presentation/cubit/home_cubit.dart';
 import 'package:dev_mate_ai/features/home/presentation/widgets/custom_new_chat_container.dart';
 import 'package:dev_mate_ai/features/home/presentation/widgets/quick_tool_item.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/cubit/navigation_bar_cubit.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +25,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
+    final local=S.of(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => sl<HomeCubit>()..loadHomeData()),
@@ -32,7 +34,7 @@ class HomeScreen extends StatelessWidget {
       ],
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: CustomAppBar(title: 'DevMate AI', needButton: false),
+        appBar: CustomAppBar(title: local.appName, needButton: false),
         body: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
             if (state is HomeLoading || state is HomeInitial) {
@@ -64,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                         HeightSpace(height: 24),
 
                         Text(
-                          'Good morning, ${currentUser?.displayName ?? "User"} ',
+                          '${local.goodMorning}${currentUser?.displayName ?? local.user} ',
                           style: GoogleFonts.geist(
                             fontSize: 24.sp,
                             color: Theme.of(context).colorScheme.secondary,
@@ -72,7 +74,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Ready to build something amazing today?',
+                          local.homeReadyToBuild,
                           style: GoogleFonts.inter(
                             fontSize: 14.sp,
                             color: Theme.of(context).colorScheme.onSecondary,
@@ -83,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                         CustomNewChatContainer(),
                         HeightSpace(height: 32),
                         Text(
-                          'Quick Tools',
+                          local.homeQuickTool,
                           style: GoogleFonts.inter(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w500,
@@ -111,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Recent Activity',
+                              local.homeRecentActivity,
                               style: GoogleFonts.inter(
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.w500,
@@ -123,7 +125,7 @@ class HomeScreen extends StatelessWidget {
                                 context.read<NavigationCubit>().changeIndex(2);
                               },
                               child: Text(
-                                'View All',
+                               local.homeViewAll,
                                 style: GoogleFonts.jetBrainsMono(
                                   fontSize: 11.sp,
                                   fontWeight: FontWeight.w500,
@@ -151,7 +153,7 @@ class HomeScreen extends StatelessWidget {
                                       padding: EdgeInsets.all(16.0),
                                       child: Center(
                                         child: Text(
-                                          'No elements',
+                                          local.noElements,
                                           style: GoogleFonts.inter(
                                             color: Theme.of(
                                               context,
@@ -164,7 +166,6 @@ class HomeScreen extends StatelessWidget {
                                       shrinkWrap: true,
                                       physics:
                                           const NeverScrollableScrollPhysics(),
-                                      // Safely show up to 3 items, or the actual length if it's less than 3
                                       itemCount: state.history.length > 3
                                           ? 3
                                           : state.history.length,
@@ -173,16 +174,16 @@ class HomeScreen extends StatelessWidget {
 
                                         return CustomHistoryCardWidget(
                                           title: item.title.isEmpty
-                                              ? 'New Chat'
+                                              ? local.newChat
                                               : item.title,
                                           description: item.lastMessage.isEmpty
-                                              ? 'No messages yet'
+                                              ? local.noMessageYet
                                               : item.lastMessage,
                                           chipType: item.type,
                                           time: item.updatedAt,
                                           onTap: () {
                                             if (item.type.toLowerCase() ==
-                                                'chat') {
+                                                local.chats) {
                                               Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                   builder: (_) => ChatScreen(

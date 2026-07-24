@@ -34,4 +34,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<void> deleteAccount() {
     return remote.deleteAccount();
   }
+  
+  @override
+  Future<void> updateProfileDetails(String name) {
+    return remote.updateProfileDetails(name);
+  }
 }

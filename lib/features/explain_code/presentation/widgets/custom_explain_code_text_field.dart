@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,13 +10,14 @@ class CustomExplainCodeTextField extends StatelessWidget {
   final TextEditingController instructionsController;
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return CustomTextField(
                 controller: instructionsController,
-                label: 'Additional Instructions (Optional)',
+                label: local.additionalInstruction,
                 minLine: 1,
                 maxLines: 3,
                 keyBoardType: TextInputType.multiline,
-                hintText: 'e.g. Explain line by line, focus on performance...',
+                hintText: local.additionalinstructionDes,
                 prefixIcon: const Icon(
                   Icons.edit_note,
                 ),

@@ -1,7 +1,7 @@
 import 'package:dev_mate_ai/core/constants/app_assets.dart';
-import 'package:dev_mate_ai/core/constants/app_colors.dart';
 import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,6 +45,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return BlocProvider(
       create: (context) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
@@ -66,7 +67,7 @@ class _AuthScreenState extends State<AuthScreen> {
             CustomSnackBar.show(
               context,
               message: state.message,
-              backgroundColor: AppColors.success,
+              backgroundColor: Colors.greenAccent,
             );
           }
         },
@@ -94,7 +95,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 350),
                           child: Text(
-                            isSignUp ? "Create Account" : "Welcome Back",
+                            isSignUp ? local.createAccount : local.welcomBack,
                             key: ValueKey(isSignUp),
                             style: GoogleFonts.inter(
                               color: Theme.of(context).colorScheme.secondary,
@@ -108,8 +109,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
                         Text(
                           isSignUp
-                              ? "Create your DevMate AI account."
-                              : "Continue your AI journey.",
+                              ? local.signupText
+                              : local.signinText,
                           style: GoogleFonts.inter(
                             color: Theme.of(context).colorScheme.onSecondary,
                             fontSize: 15.sp,
@@ -167,7 +168,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                GoRouter.of(context).pushNamed(RouteName.sendEmailForPassword);
                               },
                               child: Text(
-                                "Forgot Password?",
+                                local.forgetPassword,
                                 style: GoogleFonts.inter(
                                   color: Theme.of(
                                     context,
@@ -190,7 +191,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 14.w),
                               child: Text(
-                                "OR",
+                                local.or,
                                 style: TextStyle(
                                   color: Theme.of(
                                     context,
@@ -232,8 +233,8 @@ class _AuthScreenState extends State<AuthScreen> {
                               children: [
                                 TextSpan(
                                   text: isSignUp
-                                      ? "Already have an account? "
-                                      : "Don't have an account? ",
+                                      ? local.haveAnAccount
+                                      : local.dontHaveAccount,
                                   style: TextStyle(
                                     color: Theme.of(
                                       context,
@@ -242,7 +243,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: isSignUp ? "Sign In" : "Sign Up",
+                                  text: isSignUp ? local.signin : local.signup,
                                   style: GoogleFonts.jetBrainsMono(
                                     color: Theme.of(
                                       context,

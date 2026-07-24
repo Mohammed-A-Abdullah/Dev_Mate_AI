@@ -115,4 +115,21 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       throw Exception(e.message ?? 'Failed to delete account.');
     }
   }
+
+  @override
+  Future<void> updateProfileDetails(String name) async {
+    final user = auth.currentUser;
+    if (user == null) throw Exception('User not logged in');
+
+    try {
+      await user.updateDisplayName(name);
+
+      await firestore.collection('users').doc(user.uid).set(
+        {'name': name,},
+        SetOptions(merge: true),
+      ); 
+    } catch (e) {
+      throw Exception('Failed to update profile: $e');
+    }
+  }
 }

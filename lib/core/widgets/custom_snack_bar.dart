@@ -28,7 +28,7 @@ class CustomSnackBar {
         ),
         backgroundColor: backgroundColor ?? Colors.red,
         content: Text(
-          message,style: GoogleFonts.inter(color: AppColors.primaryText,fontSize: 14.sp,fontWeight: FontWeight.w500),
+          message,style: GoogleFonts.inter(color: AppColors.secondary,fontSize: 14.sp,fontWeight: FontWeight.w500),
         ),
       ),
     );

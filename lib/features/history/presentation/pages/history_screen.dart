@@ -5,6 +5,7 @@ import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/history/presentation/widgets/custom_history_card_widget.dart';
 import 'package:dev_mate_ai/features/history/presentation/widgets/custom_history_text_field.dart';
 import 'package:dev_mate_ai/features/history/presentation/widgets/custom_tab_bar_widget.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -59,9 +60,10 @@ class _HistoryViewState extends State<HistoryView> {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBar(title: 'DevMate AI'),
+      appBar: CustomAppBar(title: local.appName),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: SingleChildScrollView(
@@ -70,7 +72,7 @@ class _HistoryViewState extends State<HistoryView> {
             children: [
               HeightSpace(height: 24),
               Text(
-                'Activity History',
+                local.activityHistory,
                 style: GoogleFonts.geist(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w500,
@@ -111,9 +113,9 @@ class _HistoryViewState extends State<HistoryView> {
                         final item = state.history[index];
 
                         return CustomHistoryCardWidget(
-                          title: item.title.isEmpty ? 'New Chat' : item.title,
+                          title: item.title.isEmpty ? local.newChat : item.title,
                           description: item.lastMessage.isEmpty
-                              ? 'No messages yet'
+                              ? local.noMessageYet
                               : item.lastMessage,
                           chipType: item.type,
                           time: item.updatedAt,

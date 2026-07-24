@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -106,6 +107,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return BlocConsumer<ReadmeCubit, ReadmeState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
@@ -150,7 +152,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: const CustomAppBar(title: 'Generate README'),
+          appBar:  CustomAppBar(title: local.generateReadMe),
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(16.sp),
@@ -160,19 +162,19 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
                   const HeightSpace(height: 35),
                   CostomReadmeTextField(
                     controller: _titleController,
-                    title: 'Project Title',
-                    description: 'Enter your project name',
+                    title: local.projectTitle,
+                    description: local.enterProjectName,
                   ),
                   const HeightSpace(height: 20),
                   CostomReadmeTextField(
                     controller: _descriptionController,
-                    title: 'Project Description',
-                    description: 'Enter a brief description of your project...',
+                    title: local.projectDes,
+                    description: local.enterProjectDes,
                   ),
                   const HeightSpace(height: 20),
                   CustomDropdownbuttonfield(
-                    labelText: 'Project Type',
-                    hintText: 'Select type',
+                    labelText: local.projectType,
+                    hintText: local.selectType,
                     initialValue: state.projectType,
                     items: _ReadmeConstants.projectTypes,
                     onChanged: (value) {
@@ -188,14 +190,14 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
                   const HeightSpace(height: 20),
                   CostomReadmeTextField(
                     controller: _githubLinkController,
-                    title: 'GitHub Link (Optional)',
+                    title: local.githubLink,
                     description:
-                        'Provide your GitHub repository link (optional).',
+                        local.githubDes,
                     icon: Icons.link,
                   ),
                   const HeightSpace(height: 20),
                   CustomFeatureButton(
-                    text: 'Generate README',
+                    text: local.generateReadMe,
                     isLoading: state.isLoading,
                     onTap: state.isLoading
                         ? null
@@ -213,10 +215,11 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
   }
 
   Widget _buildFeatureInput(ReadmeState state) {
+    final local=S.of(context);
     return CustomTextField(
       controller: _featureController,
-      label: 'Feature',
-      hintText: 'Add feature',
+      label: local.feature,
+      hintText: local.addFeature,
       keyBoardType: TextInputType.multiline,
       suffixIconWidget: IconButton(
         icon: const Icon(Icons.add),

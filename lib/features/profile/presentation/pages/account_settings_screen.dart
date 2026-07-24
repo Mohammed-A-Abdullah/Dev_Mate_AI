@@ -1,13 +1,16 @@
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
 import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
+import 'package:dev_mate_ai/core/widgets/custom_text_field.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_row_divider.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../cubit/profile_state.dart';
 import 'change_password_screen.dart';
 
@@ -16,11 +19,12 @@ class AccountSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local= S.of(context);
     return BlocProvider(
       create: (context) => sl<ProfileCubit>()..loadProfile(),
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: const CustomAppBar(title: 'Account Settings'),
+        appBar:  CustomAppBar(title: local.accountSetting),
         body: BlocConsumer<ProfileCubit, ProfileState>(
           listener: (context, state) {
             if (state is ProfileError) {
@@ -28,9 +32,8 @@ class AccountSettingsScreen extends StatelessWidget {
             } else if (state is AccountDeleted) {
               CustomSnackBar.show(
                 context,
-                message: 'Account deleted successfully.',
+                message: local.accountDeleted,
               );
-              // Navigate to Login/Auth initial route
               Navigator.of(context).popUntil((route) => route.isFirst);
             }
           },
@@ -46,37 +49,51 @@ class AccountSettingsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle(context, 'Personal Information'),
+                  _buildSectionTitle(context, local.personalInfo),
                   HeightSpace(height: 12.h),
                   _buildSettingsCard(
                     children: [
                       _buildListTile(
                         context: context,
-                        title: 'Full Name',
-                        subtitle: profile?.name ?? 'Loading...',
+                        title: local.fullName,
+                        subtitle: profile?.name ?? local.loading,
+                        trailing: _buildEditIcon(context),
+                        onTap: () {
+                          if (profile != null) {
+                            _showEditProfileDialog(
+                              context: context,
+                              cubit: context.read<ProfileCubit>(),
+                              currentName: profile.name,
+                            );
+                          }
+                        },
                       ),
                       CustomRowDivider(),
+
                       _buildListTile(
                         context: context,
-                        title: 'Email',
-                        subtitle: profile?.email ?? 'Loading...',
+                        title: local.email,
+                        subtitle: profile?.email ?? local.loading,
+                        trailing: Icon(Icons.email),
                       ),
                     ],
                   ),
                   HeightSpace(height: 24.h),
-                  _buildSectionTitle(context, 'Security'),
+                  _buildSectionTitle(context, local.security),
                   HeightSpace(height: 12.h),
                   _buildSettingsCard(
                     children: [
                       _buildListTile(
                         context: context,
-                        title: 'Change Password',
-                        subtitle: 'Update your password',
+                        title: local.changePass,
+                        subtitle: local.updatePassword,
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const ChangePasswordScreen(),
+                          showDialog(
+                            context: context,
+                            barrierDismissible:
+                                false,
+                            builder: (_) => ChangePasswordDialog(
+                              cubit: context.read<ProfileCubit>(),
                             ),
                           );
                         },
@@ -84,36 +101,31 @@ class AccountSettingsScreen extends StatelessWidget {
                       CustomRowDivider(),
                       _buildListTile(
                         context: context,
-                        title: 'Email Verification',
-                        subtitle: 'Your email status',
+                        title: local.emailVerification,
+                        subtitle: local.emailStatus,
                         trailing: Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 12.w,
                             vertical: 4.h,
                           ),
                           decoration: BoxDecoration(
-                            color: profile!.isGuest
-                                ? Colors.grey.withValues(alpha: 0.1)
-                                : Color(0xff22C55E).withValues(alpha: 0.1),
+                            color: profile?.isGuest == true
+                                ? Colors.grey.withValues(alpha:0.1)
+                                : const Color(0xff22C55E).withValues(alpha:0.1),
                             borderRadius: BorderRadius.circular(12.r),
                           ),
-                          child: profile!.isGuest
-                              ? Text(
-                                  'UnVerified',
-                                  style: GoogleFonts.inter(
-                                    color: Colors.grey,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                )
-                              : Text(
-                                  'Verified',
-                                  style: GoogleFonts.inter(
-                                    color: const Color(0xff22C55E),
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                          child: Text(
+                            profile?.isGuest == true
+                                ? local.unverified
+                                : local.verified,
+                            style: GoogleFonts.inter(
+                              color: profile?.isGuest == true
+                                  ? Colors.grey
+                                  : const Color(0xff22C55E),
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -121,7 +133,7 @@ class AccountSettingsScreen extends StatelessWidget {
                   HeightSpace(height: 24.h),
                   _buildSectionTitle(
                     context,
-                    'Danger Zone',
+                    local.dangerZone,
                     color: const Color(0xffFF5B5B),
                   ),
                   HeightSpace(height: 12.h),
@@ -129,8 +141,8 @@ class AccountSettingsScreen extends StatelessWidget {
                     children: [
                       _buildListTile(
                         context: context,
-                        title: 'Delete Account',
-                        subtitle: 'Permanently delete your account',
+                        title: local.deleteAcount,
+                        subtitle: local.deleteAccountPermin,
                         titleColor: const Color(0xffFF5B5B),
                         onTap: () => _showDeleteConfirmationDialog(context),
                         trailing: Row(
@@ -162,6 +174,76 @@ class AccountSettingsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildEditIcon(BuildContext context) {
+    return Icon(
+      Icons.edit_outlined,
+      color: Theme.of(context).colorScheme.secondary,
+      size: 18.sp,
+    );
+  }
+
+  void _showEditProfileDialog({
+    required BuildContext context,
+    required ProfileCubit cubit,
+    required String currentName,
+  }) {
+    final nameController = TextEditingController(text: currentName);
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          title: Text(
+            S.of(context).editProfile,
+            style: GoogleFonts.inter(
+              color: Theme.of(context).colorScheme.secondary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomTextField(
+                  controller: nameController,
+                  hintText: S.of(context).fullName,
+                  prefixIcon: const Icon(Icons.person_outline),
+                  keyBoardType: TextInputType.text,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child:  Text(S.of(context).cancel, style: TextStyle(color: Theme.of(context).colorScheme.onSecondary,)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  cubit.updateProfileDetails(nameController.text.trim());
+                  Navigator.pop(dialogContext);
+                }
+              },
+              child:  Text(S.of(context).save, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+            ),),
+          ],
+        );
+      },
+    );
+  }
+
   void _showDeleteConfirmationDialog(BuildContext parentContext) {
     showDialog(
       context: parentContext,
@@ -169,28 +251,28 @@ class AccountSettingsScreen extends StatelessWidget {
         return AlertDialog(
           backgroundColor: const Color(0xff1A1D2D),
           title: Text(
-            'Delete Account',
+            S.of(parentContext).deleteAccount,
             style: GoogleFonts.inter(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
           content: Text(
-            'Are you sure you want to permanently delete your account? This action cannot be undone.',
+            S.of(parentContext).deleteAccountDesc,
             style: GoogleFonts.inter(color: Colors.white70, fontSize: 14.sp),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+              child:  Text(S.of(parentContext).cancel, style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(dialogContext);
                 parentContext.read<ProfileCubit>().deleteAccount();
               },
-              child: const Text(
-                'Delete',
+              child:  Text(
+                S.of(parentContext).delete,
                 style: TextStyle(color: Color(0xffFF5B5B)),
               ),
             ),
@@ -200,13 +282,14 @@ class AccountSettingsScreen extends StatelessWidget {
     );
   }
 
+
   Widget _buildSectionTitle(
     BuildContext context,
     String title, {
     Color? color,
   }) {
     return Text(
-      title, // Fixed parameter usage
+      title,
       style: GoogleFonts.inter(
         color: color ?? Theme.of(context).colorScheme.secondary,
         fontSize: 14.sp,

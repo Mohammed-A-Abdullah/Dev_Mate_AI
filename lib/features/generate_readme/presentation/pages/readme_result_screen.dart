@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -11,6 +12,7 @@ class ReadmeResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -20,7 +22,7 @@ class ReadmeResultScreen extends StatelessWidget {
           backgroundColor: const Color(0xff111319),
           centerTitle: true,
           title: Text(
-            'README Result',
+            local.readmeResult,
             style: GoogleFonts.geist(
               color: const Color(0xffB5C4FF),
               fontWeight: FontWeight.bold,
@@ -31,18 +33,15 @@ class ReadmeResultScreen extends StatelessWidget {
             indicatorColor: const Color(0xffB5C4FF),
             labelColor: const Color(0xffB5C4FF),
             unselectedLabelColor: Colors.grey,
-            tabs: const [
-              Tab(icon: Icon(Icons.visibility), text: 'Preview'),
-              Tab(icon: Icon(Icons.code), text: 'Markdown'),
+            tabs:  [
+              Tab(icon: Icon(Icons.visibility), text: local.preview),
+              Tab(icon: Icon(Icons.code), text: local.markDown),
             ],
           ),
         ),
 
         body: TabBarView(
           children: [
-            ///=========================
-            /// Preview
-            ///=========================
             SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: MarkdownBody(
@@ -99,11 +98,11 @@ class ReadmeResultScreen extends StatelessWidget {
                         await Clipboard.setData(ClipboardData(text: readme));
 
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("README copied")),
+                           SnackBar(content: Text(local.readmeCopied)),
                         );
                       },
                       icon: const Icon(Icons.copy),
-                      label: const Text("Copy"),
+                      label:  Text(local.copy),
                     ),
                   ),
                 ),

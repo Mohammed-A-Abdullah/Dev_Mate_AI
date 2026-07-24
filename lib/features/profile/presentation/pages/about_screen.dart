@@ -5,6 +5,7 @@ import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_about_build_info_tile.dart';
 import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_about_build_simple_tile.dart';
 import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_row_divider.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -25,8 +26,8 @@ class AboutScreen extends StatelessWidget {
       if (!launched) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Could not open the link. No supported app found.'),
+             SnackBar(
+              content: Text(S.of(context).couldNotOpenLink),
             ),
           );
         }
@@ -34,8 +35,8 @@ class AboutScreen extends StatelessWidget {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('An error occurred while trying to open the link.'),
+           SnackBar(
+            content: Text(S.of(context).AboutErrorAccurre),
           ),
         );
       }
@@ -44,9 +45,10 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local =S.of(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBar(title: 'About DevMate'),
+      appBar: CustomAppBar(title: local.aboutDevMate),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
         child: Column(
@@ -55,7 +57,7 @@ class AboutScreen extends StatelessWidget {
             SvgPicture.asset(AppAssets.logo, width: 100.w),
             HeightSpace(height: 16),
             Text(
-              'DevMate AI',
+              local.appName,
               style: GoogleFonts.inter(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.bold,
@@ -64,7 +66,7 @@ class AboutScreen extends StatelessWidget {
             ),
             HeightSpace(height: 4),
             Text(
-              'Version 1.0.0',
+              "Version 1.0.0",
               style: GoogleFonts.inter(
                 color: Theme.of(context).colorScheme.onSecondary,
                 fontSize: 14.sp,
@@ -72,7 +74,7 @@ class AboutScreen extends StatelessWidget {
             ),
             HeightSpace(height: 4),
             Text(
-              'Your AI-Powered Developer Companion',
+              local.yourAIPowerdDeleCompanion,
               style: GoogleFonts.inter(
                 color: Theme.of(context).colorScheme.onSecondary,
                 fontSize: 14.sp,
@@ -94,20 +96,20 @@ class AboutScreen extends StatelessWidget {
               child: Column(
                 children: [
                   CustomAboutBuildInfoTile(
-                    title: 'Description',
+                    title: local.aboutDescription,
                     subtitle:
-                        'DevMate AI helps developers write better code, understand concepts, and build amazing projects with the power of AI.',
+                        local.aboutDescriptionText,
                     isLongText: true,
                   ),
                   CustomRowDivider(),
                   CustomAboutBuildInfoTile(
-                    title: 'Developer',
-                    subtitle: 'Mohamed Ahmed Abdullah',
+                    title: local.aboutDeveloper,
+                    subtitle: local.aboutDeveloperName,
                   ),
                   CustomRowDivider(),
                   CustomAboutBuildInfoTile(
-                    title: 'Built With',
-                    subtitle: 'Flutter • Firebase • Gemini AI • Cubit',
+                    title: local.aboutBuildWith,
+                    subtitle: local.aboutBuildWithData,
                   ),
                   CustomRowDivider(),
                   InkWell(
@@ -115,7 +117,7 @@ class AboutScreen extends StatelessWidget {
                       context,
                       'https://mohammed-a-abdullah.github.io/portfolio_web/',
                     ),
-                    child: CustomAboutBuildSimpleTile(title: 'Privacy Policy'),
+                    child: CustomAboutBuildSimpleTile(title: local.privaceyPolicy),
                   ),
                   CustomRowDivider(),
                   InkWell(
@@ -123,7 +125,7 @@ class AboutScreen extends StatelessWidget {
                       context,
                       'https://mohammed-a-abdullah.github.io/portfolio_web/',
                     ),
-                    child: CustomAboutBuildSimpleTile(title: 'Terms of Service'),
+                    child: CustomAboutBuildSimpleTile(title: local.termService),
                   ),
                   CustomRowDivider(),
                   InkWell(
@@ -133,14 +135,14 @@ class AboutScreen extends StatelessWidget {
                         'https://mohammed-a-abdullah.github.io/portfolio_web/',
                       );
                     },
-                    child: CustomAboutBuildSimpleTile(title: 'Open Source Licenses'),
+                    child: CustomAboutBuildSimpleTile(title: local.openSource),
                   ),
                 ],
               ),
             ),
             HeightSpace(height: 32.h),
             Text(
-              '© 2025 DevMate AI. All rights reserved.',
+              local.copyWrite,
               style: GoogleFonts.inter(
                 color: Theme.of(context).colorScheme.onSecondary,
                 fontSize: 12.sp,

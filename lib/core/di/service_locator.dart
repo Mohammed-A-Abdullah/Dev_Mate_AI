@@ -57,6 +57,7 @@ import 'package:dev_mate_ai/features/profile/data/repositories/profile_repositor
 import 'package:dev_mate_ai/features/profile/domain/useccases/change_password_use_case.dart';
 import 'package:dev_mate_ai/features/profile/domain/useccases/delete_account_use_case.dart';
 import 'package:dev_mate_ai/features/profile/domain/useccases/update_photo_use_case.dart';
+import 'package:dev_mate_ai/features/profile/domain/useccases/update_profile_details_use_case.dart';
 import 'package:dev_mate_ai/features/project_planner/data/repositories/project_plan_repository_impl.dart';
 import 'package:dev_mate_ai/features/project_planner/domain/repositories/i_project_plan_repository.dart';
 import 'package:dev_mate_ai/features/project_planner/domain/usecases/generate_plan_usecase.dart';
@@ -266,6 +267,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<DeleteAccountUseCase>(
     () => DeleteAccountUseCase(sl()),
   );
+  sl.registerLazySingleton<UpdateProfileDetailsUseCase>(()=>UpdateProfileDetailsUseCase(sl()));
   sl.registerFactory<ProfileCubit>(
     () => ProfileCubit(
       sl(),
@@ -273,6 +275,7 @@ Future<void> setupServiceLocator() async {
       updatePhotoUseCase: sl(),
       deleteAccountUseCase: sl(),
       changePasswordUseCase: sl(),
+      updateProfileDetailsUseCase: sl(),
     ),
   );
 

@@ -5,28 +5,37 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CustomCodeField extends StatelessWidget {
   const CustomCodeField({super.key, required this.codeController});
-final CodeController codeController;
+  final CodeController codeController;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-                height: 350.h,
-                decoration: BoxDecoration(
-                  color: Color(0xff1E1F26),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: CodeField(
-                  expands: true,
-                  padding: EdgeInsets.all(5),
+      height: 350.h,
+      decoration: BoxDecoration(
+        color: const Color(0xff1E1F26),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: CodeField(
+        controller: codeController,
+        decoration: const BoxDecoration(color: Colors.transparent),
+        expands: true,
+        gutterStyle: GutterStyle(
+          background: Colors.transparent,
+          showFoldingHandles: false,
+          width: 45.w,
+          margin: 10.w,
+          textStyle: GoogleFonts.sourceCodePro(
+            color: Theme.of(context).colorScheme.secondary,
+            fontSize: 14.sp,
+          ),
+        ),
 
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.r),
-                  ),
-                  controller: codeController,
-                  textStyle: GoogleFonts.sourceCodePro(
-                    fontSize: 14.sp,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-              );
+        textStyle: GoogleFonts.sourceCodePro(
+          fontSize: 14.sp,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+      ),
+    );
   }
 }

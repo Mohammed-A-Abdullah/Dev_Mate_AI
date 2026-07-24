@@ -8,6 +8,7 @@ import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_image_s
 import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_setting_groupe.dart';
 import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_state_card.dart';
 import 'package:dev_mate_ai/features/profile/presentation/widgets/image_picker_dialog.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,6 +16,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
+import '../widgets/language_dialoge.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -42,6 +44,7 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local=S.of(context);
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
         if (state is ProfileLoggedOut) {
@@ -62,10 +65,10 @@ class ProfileView extends StatelessWidget {
           final profile = state.profile;
           final displayName = profile.name;
           final photoUrl = profile.imageUrl;
-          final roleLabel = profile.isGuest ? "Guest Explorer" : "AI Developer";
+          final roleLabel = profile.isGuest ? local.guestEplorer : local.aiDeveloper;
           return Scaffold(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            appBar: CustomAppBar(title: "Profile", needButton: false),
+            appBar: CustomAppBar(title: local.profile, needButton: false),
             body: SafeArea(
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -99,7 +102,7 @@ class ProfileView extends StatelessWidget {
                         Expanded(
                           child: CustomStateCard(
                             value: profile.chats.toString(),
-                            label: "Chats",
+                            label: local.chats,
                             valueColor: const Color(0xffB5C4FF),
                           ),
                         ),
@@ -107,7 +110,7 @@ class ProfileView extends StatelessWidget {
                         Expanded(
                           child: CustomStateCard(
                             value: profile.readmes.toString(),
-                            label: "READMEs",
+                            label: local.readme,
                             valueColor: const Color(0xffC79DFF),
                           ),
                         ),
@@ -115,7 +118,7 @@ class ProfileView extends StatelessWidget {
                         Expanded(
                           child: CustomStateCard(
                             value: profile.analysis.toString(),
-                            label: "Analysis",
+                            label: local.analysis,
                             valueColor: const Color(0xff6EE7B7),
                           ),
                         ),
@@ -128,8 +131,11 @@ class ProfileView extends StatelessWidget {
                       onAccountSettingsTap: () {
                         context.pushNamed(RouteName.accountStettingsScreen);
                       },
-                      onNotificationsTap: () {
-                        context.pushNamed(RouteName.notificationsScreen);
+                      onLanguageTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => const LanguageDialog(),
+                        );
                       },
                       onAboutTap: () async {
                         context.pushNamed(RouteName.aboutScreen);

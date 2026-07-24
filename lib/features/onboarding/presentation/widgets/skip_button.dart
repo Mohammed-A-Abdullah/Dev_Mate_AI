@@ -1,3 +1,4 @@
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,7 +18,7 @@ class SkipButton extends StatelessWidget {
           await context.read<SplashCubit>().finishOnboarding();
         },
         child: Text(
-          "SKIP",
+          S.of(context).skip,
           style: GoogleFonts.jetBrainsMono(
             fontSize: 11.sp,
             color: Theme.of(context).colorScheme.onSecondary,
