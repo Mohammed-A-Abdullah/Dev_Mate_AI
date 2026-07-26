@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 import '../entities/auth_user_entity.dart';
 
 abstract class AuthRepository {
