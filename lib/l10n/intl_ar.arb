@@ -91,6 +91,8 @@
   "home": "الرئيسية",
   "history": "السجل",
   "goodMorning": "صباح الخير، ",
+  "goodAfternoon": "مساء الخير، ",
+  "goodEvening": "مساء الخير، ",
   "user": "المستخدم",
   "homeReadyToBuild": "هل أنت مستعد لبناء شيء رائع اليوم؟",
   "homeQuickTool": "الأدوات السريعة",
@@ -148,5 +150,17 @@
   "sendEmailPassword": "أدخل بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور",
   "showDialogSendEmail": "يرجى إدخال عنوان بريدك الإلكتروني أولًا.",
   "checkEmail": "تحقق من البريد الإلكتروني",
-  "emailAddress": "عنوان البريد الإلكتروني"
+  "emailAddress": "عنوان البريد الإلكتروني",
+  "explainCodeTitle": "شرح الكود",
+  "explainCodeDesc": "تبسيط وتحليل المنطق المعقد",
+  "debugCodeTitle": "إصلاح الأخطاء",
+  "debugCodeDesc": "كتشف الأخطاء واصلحها بسرعة",
+  "generateReadmeTitle": "إنشاء README",
+  "generateReadmeDesc": "توثيق فوري للمشروع",
+  "projectPlannerTitle": "مخطط المشروع",
+  "projectPlannerDesc": "صمم هيكلية تطبيقك القادم",
+  "aiChatTitle": "مساعد الذكاء الاصطناعي",
+  "aiChatDesc": "مساعدة برمجية مفتوحة",
+  "codeReviewTitle": "مراجعة الكود",
+  "codeReviewDesc": "تحليل الكود وفق أفضل الممارسات"
 }

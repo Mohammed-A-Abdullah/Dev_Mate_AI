@@ -59,6 +59,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "additionalinstructionDes": MessageLookupByLibrary.simpleMessage(
       "e.g. Explain line by line, focus on performance...",
     ),
+    "aiChatDesc": MessageLookupByLibrary.simpleMessage(
+      "Open-ended coding help",
+    ),
+    "aiChatTitle": MessageLookupByLibrary.simpleMessage("AI Chat"),
     "aiDeveloper": MessageLookupByLibrary.simpleMessage("AI Developer"),
     "analysis": MessageLookupByLibrary.simpleMessage("Analysis"),
     "appName": MessageLookupByLibrary.simpleMessage("DeveMat AI"),
@@ -82,6 +86,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "chooseLang": MessageLookupByLibrary.simpleMessage("Choose Language"),
     "codeReview": MessageLookupByLibrary.simpleMessage("Code Review"),
+    "codeReviewDesc": MessageLookupByLibrary.simpleMessage(
+      "Analyze for best practices",
+    ),
+    "codeReviewTitle": MessageLookupByLibrary.simpleMessage("Code Review"),
     "comfirmPass": MessageLookupByLibrary.simpleMessage("Confirm Password"),
     "comfirmPassValidator": MessageLookupByLibrary.simpleMessage(
       "Password is required",
@@ -98,12 +106,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
     "deadline": MessageLookupByLibrary.simpleMessage("Deadline"),
     "debugCode": MessageLookupByLibrary.simpleMessage("Debug Code"),
+    "debugCodeDesc": MessageLookupByLibrary.simpleMessage(
+      "Find and fix errors fast",
+    ),
     "debugCodeInstruction": MessageLookupByLibrary.simpleMessage(
       "Debug & Error Instructions (Optional)",
     ),
     "debugCodeInstructionDes": MessageLookupByLibrary.simpleMessage(
       "Provide any specific instructions or context for debugging the code.",
     ),
+    "debugCodeTitle": MessageLookupByLibrary.simpleMessage("Debug Code"),
     "delete": MessageLookupByLibrary.simpleMessage("Delete"),
     "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete Account"),
     "deleteAccountDesc": MessageLookupByLibrary.simpleMessage(
@@ -138,6 +150,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "experienceLevel": MessageLookupByLibrary.simpleMessage("Experience Level"),
     "explainCode": MessageLookupByLibrary.simpleMessage("Explain Code"),
+    "explainCodeDesc": MessageLookupByLibrary.simpleMessage(
+      "Break down complex logic",
+    ),
+    "explainCodeTitle": MessageLookupByLibrary.simpleMessage("Explain Code"),
     "failToSendEmail": MessageLookupByLibrary.simpleMessage(
       "Failed to send reset email.",
     ),
@@ -149,6 +165,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "fullName": MessageLookupByLibrary.simpleMessage("Full Name"),
     "gallary": MessageLookupByLibrary.simpleMessage("Gallery"),
     "generateReadMe": MessageLookupByLibrary.simpleMessage("Generate README"),
+    "generateReadmeDesc": MessageLookupByLibrary.simpleMessage(
+      "Instant documentation",
+    ),
+    "generateReadmeTitle": MessageLookupByLibrary.simpleMessage(
+      "Generate README",
+    ),
     "getStarted": MessageLookupByLibrary.simpleMessage("Get Started"),
     "githubDes": MessageLookupByLibrary.simpleMessage(
       "Provide your GitHub repository link (optional).",
@@ -156,6 +178,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "githubLink": MessageLookupByLibrary.simpleMessage(
       "GitHub Link (Optional)",
     ),
+    "goodAfternoon": MessageLookupByLibrary.simpleMessage("Good Afternoon, "),
+    "goodEvening": MessageLookupByLibrary.simpleMessage("Good Evening, "),
     "goodMorning": MessageLookupByLibrary.simpleMessage("Good morning, "),
     "guestEplorer": MessageLookupByLibrary.simpleMessage("Guest Explorer"),
     "haveAnAccount": MessageLookupByLibrary.simpleMessage(
@@ -227,6 +251,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "projectDes": MessageLookupByLibrary.simpleMessage("Project Description"),
     "projectPlanner": MessageLookupByLibrary.simpleMessage("Project Planner"),
+    "projectPlannerDesc": MessageLookupByLibrary.simpleMessage(
+      "Architect your next app",
+    ),
+    "projectPlannerTitle": MessageLookupByLibrary.simpleMessage(
+      "Project Planner",
+    ),
     "projectTitle": MessageLookupByLibrary.simpleMessage("Project Title"),
     "projectType": MessageLookupByLibrary.simpleMessage("Project Type"),
     "readme": MessageLookupByLibrary.simpleMessage("READMEs"),

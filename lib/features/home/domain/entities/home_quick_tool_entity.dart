@@ -1,17 +1,13 @@
-import 'package:flutter/material.dart';
+import 'home_tool_type.dart';
 
 class HomeQuickToolEntity {
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String description;
-  final String screen;
+  final HomeToolType type;
+  final String? title;
+  final String? description;
 
   const HomeQuickToolEntity({
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.description,
-     required this.screen,
+    required this.type,
+     this.title,
+     this.description,
   });
 }

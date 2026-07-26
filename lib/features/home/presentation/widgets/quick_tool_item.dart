@@ -1,10 +1,12 @@
 import 'package:dev_mate_ai/core/theme/extensions/home_theme_extension.dart';
+import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/home/domain/entities/home_quick_tool_entity.dart';
+import 'package:dev_mate_ai/features/home/presentation/helper/home_tool_helper.dart';
+import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/widgets/spacing_widgets.dart';
 
 class QuickToolItem extends StatelessWidget {
   final HomeQuickToolEntity tool;
@@ -13,9 +15,11 @@ class QuickToolItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local = S.of(context);
+
     return GestureDetector(
       onTap: () {
-        GoRouter.of(context).pushNamed(tool.screen);
+        GoRouter.of(context).pushNamed(HomeToolHelper.route(tool.type));
       },
       child: Container(
         width: 100.w,
@@ -38,11 +42,14 @@ class QuickToolItem extends StatelessWidget {
                   ).extension<HomeThemeExtension>()!.iconCardQuickTool,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Icon(tool.icon, color: tool.iconColor),
+                child: Icon(
+                  HomeToolHelper.icon(tool.type),
+                  color: HomeToolHelper.color(tool.type),
+                ),
               ),
               HeightSpace(height: 5),
               Text(
-                tool.title,
+                HomeToolHelper.title(tool.type, local),
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
@@ -51,7 +58,7 @@ class QuickToolItem extends StatelessWidget {
               ),
               HeightSpace(height: 5),
               Text(
-                tool.description,
+                HomeToolHelper.description(tool.type, local),
                 style: GoogleFonts.jetBrainsMono(
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w400,

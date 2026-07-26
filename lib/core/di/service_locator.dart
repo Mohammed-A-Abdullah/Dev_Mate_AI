@@ -46,7 +46,7 @@ import 'package:dev_mate_ai/features/history/data/repositories/history_repositor
 import 'package:dev_mate_ai/features/history/domain/repository/history_repository.dart';
 import 'package:dev_mate_ai/features/history/domain/usecases/get_history_use_case.dart';
 import 'package:dev_mate_ai/features/history/presentation/cubit/history_cubit.dart';
-import 'package:dev_mate_ai/features/home/data/repository/home_repository_imp.dart';
+import 'package:dev_mate_ai/features/home/data/repository/home_repository_impl.dart';
 import 'package:dev_mate_ai/features/home/domain/repository/home_quick_tools_repository.dart';
 import 'package:dev_mate_ai/features/home/presentation/cubit/home_cubit.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/cubit/navigation_bar_cubit.dart';
@@ -91,9 +91,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
 
   //home page sl
-  sl.registerLazySingleton<HomeRepositoryImp>(() => HomeRepositoryImp());
-  sl.registerLazySingleton<HomeQuickToolsRepository>(() => HomeRepositoryImp());
-  sl.registerFactory<HomeCubit>(() => HomeCubit(sl()));
+  sl.registerLazySingleton<HomeRepositoryImpl>(() => HomeRepositoryImpl());
+  sl.registerLazySingleton<HomeQuickToolsRepository>(() => HomeRepositoryImpl());
+  sl.registerFactory(() => HomeCubit(repository: sl()));  
 
   //auth sl
   sl.registerLazySingleton<AuthRemoteDataSource>(

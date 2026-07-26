@@ -61,6 +61,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "additionalinstructionDes": MessageLookupByLibrary.simpleMessage(
       "مثال: اشرح سطرًا بسطر أو ركز على الأداء...",
     ),
+    "aiChatDesc": MessageLookupByLibrary.simpleMessage("مساعدة برمجية مفتوحة"),
+    "aiChatTitle": MessageLookupByLibrary.simpleMessage(
+      "مساعد الذكاء الاصطناعي",
+    ),
     "aiDeveloper": MessageLookupByLibrary.simpleMessage("مطور ذكاء اصطناعي"),
     "analysis": MessageLookupByLibrary.simpleMessage("التحليل"),
     "appName": MessageLookupByLibrary.simpleMessage("ديف ميت AI"),
@@ -88,6 +92,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "chooseLang": MessageLookupByLibrary.simpleMessage("اختر اللغة"),
     "codeReview": MessageLookupByLibrary.simpleMessage("مراجعة الكود"),
+    "codeReviewDesc": MessageLookupByLibrary.simpleMessage(
+      "تحليل الكود وفق أفضل الممارسات",
+    ),
+    "codeReviewTitle": MessageLookupByLibrary.simpleMessage("مراجعة الكود"),
     "comfirmPass": MessageLookupByLibrary.simpleMessage("تأكيد كلمة المرور"),
     "comfirmPassValidator": MessageLookupByLibrary.simpleMessage(
       "يرجى تأكيد كلمة المرور",
@@ -104,12 +112,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark": MessageLookupByLibrary.simpleMessage("داكن"),
     "deadline": MessageLookupByLibrary.simpleMessage("الموعد النهائي"),
     "debugCode": MessageLookupByLibrary.simpleMessage("تصحيح الكود"),
+    "debugCodeDesc": MessageLookupByLibrary.simpleMessage(
+      "كتشف الأخطاء واصلحها بسرعة",
+    ),
     "debugCodeInstruction": MessageLookupByLibrary.simpleMessage(
       "تعليمات التصحيح (اختياري)",
     ),
     "debugCodeInstructionDes": MessageLookupByLibrary.simpleMessage(
       "أدخل أي تعليمات أو معلومات تساعد في تصحيح الكود.",
     ),
+    "debugCodeTitle": MessageLookupByLibrary.simpleMessage("إصلاح الأخطاء"),
     "delete": MessageLookupByLibrary.simpleMessage("حذف"),
     "deleteAccount": MessageLookupByLibrary.simpleMessage("حذف الحساب"),
     "deleteAccountDesc": MessageLookupByLibrary.simpleMessage(
@@ -144,6 +156,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "experienceLevel": MessageLookupByLibrary.simpleMessage("مستوى الخبرة"),
     "explainCode": MessageLookupByLibrary.simpleMessage("شرح الكود"),
+    "explainCodeDesc": MessageLookupByLibrary.simpleMessage(
+      "تبسيط وتحليل المنطق المعقد",
+    ),
+    "explainCodeTitle": MessageLookupByLibrary.simpleMessage("شرح الكود"),
     "failToSendEmail": MessageLookupByLibrary.simpleMessage(
       "فشل إرسال رسالة إعادة تعيين كلمة المرور.",
     ),
@@ -157,11 +173,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "fullName": MessageLookupByLibrary.simpleMessage("الاسم الكامل"),
     "gallary": MessageLookupByLibrary.simpleMessage("المعرض"),
     "generateReadMe": MessageLookupByLibrary.simpleMessage("إنشاء README"),
+    "generateReadmeDesc": MessageLookupByLibrary.simpleMessage(
+      "توثيق فوري للمشروع",
+    ),
+    "generateReadmeTitle": MessageLookupByLibrary.simpleMessage("إنشاء README"),
     "getStarted": MessageLookupByLibrary.simpleMessage("ابدأ الآن"),
     "githubDes": MessageLookupByLibrary.simpleMessage(
       "أدخل رابط مستودع GitHub الخاص بك (اختياري).",
     ),
     "githubLink": MessageLookupByLibrary.simpleMessage("رابط GitHub (اختياري)"),
+    "goodAfternoon": MessageLookupByLibrary.simpleMessage("مساء الخير، "),
+    "goodEvening": MessageLookupByLibrary.simpleMessage("مساء الخير، "),
     "goodMorning": MessageLookupByLibrary.simpleMessage("صباح الخير، "),
     "guestEplorer": MessageLookupByLibrary.simpleMessage("مستخدم زائر"),
     "haveAnAccount": MessageLookupByLibrary.simpleMessage("لديك حساب بالفعل؟ "),
@@ -223,6 +245,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "projectDes": MessageLookupByLibrary.simpleMessage("وصف المشروع"),
     "projectPlanner": MessageLookupByLibrary.simpleMessage("مخطط المشروع"),
+    "projectPlannerDesc": MessageLookupByLibrary.simpleMessage(
+      "صمم هيكلية تطبيقك القادم",
+    ),
+    "projectPlannerTitle": MessageLookupByLibrary.simpleMessage("مخطط المشروع"),
     "projectTitle": MessageLookupByLibrary.simpleMessage("عنوان المشروع"),
     "projectType": MessageLookupByLibrary.simpleMessage("نوع المشروع"),
     "readme": MessageLookupByLibrary.simpleMessage("ملفات README"),

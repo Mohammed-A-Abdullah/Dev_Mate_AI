@@ -91,6 +91,8 @@
   "home": "Home",
   "history": "History",
   "goodMorning": "Good morning, ",
+  "goodAfternoon":"Good Afternoon, ",
+  "goodEvening":"Good Evening, ",
   "user": "User",
   "homeReadyToBuild": "Ready to build something amazing today?",
   "homeQuickTool": "Quick Tools",
@@ -148,5 +150,17 @@
   "sendEmailPassword": "Enter your email to send reset password email",
   "showDialogSendEmail": "Please enter your email address first.",
   "checkEmail": "Check email",
-  "emailAddress": "Email address"
+  "emailAddress": "Email address",
+  "explainCodeTitle": "Explain Code",
+"explainCodeDesc": "Break down complex logic",
+"debugCodeTitle": "Debug Code",
+"debugCodeDesc": "Find and fix errors fast",
+"generateReadmeTitle": "Generate README",
+"generateReadmeDesc": "Instant documentation",
+"projectPlannerTitle": "Project Planner",
+"projectPlannerDesc": "Architect your next app",
+"aiChatTitle": "AI Chat",
+"aiChatDesc": "Open-ended coding help",
+"codeReviewTitle": "Code Review",
+"codeReviewDesc": "Analyze for best practices"
 }

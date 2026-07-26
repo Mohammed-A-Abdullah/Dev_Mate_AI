@@ -810,6 +810,26 @@ class S {
     );
   }
 
+  /// `Good Afternoon, `
+  String get goodAfternoon {
+    return Intl.message(
+      'Good Afternoon, ',
+      name: 'goodAfternoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Good Evening, `
+  String get goodEvening {
+    return Intl.message(
+      'Good Evening, ',
+      name: 'goodEvening',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `User`
   String get user {
     return Intl.message('User', name: 'user', desc: '', args: []);
@@ -1300,6 +1320,121 @@ class S {
     return Intl.message(
       'Email address',
       name: 'emailAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Explain Code`
+  String get explainCodeTitle {
+    return Intl.message(
+      'Explain Code',
+      name: 'explainCodeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Break down complex logic`
+  String get explainCodeDesc {
+    return Intl.message(
+      'Break down complex logic',
+      name: 'explainCodeDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Debug Code`
+  String get debugCodeTitle {
+    return Intl.message(
+      'Debug Code',
+      name: 'debugCodeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Find and fix errors fast`
+  String get debugCodeDesc {
+    return Intl.message(
+      'Find and fix errors fast',
+      name: 'debugCodeDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate README`
+  String get generateReadmeTitle {
+    return Intl.message(
+      'Generate README',
+      name: 'generateReadmeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Instant documentation`
+  String get generateReadmeDesc {
+    return Intl.message(
+      'Instant documentation',
+      name: 'generateReadmeDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Project Planner`
+  String get projectPlannerTitle {
+    return Intl.message(
+      'Project Planner',
+      name: 'projectPlannerTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Architect your next app`
+  String get projectPlannerDesc {
+    return Intl.message(
+      'Architect your next app',
+      name: 'projectPlannerDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AI Chat`
+  String get aiChatTitle {
+    return Intl.message('AI Chat', name: 'aiChatTitle', desc: '', args: []);
+  }
+
+  /// `Open-ended coding help`
+  String get aiChatDesc {
+    return Intl.message(
+      'Open-ended coding help',
+      name: 'aiChatDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Code Review`
+  String get codeReviewTitle {
+    return Intl.message(
+      'Code Review',
+      name: 'codeReviewTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Analyze for best practices`
+  String get codeReviewDesc {
+    return Intl.message(
+      'Analyze for best practices',
+      name: 'codeReviewDesc',
       desc: '',
       args: [],
     );
