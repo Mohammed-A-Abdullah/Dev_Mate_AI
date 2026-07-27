@@ -14,7 +14,7 @@ import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../cubit/readme_cubit.dart';
 import '../cubit/readme_state.dart';
-import '../generarte_readme_constant.dart';
+import '../constants/generarte_readme_constant.dart';
 import '../widgets/costom_readme_text_field.dart';
 
 class GenerateReadmeScreen extends StatelessWidget {
