@@ -9,47 +9,32 @@ class ProjectPlanCubit extends Cubit<ProjectPlanState> {
   ProjectPlanCubit({required this.generatePlanUseCase})
     : super(const ProjectPlanState());
 
-  // UI state mutations
-  void updateTitle(String title) {
-    emit(state.copyWith(title: title));
-  }
+  void updatePlatform(String platform) =>
+      emit(state.copyWith(platform: platform));
+  void updateProgrammingLanguage(String language) =>
+      emit(state.copyWith(programmingLanguage: language));
+  void updateExperienceLevel(String level) =>
+      emit(state.copyWith(experienceLevel: level));
+  void updateArchitecture(String architecture) =>
+      emit(state.copyWith(architecture: architecture));
+  void updateDeadline(String deadline) =>
+      emit(state.copyWith(deadline: deadline));
+  void updateDeploymentTarget(String target) =>
+      emit(state.copyWith(deploymentTarget: target));
 
-  void updateDescription(String description) {
-    emit(state.copyWith(description: description));
-  }
+  Future<void> generatePlan({
+    required String title,
+    required String description,
+  }) async {
+    final trimmedTitle = title.trim();
+    final trimmedDesc = description.trim();
 
-  void updatePlatform(String platform) {
-    emit(state.copyWith(platform: platform));
-  }
-
-  void updateProgrammingLanguage(String language) {
-    emit(state.copyWith(programmingLanguage: language));
-  }
-
-  void updateExperienceLevel(String level) {
-    emit(state.copyWith(experienceLevel: level));
-  }
-
-  void updateArchitecture(String architecture) {
-    emit(state.copyWith(architecture: architecture));
-  }
-
-  void updateDeadline(String deadline) {
-    emit(state.copyWith(deadline: deadline));
-  }
-
-  void updateDeploymentTarget(String target) {
-    emit(state.copyWith(deploymentTarget: target));
-  }
-
-  // Submit plan generation
-  Future<void> generatePlan() async {
-    if (state.title.trim().isEmpty) {
+    if (trimmedTitle.isEmpty) {
       emit(state.copyWith(errorMessage: 'Please provide a project title.'));
       return;
     }
 
-    if (state.description.trim().isEmpty) {
+    if (trimmedDesc.isEmpty) {
       emit(
         state.copyWith(errorMessage: 'Please provide a project description.'),
       );
@@ -60,8 +45,8 @@ class ProjectPlanCubit extends Cubit<ProjectPlanState> {
 
     try {
       final request = ProjectPlanRequest(
-        title: state.title,
-        description: state.description,
+        title: trimmedTitle,
+        description: trimmedDesc,
         platform: state.platform,
         programmingLanguage: state.programmingLanguage,
         experienceLevel: state.experienceLevel,
@@ -73,16 +58,9 @@ class ProjectPlanCubit extends Cubit<ProjectPlanState> {
       final result = await generatePlanUseCase(request);
       emit(state.copyWith(isLoading: false, planResult: result));
     } catch (e) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          errorMessage: 'Failed to generate plan: ${e.toString()}',
-        ),
-      );
+      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
     }
   }
 
-  void clearError() {
-    emit(state.copyWith(errorMessage: null));
-  }
+  void clearError() => emit(state.copyWith(errorMessage: null));
 }

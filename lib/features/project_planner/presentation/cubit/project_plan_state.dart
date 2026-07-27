@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 class ProjectPlanState extends Equatable {
-  final String title;
-  final String description;
   final String platform;
   final String programmingLanguage;
   final String experienceLevel;
@@ -14,8 +12,6 @@ class ProjectPlanState extends Equatable {
   final String? errorMessage;
 
   const ProjectPlanState({
-    this.title = '',
-    this.description = '',
     this.platform = 'Flutter (Mobile)',
     this.programmingLanguage = 'Dart',
     this.experienceLevel = 'Beginner',
@@ -28,8 +24,6 @@ class ProjectPlanState extends Equatable {
   });
 
   ProjectPlanState copyWith({
-    String? title,
-    String? description,
     String? platform,
     String? programmingLanguage,
     String? experienceLevel,
@@ -41,8 +35,6 @@ class ProjectPlanState extends Equatable {
     String? errorMessage,
   }) {
     return ProjectPlanState(
-      title: title ?? this.title,
-      description: description ?? this.description,
       platform: platform ?? this.platform,
       programmingLanguage: programmingLanguage ?? this.programmingLanguage,
       experienceLevel: experienceLevel ?? this.experienceLevel,
@@ -50,15 +42,13 @@ class ProjectPlanState extends Equatable {
       deadline: deadline ?? this.deadline,
       deploymentTarget: deploymentTarget ?? this.deploymentTarget,
       isLoading: isLoading ?? this.isLoading,
-      planResult: planResult ?? this.planResult,
-      errorMessage: errorMessage ?? this.errorMessage,
+      planResult: planResult,
+      errorMessage: errorMessage,
     );
   }
 
   @override
   List<Object?> get props => [
-    title,
-    description,
     platform,
     programmingLanguage,
     experienceLevel,

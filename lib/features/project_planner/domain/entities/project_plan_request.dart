@@ -1,4 +1,6 @@
-class ProjectPlanRequest {
+import 'package:equatable/equatable.dart';
+
+class ProjectPlanRequest extends Equatable {
   final String title;
   final String description;
   final String platform;
@@ -8,7 +10,7 @@ class ProjectPlanRequest {
   final String deadline;
   final String deploymentTarget;
 
-  ProjectPlanRequest({
+  const ProjectPlanRequest({
     required this.title,
     required this.description,
     required this.platform,
@@ -18,4 +20,16 @@ class ProjectPlanRequest {
     required this.deadline,
     required this.deploymentTarget,
   });
+
+  @override
+  List<Object?> get props => [
+    title,
+    description,
+    platform,
+    programmingLanguage,
+    experienceLevel,
+    architecture,
+    deadline,
+    deploymentTarget,
+  ];
 }

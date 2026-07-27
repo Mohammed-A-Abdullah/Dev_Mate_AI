@@ -1,16 +1,58 @@
+import '../../../chat_screen/data/datasource/firebase_chat_data_source.dart';
 import '../../domain/entities/project_plan_request.dart';
+import '../../domain/exception/project_planner_exception.dart';
 import '../../domain/repositories/i_project_plan_repository.dart';
 import '../../../../core/services/gemini_service.dart';
 
 class ProjectPlanRepositoryImpl implements IProjectPlanRepository {
   final GeminiService _geminiService;
+  final FirebaseChatDataSource _chatDataSource;
 
-  ProjectPlanRepositoryImpl(this._geminiService);
+  ProjectPlanRepositoryImpl(this._geminiService, this._chatDataSource);
 
   @override
   Future<String> generatePlan(ProjectPlanRequest request) async {
     final prompt = _buildPrompt(request);
-    return await _geminiService.sendMessage(prompt);
+
+    try {
+      final result = await _geminiService.sendMessage(prompt);
+
+      if (result.trim().isEmpty) {
+        throw const ProjectPlanException('The AI returned an empty response.');
+      }
+
+      _saveToHistory(request, result);
+
+      return result;
+    } catch (e) {
+      if (e is ProjectPlanException) rethrow;
+      throw const ProjectPlanException(
+        'Failed to generate project plan. Please try again.',
+      );
+    }
+  }
+
+  void _saveToHistory(ProjectPlanRequest request, String result) {
+    try {
+      final promptSummary = [
+        'Project Title: ${request.title}',
+        'Description: ${request.description}',
+        'Platform: ${request.platform}',
+        'Language: ${request.programmingLanguage}',
+        'Experience: ${request.experienceLevel}',
+        'Architecture: ${request.architecture}',
+        'Deadline: ${request.deadline}',
+        'Deployment: ${request.deploymentTarget}',
+      ].join('\n');
+
+      _chatDataSource.saveQuickToolConversation(
+        title: 'Project Planner',
+        type: 'Project Planner',
+        prompt: promptSummary,
+        response: result,
+      );
+    } catch (_) {
+    }
   }
 
   String _buildPrompt(ProjectPlanRequest request) {

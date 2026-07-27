@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dev_mate_ai/core/di/service_locator.dart';
-import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/routing/route_name.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_dropdown_button_field.dart';
@@ -16,7 +14,7 @@ import '../../../../core/widgets/spacing_widgets.dart';
 import '../cubit/project_plan_cubit.dart';
 import '../cubit/project_plan_state.dart';
 import '../widgets/custom_project_planner_text_field.dart';
-import 'project_planner_constant.dart';
+import '../constants/project_planner_constant.dart';
 
 class ProjectPlannerScreen extends StatelessWidget {
   const ProjectPlannerScreen({super.key});
@@ -38,28 +36,8 @@ class ProjectPlannerView extends StatefulWidget {
 }
 
 class _ProjectPlannerViewState extends State<ProjectPlannerView> {
-  late final TextEditingController _titleController;
-  late final TextEditingController _descriptionController;
-
-  @override
-  void initState() {
-    super.initState();
-    _titleController = TextEditingController();
-    _descriptionController = TextEditingController();
-
-    final state = context.read<ProjectPlanCubit>().state;
-    _titleController.text = state.title;
-    _descriptionController.text = state.description;
-
-    _titleController.addListener(() {
-      context.read<ProjectPlanCubit>().updateTitle(_titleController.text);
-    });
-    _descriptionController.addListener(() {
-      context.read<ProjectPlanCubit>().updateDescription(
-        _descriptionController.text,
-      );
-    });
-  }
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
 
   @override
   void dispose() {
@@ -67,61 +45,45 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
     _descriptionController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    final local =S.of(context);
+    final local = S.of(context);
+
     return BlocConsumer<ProjectPlanCubit, ProjectPlanState>(
+      listenWhen: (previous, current) =>
+          previous.errorMessage != current.errorMessage ||
+          previous.planResult != current.planResult,
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: Colors.red,
+            ),
+          );
           context.read<ProjectPlanCubit>().clearError();
         }
+
         if (state.planResult != null && !state.isLoading) {
-          final navigator = GoRouter.of(context);
-          Future.microtask(() async {
-            final prompt = [
-              'Project Title: ${state.title}',
-              'Description: ${state.description}',
-              'Platform: ${state.platform}',
-              'Language: ${state.programmingLanguage}',
-              'Experience: ${state.experienceLevel}',
-              'Architecture: ${state.architecture}',
-              'Deadline: ${state.deadline}',
-              'Deployment: ${state.deploymentTarget}',
-            ].join('\n');
-
-            try {
-              await FirebaseChatDataSource(
-                firestore: FirebaseFirestore.instance,
-              ).saveQuickToolConversation(
-                title: 'Project Planner',
-                type: 'Project Planner',
-                prompt: prompt,
-                response: state.planResult!,
-              );
-            } catch (_) {}
-
-            if (!mounted) return;
-            navigator.pushNamed(
-              RouteName.ansewerEplainCode,
-              extra: state.planResult,
-            );
-          });
+          context.pushNamed(
+            RouteName.ansewerEplainCode, 
+            extra: state.planResult,
+          );
         }
       },
       builder: (context, state) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar:  CustomAppBar(title: local.projectPlanner),
-          body: SingleChildScrollView(
-            child: Padding(
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            appBar: CustomAppBar(title: local.projectPlanner),
+            body: SingleChildScrollView(
               padding: EdgeInsets.all(16.sp),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const HeightSpace(height: 35),
+                  const HeightSpace(height: 20),
                   CustomProjectPlannerTextField(
                     controller: _titleController,
                     title: local.projectTitle,
@@ -213,14 +175,18 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                       }
                     },
                   ),
-                  const HeightSpace(height: 20),
+                  const HeightSpace(height: 30),
                   CustomFeatureButton(
                     text: local.planProject,
                     isLoading: state.isLoading,
                     onTap: state.isLoading
                         ? null
                         : () {
-                            context.read<ProjectPlanCubit>().generatePlan();
+                            context.read<ProjectPlanCubit>().generatePlan(
+                              title: _titleController.text,
+                              description: _descriptionController.text,
+                            );
+                            FocusScope.of(context).unfocus();
                           },
                   ),
                 ],

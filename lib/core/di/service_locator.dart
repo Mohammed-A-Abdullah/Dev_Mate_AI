@@ -214,7 +214,7 @@ Future<void> setupServiceLocator() async {
 
   //project planner
   sl.registerLazySingleton<IProjectPlanRepository>(
-    () => ProjectPlanRepositoryImpl(sl()),
+    () => ProjectPlanRepositoryImpl(sl(),sl()),
   );
   sl.registerLazySingleton<GeneratePlanUseCase>(
     () => GeneratePlanUseCase(sl()),
