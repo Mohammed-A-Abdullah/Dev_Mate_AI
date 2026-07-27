@@ -34,122 +34,177 @@ class HistoryView extends StatefulWidget {
 }
 
 class _HistoryViewState extends State<HistoryView> {
-  late final TextEditingController historController;
-  late final List<String> filterChip;
+  late final TextEditingController historyController;
+  late final List<String> filterChips;
+
+  int selectedFilterIndex = 0;
+  String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    historController = TextEditingController();
-    filterChip = [
+    historyController = TextEditingController();
+
+    filterChips = [
       'All',
       'Chat',
-      'README',
+      'Generate README',
       'Code Review',
       'Project Planner',
       'Debug',
     ];
+
+    historyController.addListener(_onSearchChanged);
+
     context.read<HistoryCubit>().loadHistory();
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      searchQuery = historyController.text.trim().toLowerCase();
+    });
   }
 
   @override
   void dispose() {
-    historController.dispose();
+    historyController.removeListener(_onSearchChanged);
+    historyController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
+    final local = S.of(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBar(title: local.appName),
+      appBar: CustomAppBar(title: local.appName, needButton: false),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HeightSpace(height: 24),
-              Text(
-                local.activityHistory,
-                style: GoogleFonts.geist(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            HeightSpace(height: 24),
+            Text(
+              local.activityHistory,
+              style: GoogleFonts.geist(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).colorScheme.secondary,
               ),
-              HeightSpace(height: 16),
-              CustomHistoryTextField(controller: historController),
-              HeightSpace(height: 32),
-              SizedBox(
-                height: 33.h,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: filterChip.length,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return CustomTabBarWidget(
-                      text: filterChip[index],
-                      onTap: () {},
-                      isSelected: true,
-                    );
-                  },
-                ),
+            ),
+            HeightSpace(height: 16),
+            CustomHistoryTextField(controller: historyController),
+            HeightSpace(height: 20),
+
+            SizedBox(
+              height: 35.h,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: filterChips.length,
+                physics: const BouncingScrollPhysics(),
+                separatorBuilder: (context, index) => SizedBox(width: 8.w),
+                itemBuilder: (context, index) {
+                  return CustomTabBarWidget(
+                    text: filterChips[index],
+                    isSelected: selectedFilterIndex == index,
+                    onTap: () {
+                      setState(() {
+                        selectedFilterIndex = index;
+                      });
+                    },
+                  );
+                },
               ),
-              HeightSpace(height: 32),
-              BlocBuilder<HistoryCubit, HistoryState>(
+            ),
+            HeightSpace(height: 20),
+
+            Expanded(
+              child: BlocBuilder<HistoryCubit, HistoryState>(
                 builder: (context, state) {
                   if (state is HistoryLoading) {
-                    return  Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary,));
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    );
                   }
 
                   if (state is HistoryLoaded) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: state.history.length,
-                      itemBuilder: (context, index) {
-                        final item = state.history[index];
+                    final filteredHistory = state.history.where((item) {
+                      final matchesType =
+                          selectedFilterIndex == 0 ||
+                          item.type.toLowerCase() ==
+                              filterChips[selectedFilterIndex].toLowerCase();
 
-                        return CustomHistoryCardWidget(
-                          title: item.title.isEmpty ? local.newChat : item.title,
-                          description: item.lastMessage.isEmpty
-                              ? local.noMessageYet
-                              : item.lastMessage,
-                          chipType: item.type,
-                          time: item.updatedAt,
-                          onTap: () {
-                            if (item.type.toLowerCase() == 'chat') {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => ChatScreen(chatId: item.id),
-                                ),
-                              );
-                            } else {
-                              // Navigator.of(context).push(
-                              //   MaterialPageRoute(
-                              //     builder: (_) => CustomAiModelAnswerScreen(
-                              //       cubit: item.lastMessage,
-                              //     ),
-                              //   ),
-                              // );
-                            }
-                          },
+                      final matchesQuery =
+                          searchQuery.isEmpty ||
+                          item.title.toLowerCase().contains(searchQuery) ||
+                          item.lastMessage.toLowerCase().contains(searchQuery);
+
+                      return matchesType && matchesQuery;
+                    }).toList();
+
+                    if (filteredHistory.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No history found',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontSize: 16.sp,
+                          ),
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: filteredHistory.length,
+                      itemBuilder: (context, index) {
+                        final item = filteredHistory[index];
+
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 12.h),
+                          child: CustomHistoryCardWidget(
+                            title: item.title.isEmpty
+                                ? local.newChat
+                                : item.title,
+                            description: item.lastMessage.isEmpty
+                                ? local.noMessageYet
+                                : item.lastMessage,
+                            chipType: item.type,
+                            time: item.updatedAt,
+                            onTap: () {
+                              if (item.type.toLowerCase() == 'chat') {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => ChatScreen(chatId: item.id),
+                                  ),
+                                );
+                              } else {}
+                            },
+                          ),
                         );
                       },
                     );
                   }
 
                   if (state is HistoryError) {
-                    return Center(child: Text(state.message));
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    );
                   }
 
                   return const SizedBox();
                 },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
