@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.73"
+  animated_custom_dropdown:
+    dependency: "direct main"
+    description:
+      name: animated_custom_dropdown
+      sha256: "95ae9edcdcc788e82de4bcf5577d0cac2c7a381bdda66186bb945991dd43478c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   args:
     dependency: transitive
     description:
@@ -169,6 +177,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  dropdown_button2:
+    dependency: "direct main"
+    description:
+      name: dropdown_button2
+      sha256: "24f5b775483a9b3c508092766798c10e3f23127e66b3f4a305b5bfb59ff1debc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   equatable:
     dependency: "direct main"
     description:
@@ -597,6 +613,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.2"
+  isolate_contactor:
+    dependency: transitive
+    description:
+      name: isolate_contactor
+      sha256: "6ba8434ceb58238a1389d6365111a3efe7baa1c68a66f4db6d63d351cf6c3a0f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
+  isolate_manager:
+    dependency: transitive
+    description:
+      name: isolate_manager
+      sha256: "22ed0c25f80ec3b5f21e3a55d060f4650afff33f27c2dff34c0f9409d5759ae5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.5+1"
   jni:
     dependency: transitive
     description:
@@ -845,6 +877,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  re_editor:
+    dependency: "direct main"
+    description:
+      name: re_editor
+      sha256: "66671c4774a6b4c5254c9a53ab35a083e7e7da9ae371c519bcf491c70a2a4e56"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.0"
+  re_highlight:
+    dependency: "direct main"
+    description:
+      name: re_highlight
+      sha256: "6c4ac3f76f939fb7ca9df013df98526634e17d8f7460e028bd23a035870024f2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   record_use:
     dependency: transitive
     description:

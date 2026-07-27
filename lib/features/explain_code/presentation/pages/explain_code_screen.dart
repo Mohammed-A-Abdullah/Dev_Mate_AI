@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
+import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
 import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_code_cubit.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_code_state.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:re_editor/re_editor.dart';
 
 import '../../../../core/routing/route_name.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
@@ -16,7 +17,7 @@ import '../../../../core/widgets/custom_dropdown_button_field.dart';
 import '../../../../core/widgets/custom_feature_button.dart';
 import '../../../../core/widgets/language_helper.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
-import '../../../code_review/presentation/widgets/custom_code_field.dart';
+import '../../../../core/widgets/custom_code_field.dart';
 import '../widgets/custom_explain_code_text_field.dart';
 
 class ExplainCodeScreen extends StatelessWidget {
@@ -39,31 +40,14 @@ class ExplainCodeView extends StatefulWidget {
 }
 
 class _ExplainCodeViewState extends State<ExplainCodeView> {
-  late CodeController _codeController;
+  late final CodeLineEditingController _codeController;
   late final TextEditingController _instructionsController;
-  String _currentLanguage = 'Dart';
 
   @override
   void initState() {
     super.initState();
     _instructionsController = TextEditingController();
-    _codeController = CodeController(
-      text: '',
-      language: LanguageHelper.languageModes[_currentLanguage]!,
-    );
-
-    _codeController.addListener(() {
-      final cubit = context.read<ExplainCubit>();
-      final currentCode = _codeController.text;
-      if (cubit.state.code != currentCode) {
-        cubit.updateCode(currentCode);
-      }
-    });
-
-    _instructionsController.addListener(() {
-      final cubit = context.read<ExplainCubit>();
-      cubit.updateAdditionalInstructions(_instructionsController.text);
-    });
+    _codeController = CodeLineEditingController();
   }
 
   @override
@@ -75,57 +59,29 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
 
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
+    final local = S.of(context);
     return BlocConsumer<ExplainCubit, ExplainCodeState>(
+      listenWhen: (previous, current) =>
+          previous.errorMessage != current.errorMessage ||
+          previous.explanation != current.explanation,
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          CustomSnackBar.show(context, message: "",backgroundColor: Theme.of(context).colorScheme.error);
           context.read<ExplainCubit>().clearError();
         }
+
         if (state.explanation != null && !state.isLoading) {
-          final navigator = GoRouter.of(context);
-          Future.microtask(() async {
-            final prompt = [
-              'Language: ${state.language}',
-              'Code:',
-              state.code,
-              if (state.additionalInstructions.isNotEmpty)
-                'Instructions: ${state.additionalInstructions}',
-            ].join('\n');
+          final cubit = context.read<ExplainCubit>();
+          final explanation = state.explanation;
 
-            try {
-              await FirebaseChatDataSource(
-                firestore: FirebaseFirestore.instance,
-              ).saveQuickToolConversation(
-                title: 'Explain Code',
-                type: 'Explain Code',
-                prompt: prompt,
-                response: state.explanation!,
-              );
-            } catch (_) {}
-
-            if (!mounted) return;
-            navigator.pushNamed(
-              RouteName.ansewerEplainCode,
-              extra: state.explanation,
-            );
-          });
+          _saveAndNavigate(context, state, explanation!);
+          cubit.resetExplanation();
         }
       },
       builder: (context, state) {
-        if (_currentLanguage != state.language) {
-          final newLang = LanguageHelper.languageModes[state.language];
-          if (newLang != null) {
-            _codeController.language = newLang;
-            _currentLanguage = state.language;
-          }
-        }
-
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar:  CustomAppBar(title: local.explainCode),
+          appBar: CustomAppBar(title: local.explainCode),
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(16.sp),
@@ -145,7 +101,7 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
                     },
                   ),
                   const HeightSpace(height: 20),
-                  CustomCodeField(codeController: _codeController),
+                  CustomCodeEditor(controller: _codeController),
                   const HeightSpace(height: 20),
                   CustomExplainCodeTextField(
                     instructionsController: _instructionsController,
@@ -157,7 +113,12 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
                     onTap: state.isLoading
                         ? null
                         : () {
-                            context.read<ExplainCubit>().submitExplain();
+                            FocusScope.of(context).unfocus();
+                            context.read<ExplainCubit>().submitExplain(
+                              code: _codeController.text,
+                              additionalInstructions:
+                                  _instructionsController.text,
+                            );
                           },
                   ),
                 ],
@@ -167,5 +128,35 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
         );
       },
     );
+  }
+
+  Future<void> _saveAndNavigate(
+    BuildContext context,
+    ExplainCodeState state,
+    String explanation,
+  ) async {
+    final prompt = [
+      'Language: ${state.language}',
+      'Code:',
+      state.code,
+      if (state.additionalInstructions.isNotEmpty)
+        'Instructions: ${state.additionalInstructions}',
+    ].join('\n');
+
+    try {
+      await FirebaseChatDataSource(
+        firestore: FirebaseFirestore.instance,
+      ).saveQuickToolConversation(
+        title: 'Explain Code',
+        type: 'Explain Code',
+        prompt: prompt,
+        response: explanation,
+      );
+    } catch (_) {}
+
+    if (!mounted) return;
+    GoRouter.of(
+      context,
+    ).pushNamed(RouteName.ansewerEplainCode, extra: explanation);
   }
 }

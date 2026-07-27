@@ -5,9 +5,9 @@ import 'package:dev_mate_ai/features/code_review/presentation/widgets/custom_rev
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:re_editor/re_editor.dart';
 import '../../../../core/routing/route_name.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_dropdown_button_field.dart';
@@ -16,7 +16,7 @@ import '../../../../core/widgets/language_helper.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../cubit/code_review_cubit.dart';
 import '../cubit/code_review_state.dart';
-import '../widgets/custom_code_field.dart';
+import '../../../../core/widgets/custom_code_field.dart';
 import '../widgets/custom_review_text_field.dart';
 
 class CodeReviewScreen extends StatelessWidget {
@@ -39,18 +39,14 @@ class CodeReviewView extends StatefulWidget {
 }
 
 class _CodeReviewViewState extends State<CodeReviewView> {
-  late CodeController _codeController;
+  late CodeLineEditingController _codeController;
   late final TextEditingController _errorLogController;
-  String _currentLanguage = 'Dart';
 
   @override
   void initState() {
     super.initState();
     _errorLogController = TextEditingController();
-    _codeController = CodeController(
-      text: '',
-      language: LanguageHelper.languageModes['Dart']!,
-    );
+    _codeController = CodeLineEditingController();
     _codeController.addListener(() {
       final cubit = context.read<CodeReviewCubit>();
       final currentCode = _codeController.text;
@@ -115,14 +111,6 @@ class _CodeReviewViewState extends State<CodeReviewView> {
         }
       },
       builder: (context, state) {
-        if (_currentLanguage != state.language) {
-          final newLang = LanguageHelper.languageModes[state.language];
-          if (newLang != null) {
-            _codeController.language = newLang;
-            _currentLanguage = state.language;
-          }
-        }
-
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar:  CustomAppBar(title: local.codeReview),
@@ -148,7 +136,7 @@ class _CodeReviewViewState extends State<CodeReviewView> {
                     ),
                   ),
                   const HeightSpace(height: 20),
-                  CustomCodeField(codeController: _codeController),
+                  CustomCodeEditor(controller: _codeController),
                   const HeightSpace(height: 20),
                   CustomDropdownbuttonfield(
                     labelText: local.experienceLevel,

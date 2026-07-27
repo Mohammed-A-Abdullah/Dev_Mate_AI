@@ -9,37 +9,37 @@ class ExplainCubit extends Cubit<ExplainCodeState> {
   ExplainCubit({required this.explainCodeUseCase})
     : super(const ExplainCodeState());
 
-  // UI state mutations
   void updateLanguage(String language) {
     emit(state.copyWith(language: language));
   }
 
-  void updateCode(String code) {
-    emit(state.copyWith(code: code));
-  }
-
-  void updateAdditionalInstructions(String instructions) {
-    emit(state.copyWith(additionalInstructions: instructions));
-  }
-
-  // Submit explain request
-  Future<void> submitExplain() async {
-    if (state.code.trim().isEmpty) {
+  Future<void> submitExplain({
+    required String code,
+    required String additionalInstructions,
+  }) async {
+    final trimmedCode = code.trim();
+    if (trimmedCode.isEmpty) {
       emit(state.copyWith(errorMessage: 'Please enter some code to explain.'));
       return;
     }
 
     emit(
-      state.copyWith(isLoading: true, explanation: null, errorMessage: null),
+      state.copyWith(
+        isLoading: true,
+        explanation: null,
+        errorMessage: null,
+        code: trimmedCode,
+        additionalInstructions: additionalInstructions,
+      ),
     );
 
     try {
       final request = ExplainCodeEntity(
         language: state.language,
-        code: state.code,
-        additionalInstructions: state.additionalInstructions.trim().isEmpty
+        code: trimmedCode,
+        additionalInstructions: additionalInstructions.trim().isEmpty
             ? null
-            : state.additionalInstructions,
+            : additionalInstructions.trim(),
       );
 
       final result = await explainCodeUseCase(request);
@@ -52,6 +52,10 @@ class ExplainCubit extends Cubit<ExplainCodeState> {
         ),
       );
     }
+  }
+
+  void resetExplanation() {
+    emit(state.copyWith(explanation: null));
   }
 
   void clearError() {
