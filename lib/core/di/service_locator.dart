@@ -203,7 +203,7 @@ Future<void> setupServiceLocator() async {
 
   // generate README
   sl.registerLazySingleton<GenerateReadmeRepository>(
-    () => ReadmeRepositoryImpl(sl()),
+    () => GenerateReadmeRepositoryImpl(sl(),sl()),
   );
   sl.registerLazySingleton<GenerateReadmeUseCase>(
     () => GenerateReadmeUseCase(sl()),

@@ -1,26 +1,22 @@
-import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/widgets/custom_text_field.dart';
 
 class CustomDebugCodeTextField extends StatelessWidget {
-  const CustomDebugCodeTextField({super.key, required this.errorLogController});
+  const CustomDebugCodeTextField({
+    super.key,
+    required this.errorLogController,
+    this.onChanged,
+  });
+
   final TextEditingController errorLogController;
+  final ValueChanged<String>? onChanged;
+
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
-    return CustomTextField(
-                controller: errorLogController,
-                label: local.debugCodeInstruction,
-                minLine: 1,
-                maxLines: 3,
-                keyBoardType: TextInputType.multiline,
-                hintText:
-                    local.debugCodeInstructionDes,
-                prefixIcon: const Icon(
-                  Icons.edit_note,
-                ),
-                radius: 18.r,
-              );
+    return TextField(
+      controller: errorLogController,
+      maxLines: 2,
+      onChanged: onChanged,
+      decoration: const InputDecoration(hintText: 'Paste error log here...'),
+    );
   }
 }

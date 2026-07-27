@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
-import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
+import 'package:dev_mate_ai/core/widgets/custom_code_field.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +13,6 @@ import '../../../../core/widgets/custom_dropdown_button_field.dart';
 import '../../../../core/widgets/custom_feature_button.dart';
 import '../../../../core/widgets/language_helper.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
-import '../../../../core/widgets/custom_code_field.dart';
 import '../cubit/debug_code_cubit.dart';
 import '../cubit/debug_code_state.dart';
 import '../widgets/custom_debug_code_text_field.dart';
@@ -25,7 +23,7 @@ class DebugCodeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<DebugCubit>(),
+      create: (_) => sl<DebugCubit>(),
       child: const DebugCodeView(),
     );
   }
@@ -39,27 +37,14 @@ class DebugCodeView extends StatefulWidget {
 }
 
 class _DebugCodeViewState extends State<DebugCodeView> {
-  late CodeLineEditingController _codeController;
+  late final CodeLineEditingController _codeController;
   late final TextEditingController _errorLogController;
 
   @override
   void initState() {
     super.initState();
-    _errorLogController = TextEditingController();
     _codeController = CodeLineEditingController();
-
-    _codeController.addListener(() {
-      final cubit = context.read<DebugCubit>();
-      final currentCode = _codeController.text;
-      if (cubit.state.code != currentCode) {
-        cubit.updateCode(currentCode);
-      }
-    });
-
-    _errorLogController.addListener(() {
-      final cubit = context.read<DebugCubit>();
-      cubit.updateErrorLog(_errorLogController.text);
-    });
+    _errorLogController = TextEditingController();
   }
 
   @override
@@ -71,49 +56,32 @@ class _DebugCodeViewState extends State<DebugCodeView> {
 
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
+    final local = S.of(context);
+
     return BlocConsumer<DebugCubit, DebugState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.errorMessage!,
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          );
           context.read<DebugCubit>().clearError();
         }
+
         if (state.debugResult != null && !state.isLoading) {
-          final navigator = GoRouter.of(context);
-          Future.microtask(() async {
-            final prompt = [
-              'Language: ${state.language}',
-              'Code:',
-              state.code,
-              if (state.errorLog.isNotEmpty) 'Error Log: ${state.errorLog}',
-            ].join('\n');
-
-            try {
-              await FirebaseChatDataSource(
-                firestore: FirebaseFirestore.instance,
-              ).saveQuickToolConversation(
-                title: 'Debug Code',
-                type: 'Debug Code',
-                prompt: prompt,
-                response: state.debugResult!,
-              );
-            } catch (_) {}
-
-            if (!mounted) return;
-            navigator.pushNamed(
-              RouteName.ansewerEplainCode,
-              extra: state.debugResult,
-            );
-          });
+          final result = state.debugResult!;
+          context.read<DebugCubit>().clearResult();
+          context.pushNamed(RouteName.ansewerEplainCode, extra: result);
         }
       },
       builder: (context, state) {
-
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar:  CustomAppBar(title: local.debugCode),
+          appBar: CustomAppBar(title: local.debugCode),
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(16.sp),
@@ -133,10 +101,18 @@ class _DebugCodeViewState extends State<DebugCodeView> {
                     },
                   ),
                   const HeightSpace(height: 20),
-      CustomCodeEditor(controller: _codeController),
+                  CustomCodeEditor(
+                    controller: _codeController,
+                    onChanged: (code) {
+                      context.read<DebugCubit>().updateCode(code);
+                    },
+                  ),
                   const HeightSpace(height: 20),
                   CustomDebugCodeTextField(
                     errorLogController: _errorLogController,
+                    onChanged: (value) {
+                      context.read<DebugCubit>().updateErrorLog(value);
+                    },
                   ),
                   const HeightSpace(height: 20),
                   CustomFeatureButton(

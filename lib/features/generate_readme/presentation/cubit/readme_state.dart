@@ -42,8 +42,8 @@ class ReadmeState extends Equatable {
       technologies: technologies ?? this.technologies,
       githubLink: githubLink ?? this.githubLink,
       isLoading: isLoading ?? this.isLoading,
-      readmeResult: readmeResult ?? this.readmeResult,
-      errorMessage: errorMessage ?? this.errorMessage,
+      readmeResult: readmeResult,
+      errorMessage: errorMessage,
     );
   }
 

@@ -63,7 +63,7 @@ class _CustomDropdownbuttonfieldState extends State<CustomDropdownbuttonfield> {
       onChanged: widget.onChanged,
 
       animation: const CustomDropdownAnimation(
-        type: DropdownAnimationType.scaleFade,
+        type: DropdownAnimationType.sizeFade,
         duration: Duration(milliseconds: 350),
         curve: Curves.easeOutCubic,
       ),

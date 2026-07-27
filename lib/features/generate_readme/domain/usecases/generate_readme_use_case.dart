@@ -1,5 +1,5 @@
-import 'package:dev_mate_ai/features/generate_readme/domain/entities/generate_readme_entity.dart';
-import 'package:dev_mate_ai/features/generate_readme/domain/repositories/generate_readme_repository.dart';
+import '../entities/generate_readme_entity.dart';
+import '../repositories/generate_readme_repository.dart';
 
 class GenerateReadmeUseCase {
   final GenerateReadmeRepository repository;

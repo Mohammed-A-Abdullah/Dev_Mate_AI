@@ -38,6 +38,7 @@ class DebugCubit extends Cubit<DebugState> {
       );
 
       final result = await debugCodeUseCase(request);
+
       emit(state.copyWith(isLoading: false, debugResult: result));
     } catch (e) {
       emit(
@@ -47,6 +48,9 @@ class DebugCubit extends Cubit<DebugState> {
         ),
       );
     }
+  }
+  void clearResult() {
+    emit(state.copyWith(debugResult: null));
   }
 
   void clearError() {

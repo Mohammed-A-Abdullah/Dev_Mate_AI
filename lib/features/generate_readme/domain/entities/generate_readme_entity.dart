@@ -1,4 +1,6 @@
-class GenerateReadmeEntity {
+import 'package:equatable/equatable.dart';
+
+class GenerateReadmeEntity extends Equatable {
   final String projectTitle;
   final String projectDescription;
   final String projectType;
@@ -6,7 +8,7 @@ class GenerateReadmeEntity {
   final List<String> technologies;
   final String? githubLink;
 
-  GenerateReadmeEntity({
+  const GenerateReadmeEntity({
     required this.projectTitle,
     required this.projectDescription,
     required this.projectType,
@@ -14,4 +16,14 @@ class GenerateReadmeEntity {
     required this.technologies,
     this.githubLink,
   });
+
+  @override
+  List<Object?> get props => [
+    projectTitle,
+    projectDescription,
+    projectType,
+    features,
+    technologies,
+    githubLink,
+  ];
 }

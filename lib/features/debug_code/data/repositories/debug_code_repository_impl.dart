@@ -11,36 +11,38 @@ class DebugCodeRepositoryImpl implements DebugCodeRepository {
   @override
   Future<String> debugCode(DebugCodeRequestEntity request) async {
     final prompt = _buildPrompt(request);
-    return await _geminiService.sendMessage(prompt);
+    return _geminiService.sendMessage(prompt);
   }
 
   String _buildPrompt(DebugCodeRequestEntity request) {
-    return '''
-Act as an expert debugging assistant. Fix the issue in the provided code.
+    final hasContext =
+        request.debugContext != null && request.debugContext!.trim().isNotEmpty;
 
-Your ONLY responsibility is to debug and fix the source code.
+    return '''
+Act as an expert debugging assistant.
+
+Your task is to debug the provided code and return a corrected version.
+
+Rules:
+1. Start with the solved code.
+2. Do not add a long introduction.
+3. Add inline comments only where you changed something important.
+4. After the code, you may add a short explanation section.
 
 Programming language:
 ${request.language}
 
-${request.debugContext != null && request.debugContext!.trim().isNotEmpty ? "Error Log/Behavior:\n${request.debugContext}\n" : ""}
+${hasContext ? 'Error Log / Behavior:\n${request.debugContext}\n' : ''}
 
 Code:
-
 ```${request.language}
 ${request.code}
+````
 
-Instructions:
+Return format:
 
-1. Start directly with the corrected code block. No intro text.
-2. Inline comments MUST be added only to the parts that were changed or solved.
-3. Provide the explanation section ONLY after the code block is completed.
-
-Here is the code and error details:
-- Language: ${request.language}.
-${request.debugContext != null && request.debugContext!.trim().isNotEmpty ? "- Error Log/Behavior: ${request.debugContext}\n" : ""}
-- Code:
-${request.code}
-''';
+* Corrected code first
+* Then a short explanation of the fix
+  ''';
   }
 }

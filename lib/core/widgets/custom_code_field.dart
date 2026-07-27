@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:re_editor/re_editor.dart';
 
-class CustomCodeEditor extends StatefulWidget {
-  const CustomCodeEditor({super.key, required this.controller, this.height});
+class CustomCodeEditor extends StatelessWidget {
+  const CustomCodeEditor({
+    super.key,
+    required this.controller,
+    this.height,
+    this.onChanged,
+  });
 
   final CodeLineEditingController controller;
   final double? height;
+  final ValueChanged<String>? onChanged;
 
-  @override
-  State<CustomCodeEditor> createState() => _CustomCodeEditorState();
-}
-
-class _CustomCodeEditorState extends State<CustomCodeEditor> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -36,7 +37,7 @@ class _CustomCodeEditorState extends State<CustomCodeEditor> {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Container(
-        height: widget.height ?? 350,
+        height: height ?? 350,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: bgColor,
@@ -44,7 +45,7 @@ class _CustomCodeEditorState extends State<CustomCodeEditor> {
           border: Border.all(color: borderColor, width: 1.5),
         ),
         child: CodeEditor(
-          controller: widget.controller,
+          controller: controller,
           style: CodeEditorStyle(
             backgroundColor: bgColor,
             textColor: textColor,
@@ -65,6 +66,9 @@ class _CustomCodeEditorState extends State<CustomCodeEditor> {
                   ),
                 );
               },
+          onChanged: (value) {
+            onChanged?.call(value.toString());
+          },
         ),
       ),
     );

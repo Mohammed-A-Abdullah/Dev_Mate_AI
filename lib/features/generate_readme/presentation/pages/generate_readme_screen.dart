@@ -1,11 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dev_mate_ai/core/di/service_locator.dart';
-import 'package:dev_mate_ai/features/chat_screen/data/datasource/firebase_chat_data_source.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/routing/route_name.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_dropdown_button_field.dart';
@@ -14,36 +14,8 @@ import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../cubit/readme_cubit.dart';
 import '../cubit/readme_state.dart';
+import '../generarte_readme_constant.dart';
 import '../widgets/costom_readme_text_field.dart';
-
-class _ReadmeConstants {
-  static const List<String> projectTypes = [
-    'Web App',
-    'Mobile App',
-    'Desktop App',
-    'CLI Tool',
-    'Library/Package',
-    'Game',
-    'Other',
-  ];
-  static const List<String> technologies = [
-    'Flutter',
-    'Dart',
-    'React',
-    'Angular',
-    'Node.js',
-    'Python',
-    'Java',
-    'Kotlin',
-    'Swift',
-    'Go',
-    'Rust',
-    'C#',
-    'PHP',
-    'Ruby',
-    'Other',
-  ];
-}
 
 class GenerateReadmeScreen extends StatelessWidget {
   const GenerateReadmeScreen({super.key});
@@ -65,36 +37,10 @@ class GenerateReadmeView extends StatefulWidget {
 }
 
 class _GenerateReadmeViewState extends State<GenerateReadmeView> {
-  late final TextEditingController _titleController;
-  late final TextEditingController _descriptionController;
-  late final TextEditingController _featureController;
-  late final TextEditingController _githubLinkController;
-
-  @override
-  void initState() {
-    super.initState();
-    _titleController = TextEditingController();
-    _descriptionController = TextEditingController();
-    _featureController = TextEditingController();
-    _githubLinkController = TextEditingController();
-
-    final state = context.read<ReadmeCubit>().state;
-    _titleController.text = state.projectTitle;
-    _descriptionController.text = state.projectDescription;
-    _githubLinkController.text = state.githubLink;
-
-    _titleController.addListener(() {
-      context.read<ReadmeCubit>().updateProjectTitle(_titleController.text);
-    });
-    _descriptionController.addListener(() {
-      context.read<ReadmeCubit>().updateProjectDescription(
-        _descriptionController.text,
-      );
-    });
-    _githubLinkController.addListener(() {
-      context.read<ReadmeCubit>().updateGithubLink(_githubLinkController.text);
-    });
-  }
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _featureController = TextEditingController();
+  final _githubLinkController = TextEditingController();
 
   @override
   void dispose() {
@@ -107,59 +53,45 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
 
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
+    final local = S.of(context);
+
     return BlocConsumer<ReadmeCubit, ReadmeState>(
+      listenWhen: (previous, current) =>
+          previous.errorMessage != current.errorMessage ||
+          previous.readmeResult != current.readmeResult,
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.errorMessage!,
+                style: const TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
           context.read<ReadmeCubit>().clearError();
         }
+
         if (state.readmeResult != null && !state.isLoading) {
-          final navigator = GoRouter.of(context);
-          Future.microtask(() async {
-            final prompt = [
-              'Project Title: ${state.projectTitle}',
-              'Description: ${state.projectDescription}',
-              'Project Type: ${state.projectType}',
-              if (state.features.isNotEmpty)
-                'Features: ${state.features.join(', ')}',
-              if (state.technologies.isNotEmpty)
-                'Technologies: ${state.technologies.join(', ')}',
-              if (state.githubLink.isNotEmpty) 'GitHub: ${state.githubLink}',
-            ].join('\n');
-
-            try {
-              await FirebaseChatDataSource(
-                firestore: FirebaseFirestore.instance,
-              ).saveQuickToolConversation(
-                title: 'Generate README',
-                type: 'Generate README',
-                prompt: prompt,
-                response: state.readmeResult!,
-              );
-            } catch (_) {}
-
-            if (!mounted) return;
-            navigator.pushNamed(
-              RouteName.readmeResultScreen,
-              extra: state.readmeResult,
-            );
-          });
+          context.pushNamed(
+            RouteName.readmeResultScreen,
+            extra: state.readmeResult,
+          );
         }
       },
       builder: (context, state) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar:  CustomAppBar(title: local.generateReadMe),
-          body: SingleChildScrollView(
-            child: Padding(
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            appBar: CustomAppBar(title: local.generateReadMe),
+            body: SingleChildScrollView(
               padding: EdgeInsets.all(16.sp),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const HeightSpace(height: 35),
+                  const HeightSpace(height: 20),
                   CostomReadmeTextField(
                     controller: _titleController,
                     title: local.projectTitle,
@@ -176,7 +108,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
                     labelText: local.projectType,
                     hintText: local.selectType,
                     initialValue: state.projectType,
-                    items: _ReadmeConstants.projectTypes,
+                    items: GenerarteReadmeConstant.projectTypes,
                     onChanged: (value) {
                       if (value != null) {
                         context.read<ReadmeCubit>().updateProjectType(value);
@@ -184,26 +116,21 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
                     },
                   ),
                   const HeightSpace(height: 20),
-                  _buildFeatureInput(state),
+                  _buildFeatureInput(context, state),
                   const HeightSpace(height: 20),
-                  _buildTechnologiesChips(state),
+                  _buildTechnologiesChips(context, state),
                   const HeightSpace(height: 20),
                   CostomReadmeTextField(
                     controller: _githubLinkController,
                     title: local.githubLink,
-                    description:
-                        local.githubDes,
+                    description: local.githubDes,
                     icon: Icons.link,
                   ),
-                  const HeightSpace(height: 20),
+                  const HeightSpace(height: 30),
                   CustomFeatureButton(
                     text: local.generateReadMe,
                     isLoading: state.isLoading,
-                    onTap: state.isLoading
-                        ? null
-                        : () {
-                            context.read<ReadmeCubit>().generateReadme();
-                          },
+                    onTap: state.isLoading ? null : _onGeneratePressed,
                   ),
                 ],
               ),
@@ -214,45 +141,84 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
     );
   }
 
-  Widget _buildFeatureInput(ReadmeState state) {
-    final local=S.of(context);
-    return CustomTextField(
-      controller: _featureController,
-      label: local.feature,
-      hintText: local.addFeature,
-      keyBoardType: TextInputType.multiline,
-      suffixIconWidget: IconButton(
-        icon: const Icon(Icons.add),
-        onPressed: () {
-          final text = _featureController.text.trim();
-          if (text.isNotEmpty) {
-            context.read<ReadmeCubit>().addFeature(text);
-            _featureController.clear();
-          }
-        },
-      ),
-      onFieldSubmitted: (value) {
-        final text = value.trim();
-        if (text.isNotEmpty) {
-          context.read<ReadmeCubit>().addFeature(text);
-          _featureController.clear();
-        }
-      },
+  void _onGeneratePressed() {
+    context.read<ReadmeCubit>().generateReadme(
+      title: _titleController.text.trim(),
+      description: _descriptionController.text.trim(),
+      githubLink: _githubLinkController.text.trim(),
+    );
+    FocusScope.of(context).unfocus();
+  }
+
+  Widget _buildFeatureInput(BuildContext context, ReadmeState state) {
+    final local = S.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTextField(
+          controller: _featureController,
+          label: local.feature,
+          hintText: local.addFeature,
+          keyBoardType: TextInputType.multiline,
+          suffixIconWidget: IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: _addFeature,
+          ),
+          onFieldSubmitted: (_) => _addFeature(),
+        ),
+        if (state.features.isNotEmpty) ...[
+          const HeightSpace(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: state.features.map((feature) {
+              return Chip(
+                backgroundColor: Theme.of(context).colorScheme.outline,
+                label: Text(
+                  feature,
+                  style: GoogleFonts.inter(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                onDeleted: () =>
+                    context.read<ReadmeCubit>().removeFeature(feature),
+              );
+            }).toList(),
+          ),
+        ],
+      ],
     );
   }
 
-  Widget _buildTechnologiesChips(ReadmeState state) {
+  void _addFeature() {
+    final text = _featureController.text.trim();
+    if (text.isNotEmpty) {
+      context.read<ReadmeCubit>().addFeature(text);
+      _featureController.clear();
+    }
+  }
+
+  Widget _buildTechnologiesChips(BuildContext context, ReadmeState state) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: _ReadmeConstants.technologies.map((tech) {
+      children: GenerarteReadmeConstant.technologies.map((tech) {
         final selected = state.technologies.contains(tech);
+
         return FilterChip(
-          label: Text(tech),
+          showCheckmark: false,
+          backgroundColor: colorScheme.outline,
+          selectedColor: colorScheme.secondary,
+          label: Text(
+            tech,
+            style: GoogleFonts.inter(
+              color: selected ? colorScheme.outline : colorScheme.secondary,
+            ),
+          ),
           selected: selected,
-          onSelected: (_) {
-            context.read<ReadmeCubit>().toggleTechnology(tech);
-          },
+          onSelected: (_) => context.read<ReadmeCubit>().toggleTechnology(tech),
         );
       }).toList(),
     );
