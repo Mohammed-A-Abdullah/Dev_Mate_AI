@@ -172,7 +172,7 @@ Future<void> setupServiceLocator() async {
 
   // code review
   sl.registerLazySingleton<CodeReviewRepository>(
-    () => CodeReviewRepositoryImpl(geminiService: sl()),
+    () => CodeReviewRepositoryImpl(geminiService: sl(),chatDataSource: sl()),
   );
   sl.registerLazySingleton<CodeReviewUseCase>(
     () => CodeReviewUseCase(repository: sl()),

@@ -2,14 +2,60 @@ import 'package:dev_mate_ai/core/services/gemini_service.dart';
 import 'package:dev_mate_ai/features/code_review/domain/entities/code_review_request_entity.dart';
 import 'package:dev_mate_ai/features/code_review/domain/repositories/code_review_repository.dart';
 
+import '../../../chat_screen/data/datasource/firebase_chat_data_source.dart';
+
 class CodeReviewRepositoryImpl implements CodeReviewRepository {
   final GeminiService _geminiService;
+  final FirebaseChatDataSource _chatDataSource;
 
-  CodeReviewRepositoryImpl({required GeminiService geminiService}) : _geminiService = geminiService;
+  CodeReviewRepositoryImpl({
+    required GeminiService geminiService,
+    required FirebaseChatDataSource chatDataSource,
+  }) : _geminiService = geminiService,
+       _chatDataSource = chatDataSource;
+
   @override
-  Future<String> reviewCode(CodeReviewRequestEntity request)async {
-    final prompt= _buildPrompt(request);
-    return _geminiService.sendMessage(prompt);
+  Future<String> reviewCode(CodeReviewRequestEntity request) async {
+    final prompt = _buildPrompt(request);
+
+    try {
+      final result = await _geminiService.sendMessage(prompt);
+
+      if (result.trim().isEmpty) {
+        throw Exception('The AI returned an empty response.');
+      }
+
+      // حفظ المحادثة في الفايربيس في الخلفية
+      _saveToHistory(request, result);
+
+      return result;
+    } catch (e) {
+      throw Exception('Failed to review code: $e');
+    }
+  }
+
+  void _saveToHistory(CodeReviewRequestEntity request, String result) {
+    try {
+      final promptSummary = [
+        'Language: ${request.language}',
+        'Code:\n${request.code}',
+        'Review Types: ${request.reviewTypes.join(', ')}',
+        'Experience: ${request.experienceLevel}',
+        'Depth: ${request.reviewDepth}',
+        if (request.projectContext != null &&
+            request.projectContext!.isNotEmpty)
+          'Context: ${request.projectContext}',
+      ].join('\n');
+
+      _chatDataSource.saveQuickToolConversation(
+        title: 'Code Review',
+        type: 'Code Review',
+        prompt: promptSummary,
+        response: result,
+      );
+    } catch (_) {
+      // تجاهل أخطاء الحفظ
+    }
   }
 
   String _buildPrompt(CodeReviewRequestEntity request) {
