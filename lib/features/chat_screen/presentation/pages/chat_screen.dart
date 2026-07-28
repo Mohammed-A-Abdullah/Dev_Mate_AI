@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/widgets/custom_app_bar.dart';
+import '../../domain/entities/chat_message_model.dart';
 import '../cubit/chat_cubit.dart';
 import '../cubit/chat_state.dart';
 import '../widgets/custom_chat_text_field.dart';
@@ -18,7 +19,6 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return BlocProvider(
       create: (context) => sl<ChatCubit>(),
       child: ChatView(chatId: chatId, initialMessages: initialMessages),
@@ -57,13 +57,11 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
-    final cubit = context.watch<ChatCubit>();
-    final state = cubit.state;
-
+    final local = S.of(context);
+    final cubit = context.read<ChatCubit>();
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar:  CustomAppBar(title: local.appName, needButton: false),
+      appBar: CustomAppBar(title: local.appName, needButton: false),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SafeArea(
@@ -73,25 +71,55 @@ class _ChatViewState extends State<ChatView> {
             child: Column(
               children: [
                 Expanded(
-                  child: ListView.builder(
-                    reverse: true,
-                    itemCount: cubit.messages.length,
-                    itemBuilder: (context, index) {
-                      final message = cubit.messages[index];
-                      return CustomUserAndBotMessage(
-                        check: message.isUser,
-                        text: message.text,
-                        onTap: () => cubit.toggleMessageExpansion(index),
+                  child: BlocBuilder<ChatCubit, ChatState>(
+                    builder: (context, state) {
+                      final cubit = context.read<ChatCubit>();
+
+                      if (state is ChatLoading && cubit.messages.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      List<ChatMessage> currentMessages = [];
+                      if (state is ChatLoaded) {
+                        currentMessages = state.messages;
+                      } else {
+                        currentMessages = cubit.messages;
+                      }
+
+                      return ListView.builder(
+                        reverse: true,
+                        itemCount: currentMessages.length,
+                        itemBuilder: (context, index) {
+                          final message = currentMessages[index];
+                          return CustomUserAndBotMessage(
+                            check: message.isUser,
+                            text: message.text,
+                            onTap: () => cubit.toggleMessageExpansion(index),
+                          );
+                        },
                       );
                     },
                   ),
                 ),
-                if (state is ChatLoading) const CustomLoadingProgress(),
+
+                BlocBuilder<ChatCubit, ChatState>(
+                  builder: (context, state) {
+                    final cubit = context.read<ChatCubit>();
+                    if (state is ChatLoading && cubit.messages.isNotEmpty) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: CustomLoadingProgress(),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+
                 const SizedBox(height: 10),
                 CustomChatTextField(
                   chatController: _controller,
                   onPressed: () {
-                    cubit.sendMessage(_controller.text);
+                    context.read<ChatCubit>().sendMessage(_controller.text);
                     _controller.clear();
                   },
                 ),

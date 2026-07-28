@@ -2,16 +2,51 @@ import 'package:dev_mate_ai/features/debug_code/domain/entities/debug_code_reque
 import 'package:dev_mate_ai/features/debug_code/domain/repositories/debug_code_repository.dart';
 
 import '../../../../core/services/gemini_service.dart';
+import '../../../chat_screen/data/datasource/firebase_chat_data_source.dart';
 
 class DebugCodeRepositoryImpl implements DebugCodeRepository {
   final GeminiService _geminiService;
+  final FirebaseChatDataSource _chatDataSource;
 
-  DebugCodeRepositoryImpl(this._geminiService);
+  DebugCodeRepositoryImpl(
+    this._geminiService, {
+    required FirebaseChatDataSource chatDataSource,
+  }) : _chatDataSource = chatDataSource;
 
   @override
   Future<String> debugCode(DebugCodeRequestEntity request) async {
     final prompt = _buildPrompt(request);
-    return _geminiService.sendMessage(prompt);
+    try {
+      final result = await _geminiService.sendMessage(prompt);
+
+      if (result.trim().isEmpty) {
+        throw Exception('The AI returned an empty response.');
+      }
+
+      _saveToHistory(request, result);
+
+      return result;
+    } catch (e) {
+      throw Exception('Failed to debug code: $e'); 
+    }
+  }
+
+  void _saveToHistory(DebugCodeRequestEntity request, String result) {
+    try {
+      final promptSummary = [
+        'Language: ${request.language}',
+        'Code:\n${request.code}',
+        if (request.debugContext != null && request.debugContext!.isNotEmpty)
+          'Debug Context: ${request.debugContext}',
+      ].join('\n');
+
+      _chatDataSource.saveQuickToolConversation(
+        title: 'Debug Code',
+        type: 'Debug',
+        prompt: promptSummary,
+        response: result,
+      );
+    } catch (_) {}
   }
 
   String _buildPrompt(DebugCodeRequestEntity request) {

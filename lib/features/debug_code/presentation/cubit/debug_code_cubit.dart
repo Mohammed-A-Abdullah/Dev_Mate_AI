@@ -27,7 +27,11 @@ class DebugCubit extends Cubit<DebugState> {
     }
 
     emit(
-      state.copyWith(isLoading: true, debugResult: null, errorMessage: null),
+      state.copyWith(
+        isLoading: true,
+        clearResult: true, // استخدام الفلاج بدل null
+        clearError: true, // استخدام الفلاج بدل null
+      ),
     );
 
     try {
@@ -49,11 +53,12 @@ class DebugCubit extends Cubit<DebugState> {
       );
     }
   }
+
   void clearResult() {
-    emit(state.copyWith(debugResult: null));
+    emit(state.copyWith(clearResult: true));
   }
 
   void clearError() {
-    emit(state.copyWith(errorMessage: null));
+    emit(state.copyWith(clearError: true));
   }
 }

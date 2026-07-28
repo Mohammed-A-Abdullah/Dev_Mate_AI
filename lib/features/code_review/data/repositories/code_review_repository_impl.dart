@@ -25,7 +25,6 @@ class CodeReviewRepositoryImpl implements CodeReviewRepository {
         throw Exception('The AI returned an empty response.');
       }
 
-      // حفظ المحادثة في الفايربيس في الخلفية
       _saveToHistory(request, result);
 
       return result;
@@ -54,7 +53,6 @@ class CodeReviewRepositoryImpl implements CodeReviewRepository {
         response: result,
       );
     } catch (_) {
-      // تجاهل أخطاء الحفظ
     }
   }
 

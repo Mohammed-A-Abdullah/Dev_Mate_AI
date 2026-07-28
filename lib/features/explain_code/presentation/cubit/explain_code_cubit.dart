@@ -26,8 +26,8 @@ class ExplainCubit extends Cubit<ExplainCodeState> {
     emit(
       state.copyWith(
         isLoading: true,
-        explanation: null,
-        errorMessage: null,
+        clearExplanation: true, // استخدام الـ flag
+        clearError: true, // استخدام الـ flag
         code: trimmedCode,
         additionalInstructions: additionalInstructions,
       ),
@@ -55,10 +55,10 @@ class ExplainCubit extends Cubit<ExplainCodeState> {
   }
 
   void resetExplanation() {
-    emit(state.copyWith(explanation: null));
+    emit(state.copyWith(clearExplanation: true));
   }
 
   void clearError() {
-    emit(state.copyWith(errorMessage: null));
+    emit(state.copyWith(clearError: true));
   }
 }

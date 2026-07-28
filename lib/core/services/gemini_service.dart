@@ -2,7 +2,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiService {
   static const String apiKey =
-      "AQ.Ab8RN6KhOTCdkjI-NwNz9O2oo11r0wAcwQsO53iDGDK40TjKaQ";
+      "AQ.Ab8RN6KqxXKX67JmSVjWI-d21j1dXufBd-_CNkzJRIl4FDmVKw";
   final model = GenerativeModel(
     model: 'gemini-2.5-flash',
     apiKey: apiKey,
@@ -23,8 +23,13 @@ Rules:
 '''),
   );
 
-  Stream<String> sendMessageStream(String message) async* {
-    final stream = model.generateContentStream([Content.text(message)]);
+  Stream<String> sendMessageStream(
+    String message, {
+    List<Content> history = const [],
+  }) async* {
+    final chatSession = model.startChat(history: history);
+
+    final stream = chatSession.sendMessageStream(Content.text(message));
 
     String fullResponse = "";
 
@@ -35,10 +40,15 @@ Rules:
       }
     }
   }
-  Future<String> sendMessage(String message) async {
-    final response = await model.generateContent([Content.text(message)]);
+
+  Future<String> sendMessage(
+    String message, {
+    List<Content> history = const [],
+  }) async {
+    final chatSession = model.startChat(history: history);
+
+    final response = await chatSession.sendMessage(Content.text(message));
 
     return response.text ?? "No Response";
   }
-
 }

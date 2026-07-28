@@ -27,23 +27,32 @@ class ChatCubit extends Cubit<ChatState> {
     currentChatId = chatId;
     messages.clear();
 
-    final loadedMessages = await loadMessagesUsecase.call(chatId);
-    for (final message in loadedMessages) {
-      messages.add(
-        ChatMessage(
-          text: message['text']?.toString() ?? '',
-          isUser: message['isUser'] == true,
-        ),
-      );
-    }
+    emit( ChatLoading());
 
-    emit(ChatLoaded(List.from(messages)));
+    try {
+      final loadedMessages = await loadMessagesUsecase.call(chatId);
+      for (final message in loadedMessages) {
+        messages.insert(
+          0,
+          ChatMessage(
+            text: message['text']?.toString() ?? '',
+            isUser: message['isUser'] == true,
+          ),
+        );
+      }
+
+      emit(ChatLoaded(List.from(messages)));
+    } catch (e) {
+      emit(ChatError(e.toString()));
+    }
   }
 
   Future<void> sendMessage(String prompt) async {
     if (prompt.trim().isEmpty) return;
 
     final chatTitle = buildConversationTitle(prompt);
+
+    final historyForAI = messages.reversed.toList();
 
     messages.insert(0, ChatMessage(text: prompt, isUser: true));
     currentChatId ??= await createConversationUseCase(
@@ -62,7 +71,7 @@ class ChatCubit extends Cubit<ChatState> {
     emit(ChatLoading());
 
     try {
-      final response = await sendMessageUsecase.call(prompt);
+      final response = await sendMessageUsecase.call(prompt, historyForAI);
 
       messages.insert(0, ChatMessage(text: response, isUser: false));
 
