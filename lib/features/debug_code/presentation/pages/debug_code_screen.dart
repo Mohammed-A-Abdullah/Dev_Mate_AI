@@ -1,5 +1,6 @@
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/widgets/custom_code_field.dart';
+import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart'; // تأكد من استدعاء هذا الملف
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,15 +60,15 @@ class _DebugCodeViewState extends State<DebugCodeView> {
     final local = S.of(context);
 
     return BlocConsumer<DebugCubit, DebugState>(
+      listenWhen: (previous, current) =>
+          previous.errorMessage != current.errorMessage ||
+          previous.debugResult != current.debugResult,
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                state.errorMessage!,
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
+          CustomSnackBar.show(
+            context,
+            message: state.errorMessage!,
+            backgroundColor: Theme.of(context).colorScheme.error,
           );
           context.read<DebugCubit>().clearError();
         }
@@ -121,6 +122,7 @@ class _DebugCodeViewState extends State<DebugCodeView> {
                     onTap: state.isLoading
                         ? null
                         : () {
+                            FocusScope.of(context).unfocus();
                             context.read<DebugCubit>().submitDebug();
                           },
                   ),

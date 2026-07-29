@@ -24,6 +24,8 @@ class ExplainCodeState extends Equatable {
     bool? isLoading,
     String? explanation,
     String? errorMessage,
+    bool clearExplanation = false, 
+    bool clearError = false, 
   }) {
     return ExplainCodeState(
       language: language ?? this.language,
@@ -31,8 +33,8 @@ class ExplainCodeState extends Equatable {
       additionalInstructions:
           additionalInstructions ?? this.additionalInstructions,
       isLoading: isLoading ?? this.isLoading,
-      explanation: explanation ?? this.explanation,
-      errorMessage: errorMessage ?? this.errorMessage,
+      explanation: clearExplanation ? null : (explanation ?? this.explanation),
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );
   }
 

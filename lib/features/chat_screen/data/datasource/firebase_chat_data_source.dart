@@ -31,7 +31,9 @@ class FirebaseChatDataSource {
     required String type,
     String? title,
   }) async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('User not logged in');
+    final uid = user.uid;
     final conversationRef = firestore
         .collection('user')
         .doc(uid)

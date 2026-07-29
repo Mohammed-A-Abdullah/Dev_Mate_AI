@@ -1,5 +1,7 @@
 import 'package:dev_mate_ai/core/services/gemini_service.dart';
+import 'package:dev_mate_ai/features/chat_screen/domain/entities/chat_message_model.dart';
 import 'package:dev_mate_ai/features/chat_screen/domain/repositories/chat_repository.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 import '../datasource/firebase_chat_data_source.dart';
 
@@ -8,10 +10,18 @@ class ChatRepositoryImpl implements ChatRepository {
   final FirebaseChatDataSource firebase;
 
   ChatRepositoryImpl({required this.gemnini, required this.firebase});
+@override
+  Future<String> sendMessage(
+    String prompt, {
+    List<ChatMessage> history = const [],
+  }) {
+    final List<Content> geminiHistory = history.map((msg) {
+      return msg.isUser
+          ? Content.text(msg.text) 
+          : Content.model([TextPart(msg.text)]); 
+    }).toList();
 
-  @override
-  Future<String> sendMessage(String prompt) {
-    return gemnini.sendMessage(prompt);
+    return gemnini.sendMessage(prompt, history: geminiHistory);
   }
 
   @override

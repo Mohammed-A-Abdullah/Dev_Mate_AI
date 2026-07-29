@@ -24,14 +24,16 @@ class DebugState extends Equatable {
     bool? isLoading,
     String? debugResult,
     String? errorMessage,
+    bool clearResult = false, // لحل مشكلة تفريغ النتيجة
+    bool clearError = false, // لحل مشكلة تفريغ الخطأ
   }) {
     return DebugState(
       language: language ?? this.language,
       code: code ?? this.code,
       errorLog: errorLog ?? this.errorLog,
       isLoading: isLoading ?? this.isLoading,
-      debugResult: debugResult ?? this.debugResult,
-      errorMessage: errorMessage ?? this.errorMessage,
+      debugResult: clearResult ? null : (debugResult ?? this.debugResult),
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );
   }
 

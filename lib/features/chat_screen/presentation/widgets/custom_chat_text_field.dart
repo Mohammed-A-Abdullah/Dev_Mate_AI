@@ -14,19 +14,19 @@ class CustomChatTextField extends StatelessWidget {
   final void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
+    final local = S.of(context);
     return CustomTextField(
       controller: chatController,
       hintText: local.chatHintText,
       radius: 20.r,
       keyBoardType: TextInputType.multiline,
       prefixIcon: Icon(
-        Icons.attach_file,
-        color: Theme.of(context).colorScheme.outline,
+        Icons.smart_toy_sharp,
+        color: Theme.of(context).colorScheme.primary,
         size: 24.sp,
       ),
       suffixIconWidget: Padding(
-        padding: EdgeInsets.only(right: 8.w),
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
         child: Container(
           margin: const EdgeInsets.all(4),
           width: 45.w,

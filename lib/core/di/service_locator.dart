@@ -183,7 +183,7 @@ Future<void> setupServiceLocator() async {
 
   // debug code
   sl.registerLazySingleton<DebugCodeRepository>(
-    () => DebugCodeRepositoryImpl(sl()),
+    () => DebugCodeRepositoryImpl(sl(),chatDataSource: sl()),
   );
   sl.registerLazySingleton<DebugCodeUseCase>(
     () => DebugCodeUseCase(repository: sl()),
@@ -192,7 +192,7 @@ Future<void> setupServiceLocator() async {
 
   // explain code
   sl.registerLazySingleton<ExplainCodeRepository>(
-    () => ExplainRepositoryImpl(sl()),
+    () => ExplainRepositoryImpl(sl(),chatDataSource: sl()),
   );
   sl.registerLazySingleton<ExplainCodeUseCase>(
     () => ExplainCodeUseCase(repository: sl()),
