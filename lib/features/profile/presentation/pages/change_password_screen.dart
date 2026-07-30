@@ -32,16 +32,13 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
+    final local = S.of(context);
     return BlocProvider.value(
       value: widget.cubit,
       child: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ChangePasswordSuccess) {
-            CustomSnackBar.show(
-              context,
-              message: local.passwordUpdateSucceful,
-            );
+            CustomSnackBar.show(context, message: local.passwordUpdateSucceful);
             Navigator.pop(context);
           } else if (state is ProfileError) {
             CustomSnackBar.show(context, message: state.message);
@@ -71,6 +68,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                     isPassword: true,
                     hintText: local.password,
                     prefixIcon: const Icon(Icons.lock_outline),
+                    textStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return local.passValidate;
@@ -83,10 +83,16 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                     controller: _confirmPasswordController,
                     isPassword: true,
                     hintText: local.comfirmPass,
+                    textStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
                     prefixIcon: const Icon(Icons.lock_outline),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return local.comfirmPassValidator;
+                      }
+                      if (value != _passwordController.text) {
+                        return 'كلمتا المرور غير متطابقتين';
                       }
                       return null;
                     },

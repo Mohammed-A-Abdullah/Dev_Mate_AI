@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,6 +43,7 @@ class CodeReviewView extends StatefulWidget {
 class _CodeReviewViewState extends State<CodeReviewView> {
   late final CodeLineEditingController _codeController;
   late final TextEditingController _errorLogController;
+  Timer? _slowLoadingTimer;
 
   @override
   void initState() {
@@ -52,6 +56,7 @@ class _CodeReviewViewState extends State<CodeReviewView> {
   void dispose() {
     _codeController.dispose();
     _errorLogController.dispose();
+    _slowLoadingTimer?.cancel();
     super.dispose();
   }
 
@@ -61,9 +66,27 @@ class _CodeReviewViewState extends State<CodeReviewView> {
 
     return BlocConsumer<CodeReviewCubit, CodeReviewState>(
       listenWhen: (previous, current) =>
+          previous.isLoading != current.isLoading ||
           previous.errorMessage != current.errorMessage ||
           previous.reviewResult != current.reviewResult,
       listener: (context, state) {
+        if (state.isLoading) {
+          _slowLoadingTimer?.cancel();
+          _slowLoadingTimer = Timer(const Duration(seconds: 4), () {
+            if (mounted && state.isLoading) {
+              CustomSnackBar.show(
+                context,
+                message: S.of(context).processingMayTakeLonger,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                textColor: Theme.of(context).colorScheme.onPrimary,
+                time: 5,
+              );
+            }
+          });
+        } else {
+          _slowLoadingTimer?.cancel();
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

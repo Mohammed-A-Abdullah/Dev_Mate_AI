@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/widgets/custom_code_field.dart';
 import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart'; // تأكد من استدعاء هذا الملف
@@ -40,6 +42,7 @@ class DebugCodeView extends StatefulWidget {
 class _DebugCodeViewState extends State<DebugCodeView> {
   late final CodeLineEditingController _codeController;
   late final TextEditingController _errorLogController;
+  Timer? _slowLoadingTimer;
 
   @override
   void initState() {
@@ -52,6 +55,7 @@ class _DebugCodeViewState extends State<DebugCodeView> {
   void dispose() {
     _codeController.dispose();
     _errorLogController.dispose();
+    _slowLoadingTimer?.cancel();
     super.dispose();
   }
 
@@ -61,9 +65,27 @@ class _DebugCodeViewState extends State<DebugCodeView> {
 
     return BlocConsumer<DebugCubit, DebugState>(
       listenWhen: (previous, current) =>
+      previous.isLoading != current.isLoading ||
           previous.errorMessage != current.errorMessage ||
           previous.debugResult != current.debugResult,
       listener: (context, state) {
+        if (state.isLoading) {
+          _slowLoadingTimer?.cancel();
+          _slowLoadingTimer = Timer(const Duration(seconds: 4), () {
+            if (mounted && state.isLoading) {
+              CustomSnackBar.show(
+                context,
+                message: S.of(context).processingMayTakeLonger,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                textColor: Theme.of(context).colorScheme.onPrimary,
+                time: 5,
+              );
+            }
+          });
+        } else {
+          _slowLoadingTimer?.cancel();
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
         if (state.errorMessage != null) {
           CustomSnackBar.show(
             context,

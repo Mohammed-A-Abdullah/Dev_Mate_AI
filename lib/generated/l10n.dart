@@ -730,9 +730,9 @@ class S {
     return Intl.message('READMEs', name: 'readme', desc: '', args: []);
   }
 
-  /// `Analysis`
-  String get analysis {
-    return Intl.message('Analysis', name: 'analysis', desc: '', args: []);
+  /// `Review`
+  String get review {
+    return Intl.message('Review', name: 'review', desc: '', args: []);
   }
 
   /// `Theme`
@@ -1438,6 +1438,36 @@ class S {
       desc: '',
       args: [],
     );
+  }
+
+  /// `Debug`
+  String get debug {
+    return Intl.message('Debug', name: 'debug', desc: '', args: []);
+  }
+
+  /// `Explain`
+  String get explain {
+    return Intl.message('Explain', name: 'explain', desc: '', args: []);
+  }
+
+  /// `planner`
+  String get planner {
+    return Intl.message('planner', name: 'planner', desc: '', args: []);
+  }
+
+  /// `This operation may take a little longer. Please wait...`
+  String get processingMayTakeLonger {
+    return Intl.message(
+      'This operation may take a little longer. Please wait...',
+      name: 'processingMayTakeLonger',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chat`
+  String get chat {
+    return Intl.message('Chat', name: 'chat', desc: '', args: []);
   }
 }
 

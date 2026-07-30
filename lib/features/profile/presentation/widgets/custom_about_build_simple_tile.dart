@@ -15,14 +15,13 @@ class CustomAboutBuildSimpleTile extends StatelessWidget {
           Text(
             title,
             style: GoogleFonts.inter(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.secondary,
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
           Icon(
             Icons.arrow_forward_ios,
-            color: const Color(0xff8E92A8),
             size: 14.sp,
           ),
         ],

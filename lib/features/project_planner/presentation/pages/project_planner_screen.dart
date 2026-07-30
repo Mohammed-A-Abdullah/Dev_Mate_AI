@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/routing/route_name.dart';
@@ -38,11 +42,12 @@ class ProjectPlannerView extends StatefulWidget {
 class _ProjectPlannerViewState extends State<ProjectPlannerView> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-
+  Timer? _slowLoadingTimer;
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _slowLoadingTimer?.cancel();
     super.dispose();
   }
 
@@ -52,9 +57,27 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
 
     return BlocConsumer<ProjectPlanCubit, ProjectPlanState>(
       listenWhen: (previous, current) =>
+          previous.isLoading != current.isLoading ||
           previous.errorMessage != current.errorMessage ||
           previous.planResult != current.planResult,
       listener: (context, state) {
+        if (state.isLoading) {
+          _slowLoadingTimer?.cancel();
+          _slowLoadingTimer = Timer(const Duration(seconds: 4), () {
+            if (mounted && state.isLoading) {
+              CustomSnackBar.show(
+                context,
+                message: S.of(context).processingMayTakeLonger,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                time: 8,
+                textColor: Theme.of(context).colorScheme.onPrimary,
+              );
+            }
+          });
+        } else {
+          _slowLoadingTimer?.cancel();
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -67,7 +90,7 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
 
         if (state.planResult != null && !state.isLoading) {
           context.pushNamed(
-            RouteName.ansewerEplainCode, 
+            RouteName.ansewerEplainCode,
             extra: state.planResult,
           );
         }

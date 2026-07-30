@@ -66,7 +66,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "مساعد الذكاء الاصطناعي",
     ),
     "aiDeveloper": MessageLookupByLibrary.simpleMessage("مطور ذكاء اصطناعي"),
-    "analysis": MessageLookupByLibrary.simpleMessage("التحليل"),
     "appName": MessageLookupByLibrary.simpleMessage("ديف ميت AI"),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "architecture": MessageLookupByLibrary.simpleMessage("المعمارية"),
@@ -76,6 +75,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "camera": MessageLookupByLibrary.simpleMessage("الكاميرا"),
     "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
     "changePass": MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
+    "chat": MessageLookupByLibrary.simpleMessage("المحادثة"),
     "chatHintText": MessageLookupByLibrary.simpleMessage("راسل DevMate AI..."),
     "chats": MessageLookupByLibrary.simpleMessage("المحادثات"),
     "checkEmail": MessageLookupByLibrary.simpleMessage(
@@ -111,6 +111,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dangerZone": MessageLookupByLibrary.simpleMessage("منطقة الخطر"),
     "dark": MessageLookupByLibrary.simpleMessage("داكن"),
     "deadline": MessageLookupByLibrary.simpleMessage("الموعد النهائي"),
+    "debug": MessageLookupByLibrary.simpleMessage("تصحيح الأخطاء"),
     "debugCode": MessageLookupByLibrary.simpleMessage("تصحيح الكود"),
     "debugCodeDesc": MessageLookupByLibrary.simpleMessage(
       "كتشف الأخطاء واصلحها بسرعة",
@@ -155,6 +156,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "أدخل اسم المشروع...",
     ),
     "experienceLevel": MessageLookupByLibrary.simpleMessage("مستوى الخبرة"),
+    "explain": MessageLookupByLibrary.simpleMessage("شرح الكود"),
     "explainCode": MessageLookupByLibrary.simpleMessage("شرح الكود"),
     "explainCodeDesc": MessageLookupByLibrary.simpleMessage(
       "تبسيط وتحليل المنطق المعقد",
@@ -232,9 +234,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "personalInfo": MessageLookupByLibrary.simpleMessage("المعلومات الشخصية"),
     "planProject": MessageLookupByLibrary.simpleMessage("إنشاء خطة المشروع"),
+    "planner": MessageLookupByLibrary.simpleMessage("خطط المشاريع"),
     "platform": MessageLookupByLibrary.simpleMessage("المنصة"),
     "preview": MessageLookupByLibrary.simpleMessage("معاينة"),
     "privaceyPolicy": MessageLookupByLibrary.simpleMessage("سياسة الخصوصية"),
+    "processingMayTakeLonger": MessageLookupByLibrary.simpleMessage(
+      "العملية تأخذ وقتًا أطول قليلًا، يرجى الانتظار...",
+    ),
     "profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
     "programmingLang": MessageLookupByLibrary.simpleMessage("لغة البرمجة"),
     "projectContext": MessageLookupByLibrary.simpleMessage(
@@ -255,6 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "readmeCopied": MessageLookupByLibrary.simpleMessage("تم نسخ README"),
     "readmeResult": MessageLookupByLibrary.simpleMessage("نتيجة README"),
     "reveiwDepth": MessageLookupByLibrary.simpleMessage("مستوى المراجعة"),
+    "review": MessageLookupByLibrary.simpleMessage("مراجعه كود"),
     "reviewDepthDes": MessageLookupByLibrary.simpleMessage(
       "اختر مستوى المراجعة",
     ),

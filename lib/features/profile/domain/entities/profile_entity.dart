@@ -8,6 +8,9 @@ class ProfileEntity {
   final int chats;
   final int readmes;
   final int analysis;
+  final int debug;
+  final int explain;
+  final int planner;
 
   const ProfileEntity({
     required this.uid,
@@ -18,5 +21,8 @@ class ProfileEntity {
     required this.chats,
     required this.readmes,
     required this.analysis,
+    required this.debug,
+    required this.explain,
+    required this.planner,
   });
 }

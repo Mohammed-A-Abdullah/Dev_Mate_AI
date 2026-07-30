@@ -64,7 +64,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "aiChatTitle": MessageLookupByLibrary.simpleMessage("AI Chat"),
     "aiDeveloper": MessageLookupByLibrary.simpleMessage("AI Developer"),
-    "analysis": MessageLookupByLibrary.simpleMessage("Analysis"),
     "appName": MessageLookupByLibrary.simpleMessage("DeveMat AI"),
     "arabic": MessageLookupByLibrary.simpleMessage("العربية"),
     "architecture": MessageLookupByLibrary.simpleMessage("Architecture"),
@@ -72,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "camera": MessageLookupByLibrary.simpleMessage("Camera"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "changePass": MessageLookupByLibrary.simpleMessage("Change Password"),
+    "chat": MessageLookupByLibrary.simpleMessage("Chat"),
     "chatHintText": MessageLookupByLibrary.simpleMessage(
       "Message DevMate AI...",
     ),
@@ -105,6 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dangerZone": MessageLookupByLibrary.simpleMessage("Danger Zone"),
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
     "deadline": MessageLookupByLibrary.simpleMessage("Deadline"),
+    "debug": MessageLookupByLibrary.simpleMessage("Debug"),
     "debugCode": MessageLookupByLibrary.simpleMessage("Debug Code"),
     "debugCodeDesc": MessageLookupByLibrary.simpleMessage(
       "Find and fix errors fast",
@@ -149,6 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enter your project name here...",
     ),
     "experienceLevel": MessageLookupByLibrary.simpleMessage("Experience Level"),
+    "explain": MessageLookupByLibrary.simpleMessage("Explain"),
     "explainCode": MessageLookupByLibrary.simpleMessage("Explain Code"),
     "explainCodeDesc": MessageLookupByLibrary.simpleMessage(
       "Break down complex logic",
@@ -236,9 +238,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Personal Information",
     ),
     "planProject": MessageLookupByLibrary.simpleMessage("Plan Project"),
+    "planner": MessageLookupByLibrary.simpleMessage("planner"),
     "platform": MessageLookupByLibrary.simpleMessage("Platform"),
     "preview": MessageLookupByLibrary.simpleMessage("Preview"),
     "privaceyPolicy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+    "processingMayTakeLonger": MessageLookupByLibrary.simpleMessage(
+      "This operation may take a little longer. Please wait...",
+    ),
     "profile": MessageLookupByLibrary.simpleMessage("Profile"),
     "programmingLang": MessageLookupByLibrary.simpleMessage(
       "Programming Language",
@@ -263,6 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "readmeCopied": MessageLookupByLibrary.simpleMessage("README copied"),
     "readmeResult": MessageLookupByLibrary.simpleMessage("README Result"),
     "reveiwDepth": MessageLookupByLibrary.simpleMessage("Review Depth"),
+    "review": MessageLookupByLibrary.simpleMessage("Review"),
     "reviewDepthDes": MessageLookupByLibrary.simpleMessage(
       "Select review depth",
     ),

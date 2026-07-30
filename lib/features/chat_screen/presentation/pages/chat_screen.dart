@@ -58,10 +58,9 @@ class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {
     final local = S.of(context);
-    final cubit = context.read<ChatCubit>();
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBar(title: local.appName, needButton: false),
+      appBar: CustomAppBar(title: local.chat, needButton: false),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SafeArea(

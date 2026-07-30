@@ -24,7 +24,7 @@ class ImagePickerDialog extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xffC3C5D7),
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               onTap: () => Navigator.pop(context, ImageSourceType.camera),
@@ -36,7 +36,7 @@ class ImagePickerDialog extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xffC3C5D7),
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               onTap: () => Navigator.pop(context, ImageSourceType.gallery),

@@ -10,11 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'extensions/profile_status_theme_extension.dart';
+
 class LightTheme {
   static ThemeData theme = ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: AppColors.lightBackground,
-
+    dividerColor: Color(0xffE8ECF5),
     textSelectionTheme: const TextSelectionThemeData(
       cursorColor: AppColors.lightPrimary,
     ),
@@ -29,7 +31,7 @@ class LightTheme {
       labelStyle: GoogleFonts.inter(color: const Color(0xff6F7385)),
       filled: true,
       fillColor: const Color(0xffFFFFFF),
-
+      
       hintStyle: GoogleFonts.inter(
         color: const Color(0xff6F7385),
         fontSize: 14.sp,
@@ -96,6 +98,14 @@ class LightTheme {
         secondprofilCardGradient: const Color(0xffC4D3FF),
         profilCard: const Color(0xffFFFFFF),
       ),
+      const ProfileStatsThemeExtension(
+    chatsColor: Color(0xffB5C4FF),
+    readmeColor: Color(0xffC79DFF),
+    analysisColor: Color(0xff6EE7B7),
+    debugColor: Color(0xffFFB86C),
+    explainColor: Color(0xff7DD3FC),
+    reviewColor: AppColors.lightSecondary,
+    ),
     ],
   );
 }
