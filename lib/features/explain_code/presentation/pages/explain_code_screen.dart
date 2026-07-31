@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
 import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_code_cubit.dart';
@@ -40,6 +42,7 @@ class ExplainCodeView extends StatefulWidget {
 class _ExplainCodeViewState extends State<ExplainCodeView> {
   late final CodeLineEditingController _codeController;
   late final TextEditingController _instructionsController;
+  Timer? _slowLoadingTimer;
 
   @override
   void initState() {
@@ -52,6 +55,7 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
   void dispose() {
     _codeController.dispose();
     _instructionsController.dispose();
+    _slowLoadingTimer?.cancel();
     super.dispose();
   }
 
@@ -61,15 +65,34 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
 
     return BlocConsumer<ExplainCubit, ExplainCodeState>(
       listenWhen: (previous, current) =>
+      previous.isLoading != current.isLoading ||
           previous.errorMessage != current.errorMessage ||
           previous.explanation != current.explanation,
       listener: (context, state) {
+        if (state.isLoading) {
+          _slowLoadingTimer?.cancel();
+          _slowLoadingTimer = Timer(const Duration(seconds: 4), () {
+            if (mounted && state.isLoading) {
+              CustomSnackBar.show(
+                context,
+                message: S.of(context).processingMayTakeLonger,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                textColor: Theme.of(context).colorScheme.onPrimary,
+                time: 5,
+              );
+            }
+          });
+        } else {
+          _slowLoadingTimer?.cancel();
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
         if (state.errorMessage != null) {
           CustomSnackBar.show(
             context,
             message: state.errorMessage!,
             backgroundColor: Theme.of(context).colorScheme.error,
           );
+          print(state.errorMessage);
           context.read<ExplainCubit>().clearError();
           print(state.errorMessage);
         }
@@ -78,11 +101,9 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
           final explanation = state.explanation;
           context.read<ExplainCubit>().resetExplanation();
 
-          GoRouter.of(context).pushNamed(
-            RouteName
-                .ansewerEplainCode, // تأكد من تصحيح الإملاء في RouteName لاحقاً إذا أمكن
-            extra: explanation,
-          );
+          GoRouter.of(
+            context,
+          ).pushNamed(RouteName.ansewerEplainCode, extra: explanation);
         }
       },
       builder: (context, state) {

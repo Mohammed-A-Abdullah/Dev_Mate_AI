@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,6 +44,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
   final _descriptionController = TextEditingController();
   final _featureController = TextEditingController();
   final _githubLinkController = TextEditingController();
+  Timer? _slowLoadingTimer;
 
   @override
   void dispose() {
@@ -48,6 +52,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
     _descriptionController.dispose();
     _featureController.dispose();
     _githubLinkController.dispose();
+    _slowLoadingTimer?.cancel();
     super.dispose();
   }
 
@@ -57,9 +62,28 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
 
     return BlocConsumer<ReadmeCubit, ReadmeState>(
       listenWhen: (previous, current) =>
+          previous.isLoading != current.isLoading ||
           previous.errorMessage != current.errorMessage ||
           previous.readmeResult != current.readmeResult,
       listener: (context, state) {
+        if (state.isLoading) {
+          _slowLoadingTimer?.cancel();
+          _slowLoadingTimer = Timer(const Duration(seconds: 4), () {
+            if (mounted && state.isLoading) {
+              CustomSnackBar.show(
+                context,
+                message: S.of(context).processingMayTakeLonger,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                textColor: Theme.of(context).colorScheme.onPrimary,
+                time: 8,
+              );
+            }
+          });
+          
+        } else {
+          _slowLoadingTimer?.cancel();
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

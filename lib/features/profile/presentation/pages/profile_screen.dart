@@ -14,9 +14,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/theme/extensions/profile_status_theme_extension.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
 import '../widgets/language_dialoge.dart';
+import 'account_settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -37,17 +39,21 @@ class ProfileView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) {
-        return ImagePickerDialog();
+        return const ImagePickerDialog();
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
+    final local = S.of(context);
+    final statsTheme = Theme.of(
+      context,
+    ).extension<ProfileStatsThemeExtension>()!;
+
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
-        if (state is ProfileLoggedOut) {
+        if (state is ProfileLoggedOut || state is AccountDeleted) {
           context.goNamed(RouteName.authScreen);
         }
 
@@ -61,11 +67,15 @@ class ProfileView extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         }
+
         if (state is ProfileLoaded) {
           final profile = state.profile;
           final displayName = profile.name;
           final photoUrl = profile.imageUrl;
-          final roleLabel = profile.isGuest ? local.guestEplorer : local.aiDeveloper;
+          final roleLabel = profile.isGuest
+              ? local.guestEplorer
+              : local.aiDeveloper;
+
           return Scaffold(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: CustomAppBar(title: local.profile, needButton: false),
@@ -79,7 +89,11 @@ class ProfileView extends StatelessWidget {
                     Center(
                       child: Column(
                         children: [
-                          CustomImageSection(onTap: () => _showImagePicker,photoUrl: photoUrl,),
+                          // ✅ إصلاح دالة onTap
+                          CustomImageSection(
+                            onTap: () => _showImagePicker(context),
+                            photoUrl: photoUrl,
+                          ),
                           SizedBox(height: 14.h),
                           Text(
                             displayName,
@@ -103,33 +117,72 @@ class ProfileView extends StatelessWidget {
                           child: CustomStateCard(
                             value: profile.chats.toString(),
                             label: local.chats,
-                            valueColor: const Color(0xffB5C4FF),
+                            valueColor: statsTheme.chatsColor,
                           ),
                         ),
-                        SizedBox(width: 10.w),
+                        WidthSpace(width: 10.w),
                         Expanded(
                           child: CustomStateCard(
                             value: profile.readmes.toString(),
                             label: local.readme,
-                            valueColor: const Color(0xffC79DFF),
+                            valueColor: statsTheme.readmeColor,
                           ),
                         ),
-                        SizedBox(width: 10.w),
+                        WidthSpace(width: 10.w),
                         Expanded(
                           child: CustomStateCard(
                             value: profile.analysis.toString(),
-                            label: local.analysis,
-                            valueColor: const Color(0xff6EE7B7),
+                            label: local.review,
+                            valueColor: statsTheme.reviewColor,
                           ),
                         ),
                       ],
                     ),
+                    HeightSpace(height: 24),
 
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomStateCard(
+                            value: profile.debug
+                                .toString(),
+                            label: local.debug,
+                            valueColor: statsTheme.debugColor,
+                          ),
+                        ),
+                        WidthSpace(width: 10.w),
+                        Expanded(
+                          child: CustomStateCard(
+                            value: profile.explain
+                                .toString(), 
+                            label: local.explain,
+                            valueColor: statsTheme.explainColor,
+                          ),
+                        ),
+                        WidthSpace(width: 10.w),
+                        Expanded(
+                          child: CustomStateCard(
+                            value: profile.planner
+                                .toString(),
+                            label: local.planner,
+                            valueColor: statsTheme.analysisColor,
+                          ),
+                        ),
+                      ],
+                    ),
                     HeightSpace(height: 24.h),
 
                     CustomSettingGroupe(
                       onAccountSettingsTap: () {
-                        context.pushNamed(RouteName.accountStettingsScreen);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context_) => BlocProvider.value(
+                              value: context.read<ProfileCubit>(),
+                              child: const AccountSettingsScreen(),
+                            ),
+                          ),
+                        );
                       },
                       onLanguageTap: () {
                         showDialog(
@@ -140,11 +193,8 @@ class ProfileView extends StatelessWidget {
                       onAboutTap: () async {
                         context.pushNamed(RouteName.aboutScreen);
                       },
-                      onLogoutTap: () async {
+                      onLogoutTap: () {
                         context.read<ProfileCubit>().logout();
-                        if (context.mounted) {
-                          context.goNamed(RouteName.authScreen);
-                        }
                       },
                     ),
 

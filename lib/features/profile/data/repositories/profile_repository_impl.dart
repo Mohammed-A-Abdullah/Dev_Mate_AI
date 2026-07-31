@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dev_mate_ai/core/services/app_preferences.dart';
 import 'package:dev_mate_ai/features/profile/domain/entities/profile_entity.dart';
 
 import '../../domain/repositories/profile_repository.dart';
@@ -16,8 +17,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<void> logout() {
-    return remote.logout();
+  Future<void> logout() async {
+    await remote.logout();
+    await AppPreferences.clearAuth();
   }
 
   @override
@@ -31,12 +33,14 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
   
   @override
-  Future<void> deleteAccount() {
-    return remote.deleteAccount();
+  Future<void> deleteAccount() async {
+    await remote.deleteAccount();
+    await AppPreferences.clearAuth();
   }
   
   @override
   Future<void> updateProfileDetails(String name) {
     return remote.updateProfileDetails(name);
   }
+
 }

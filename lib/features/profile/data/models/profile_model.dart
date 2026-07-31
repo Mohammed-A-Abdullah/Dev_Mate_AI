@@ -10,6 +10,9 @@ class ProfileModel extends ProfileEntity {
     required super.chats,
     required super.readmes,
     required super.analysis,
+    required super.debug,
+    required super.explain,
+    required super.planner,
   });
 
   factory ProfileModel.fromFirebase({
@@ -19,6 +22,11 @@ class ProfileModel extends ProfileEntity {
     String? imageUrl,
     required bool isGuest,
     required int chats,
+    required int readmes,
+    required int analysis,
+    required int debug,
+    required int explain,
+    required int planner,
   }) {
     return ProfileModel(
       uid: uid,
@@ -27,21 +35,27 @@ class ProfileModel extends ProfileEntity {
       imageUrl: imageUrl,
       isGuest: isGuest,
       chats: chats,
-      readmes: chats > 0 ? (chats ~/ 3) + 1 : 0,
-      analysis: chats > 0 ? chats ~/ 4 : 0,
+      readmes: readmes,
+      analysis: analysis,
+      debug: debug,
+      explain: explain,
+      planner: planner,
     );
   }
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
-      uid: json['uid'],
-      name: json['name'],
-      email: json['email'],
+      uid: json['uid'] ?? '',
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
       imageUrl: json['imageUrl'],
-      isGuest: json['isGuest'],
-      chats: json['chats'],
-      readmes: json['readmes'],
-      analysis: json['analysis'],
+      isGuest: json['isGuest'] ?? false,
+      chats: json['chats'] ?? json['chat'] ?? 0,
+      readmes: json['readmes'] ?? json['Generate README'] ?? 0,
+      analysis: json['analysis'] ?? json['Code Review'] ?? 0,
+      explain: json['explain'] ?? json['Explain Code'] ?? 0,
+      debug: json['debug'] ?? json['Debug'] ?? 0,
+      planner: json['planner'] ?? json['Project Planner'] ?? 0,
     );
   }
 
@@ -55,6 +69,9 @@ class ProfileModel extends ProfileEntity {
       'chats': chats,
       'readmes': readmes,
       'analysis': analysis,
+      'debug': debug,
+      'explain': explain,
+      'planner': planner,
     };
   }
 
@@ -68,6 +85,9 @@ class ProfileModel extends ProfileEntity {
       chats: chats,
       readmes: readmes,
       analysis: analysis,
+      debug: debug,
+      explain: explain,
+      planner: planner,
     );
   }
 }

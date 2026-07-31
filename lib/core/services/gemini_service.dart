@@ -2,7 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiService {
-  static  String apiKey =dotenv.env['GEMINI_API_KEY']!;
+  static String apiKey = dotenv.env['GEMINI_API_KEY']!;
   final model = GenerativeModel(
     model: 'gemini-2.5-flash',
     apiKey: apiKey,
@@ -25,9 +25,11 @@ Rules:
 
   Stream<String> sendMessageStream(
     String message, {
-    List<Content> history = const [],
+    List<Content>? history,
   }) async* {
-    final chatSession = model.startChat(history: history);
+    final safeHistory = history?.toList() ?? [];
+
+    final chatSession = model.startChat(history: safeHistory);
 
     final stream = chatSession.sendMessageStream(Content.text(message));
 
@@ -43,9 +45,11 @@ Rules:
 
   Future<String> sendMessage(
     String message, {
-    List<Content> history = const [],
+    List<Content>? history,
   }) async {
-    final chatSession = model.startChat(history: history);
+    final safeHistory = history?.toList() ?? [];
+
+    final chatSession = model.startChat(history: safeHistory);
 
     final response = await chatSession.sendMessage(Content.text(message));
 

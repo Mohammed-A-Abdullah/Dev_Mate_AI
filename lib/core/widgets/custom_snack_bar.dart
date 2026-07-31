@@ -8,6 +8,8 @@ class CustomSnackBar {
     BuildContext context, {
     required String message,
     Color? backgroundColor,
+    Color? textColor,
+    int? time,
   }) {
     ScaffoldMessenger.of(context).showSnackBar(
       snackBarAnimationStyle: AnimationStyle(
@@ -16,19 +18,26 @@ class CustomSnackBar {
         reverseCurve: Curves.easeInOut,
       ),
       SnackBar(
-        duration: const Duration(seconds: 3),
+        duration: Duration(seconds: time ?? 3),
+        
         padding: EdgeInsets.only(left: 16.w, top: 8.h, bottom: 8.h),
-        showCloseIcon: true,
-        closeIconColor: Colors.white,
+        //showCloseIcon: true,
+        closeIconColor: Theme.of(context).colorScheme.secondary,
         elevation: 3,
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.all(16.w),
+        
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.r),
         ),
         backgroundColor: backgroundColor ?? Colors.red,
         content: Text(
-          message,style: GoogleFonts.inter(color: AppColors.secondary,fontSize: 14.sp,fontWeight: FontWeight.w500),
+          message,
+          style: GoogleFonts.inter(
+            color: textColor ?? AppColors.secondary,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

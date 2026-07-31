@@ -9,7 +9,7 @@ class CustomRowDivider extends StatelessWidget {
     return Divider(
       height: 1,
       thickness: 1,
-      color: const Color(0xff2A2D3A),
+      color: Theme.of(context).dividerColor,
       indent: 14.w,
       endIndent: 14.w,
     );

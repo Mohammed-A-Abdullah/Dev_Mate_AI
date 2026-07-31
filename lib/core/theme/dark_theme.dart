@@ -10,10 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'extensions/profile_status_theme_extension.dart';
+
 class DarkTheme {
   static ThemeData theme = ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppColors.backgound,
+    dividerColor: Color(0xff2A2D3A),
 
     textSelectionTheme: const TextSelectionThemeData(
       cursorColor: Color(0xffB5C4FF),
@@ -95,6 +98,14 @@ class DarkTheme {
         secondprofilCardGradient: Color(0xff7C8DFF),
         profilCard: Color(0xff1C1E28),
       ),
+       ProfileStatsThemeExtension(
+    chatsColor: Color(0xff8BA8FF),
+    readmeColor: Color(0xffB784F7),
+    analysisColor: Color(0xff34D399),
+    debugColor: Color(0xffF59E0B),
+    explainColor: Color(0xff38BDF8),
+    reviewColor: AppColors.secondary,
+    ),
     ],
   );
 }

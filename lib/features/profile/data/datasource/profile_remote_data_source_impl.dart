@@ -20,10 +20,42 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   Future<ProfileModel> getProfile() async {
     final user = auth.currentUser!;
 
-    final history = await firestore
-        .collection('history')
-        .where('uid', isEqualTo: user.uid)
-        .get();
+    int chatsCount = 0;
+    int readmesCount = 0;
+    int analysisCount = 0;
+    int debugCount = 0;
+    int explainCount = 0;
+    int plannerCount = 0;
+
+    try {
+      // جلب جميع المحادثات مباشرة لأن حقل الـ type موجود بداخلها
+      final conversationsSnapshot = await firestore
+          .collection('user')
+          .doc(user.uid)
+          .collection('conversations')
+          .get();
+
+      for (var doc in conversationsSnapshot.docs) {
+        final data = doc.data();
+        final type = (data['type'] ?? '').toString().toLowerCase();
+
+        if (type.contains('chat')) {
+          chatsCount++;
+        } else if (type.contains('readme')) {
+          readmesCount++;
+        } else if (type.contains('review') || type.contains('analysis')) {
+          analysisCount++;
+        } else if (type.contains('debug')) {
+          debugCount++;
+        } else if (type.contains('explain')) {
+          explainCount++;
+        } else if (type.contains('planner')) {
+          plannerCount++;
+        }
+      }
+    } catch (e) {
+      throw Exception('فشل في جلب الإحصائيات: $e');
+    }
 
     return ProfileModel.fromFirebase(
       uid: user.uid,
@@ -31,7 +63,12 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       email: user.email ?? '',
       imageUrl: user.photoURL,
       isGuest: user.isAnonymous,
-      chats: history.docs.length,
+      chats: chatsCount,
+      readmes: readmesCount,
+      analysis: analysisCount,
+      debug: debugCount,
+      explain: explainCount,
+      planner: plannerCount,
     );
   }
 

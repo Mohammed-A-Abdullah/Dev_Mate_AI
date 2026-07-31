@@ -78,7 +78,7 @@ class _HistoryViewState extends State<HistoryView> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBar(title: local.appName, needButton: false),
+      appBar: CustomAppBar(title: local.history, needButton: false),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
