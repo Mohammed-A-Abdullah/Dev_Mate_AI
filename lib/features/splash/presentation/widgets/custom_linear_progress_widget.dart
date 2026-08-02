@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomLinearProgressWidget extends StatelessWidget {
-  const CustomLinearProgressWidget({super.key});
+  final double width;
+
+  const CustomLinearProgressWidget({super.key, required this.width});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 192.w,
+      width: width,
       child: TweenAnimationBuilder<double>(
-        tween: Tween<double>(begin: 0.0, end: 1.0),
-        duration: Duration(seconds: 5),
-        curve: Curves.slowMiddle,
-        builder: (context, value, child) {
+        tween: Tween(begin: 0, end: 1),
+        duration: const Duration(seconds: 5),
+        builder: (_, value, __) {
           return LinearProgressIndicator(
-            minHeight: 3.h,
-            borderRadius: BorderRadius.circular(50.r),
-            backgroundColor: Colors.blueGrey.withValues(alpha: 0.3),
-            color: Color(0xffCDBDFF),
             value: value,
+            minHeight: 4,
+            borderRadius: BorderRadius.circular(100),
           );
         },
       ),

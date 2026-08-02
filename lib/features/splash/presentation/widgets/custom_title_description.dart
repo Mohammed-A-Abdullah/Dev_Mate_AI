@@ -6,7 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 
 class CustomTitleDescription extends StatelessWidget {
-  const CustomTitleDescription({super.key});
+  final double titleSize;
+  final double descriptionSize;
+
+  const CustomTitleDescription({
+    super.key,
+    required this.titleSize,
+    required this.descriptionSize,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,22 +22,19 @@ class CustomTitleDescription extends StatelessWidget {
         Text(
           S.of(context).appName,
           style: GoogleFonts.geist(
-            fontSize: 40.sp,
-            color: Color(0xffE2E2EB),
+            fontSize: titleSize,
             fontWeight: FontWeight.bold,
           ),
         ),
-        HeightSpace(height: 8),
-        SizedBox(
-          width: 211.w,
+
+        const SizedBox(height: 8),
+
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
           child: Text(
             S.of(context).Your_AI_Powered_Developer_Assistant,
             textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
-              color: Color(0xffC3C5D7),
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w200,
-            ),
+            style: GoogleFonts.inter(fontSize: descriptionSize),
           ),
         ),
       ],
