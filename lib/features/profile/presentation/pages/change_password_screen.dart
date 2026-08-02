@@ -91,9 +91,6 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                       if (value == null || value.trim().isEmpty) {
                         return local.comfirmPassValidator;
                       }
-                      if (value != _passwordController.text) {
-                        return 'كلمتا المرور غير متطابقتين';
-                      }
                       return null;
                     },
                   ),

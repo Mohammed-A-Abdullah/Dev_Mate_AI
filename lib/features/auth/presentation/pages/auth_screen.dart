@@ -58,6 +58,7 @@ class _AuthScreenState extends State<AuthScreen> {
             CustomSnackBar.show(
               context,
               message: state.message,
+              textColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Theme.of(context).colorScheme.error,
             );
           }
@@ -67,6 +68,7 @@ class _AuthScreenState extends State<AuthScreen> {
             CustomSnackBar.show(
               context,
               message: state.message,
+              textColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Colors.greenAccent,
             );
           }

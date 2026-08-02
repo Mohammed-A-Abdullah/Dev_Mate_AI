@@ -28,7 +28,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     int plannerCount = 0;
 
     try {
-      // جلب جميع المحادثات مباشرة لأن حقل الـ type موجود بداخلها
       final conversationsSnapshot = await firestore
           .collection('user')
           .doc(user.uid)
@@ -106,6 +105,18 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       }
     } catch (e) {
       throw Exception('حدث خطأ أثناء رفع الصورة: $e');
+    }
+  }
+
+  @override
+  Future<void> deletePhoto() async {
+    final user = auth.currentUser;
+    if (user == null) throw Exception('المستخدم غير مسجل الدخول');
+
+    try {
+      await user.updatePhotoURL(null);
+    } catch (e) {
+      throw Exception('فشل في حذف الصورة: $e');
     }
   }
 

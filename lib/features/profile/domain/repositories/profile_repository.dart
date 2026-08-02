@@ -6,6 +6,7 @@ abstract class ProfileRepository {
   Future<ProfileEntity> getProfile();
 
   Future<String> updatePhoto(File imageFile);
+  Future<void> deletePhoto();
 
   Future<void> logout();
   Future<void> deleteAccount();

@@ -8,6 +8,7 @@ abstract class ProfileRemoteDataSource {
   Future<void> logout();
 
   Future<String> updatePhoto(File imageFile);
+  Future<void> deletePhoto();
 
   Future<void> deleteAccount();
 
