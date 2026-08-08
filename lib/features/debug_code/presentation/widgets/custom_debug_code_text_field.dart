@@ -23,7 +23,7 @@ class CustomDebugCodeTextField extends StatelessWidget {
 
       maxLines: maxLines,
 
-      minLines: 2,
+      minLines: 1,
 
       onChanged: onChanged,
 

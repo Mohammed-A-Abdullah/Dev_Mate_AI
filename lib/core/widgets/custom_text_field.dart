@@ -101,15 +101,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
           decoration: InputDecoration(
             labelText: widget.label,
-            labelStyle: widget.labelStyle,
+            labelStyle: widget.labelStyle ?? const TextStyle(fontSize: 14.0),
             hintText: widget.hintText ?? '',
-            hintStyle: widget.hintTextStyle,
-
+            hintStyle: widget.hintTextStyle ?? const TextStyle(fontSize: 14.0),
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: 18,
-              vertical: 18,
+              horizontal: 18.0,
+              vertical: 18.0,
             ),
-
             filled: true,
             // Remove Colors.white fallback. If null, uses the theme's fillColor
             fillColor: widget.fillColor,

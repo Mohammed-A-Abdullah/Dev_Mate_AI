@@ -186,7 +186,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
                               icon: Icons.link,
                             ),
 
-                            SizedBox(height: isDesktop ? 32 : 28),
+                            SizedBox(height: isDesktop ? 100 : 28),
 
                             CustomFeatureButton(
                               text: local.generateReadMe,
@@ -252,10 +252,10 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
                   feature,
                   style: GoogleFonts.inter(
                     color: Theme.of(context).colorScheme.secondary,
-                    fontSize: 13.sp,
+                    fontSize: 14.0,
                   ),
                 ),
-                deleteIcon: Icon(Icons.close, size: 17.sp),
+                deleteIcon: const Icon(Icons.close, size: 18.0),
                 onDeleted: () {
                   context.read<ReadmeCubit>().removeFeature(feature);
                 },
@@ -292,7 +292,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
           label: Text(
             tech,
             style: GoogleFonts.inter(
-              fontSize: 13.sp,
+              fontSize: 14.0,
               color: selected ? colorScheme.outline : colorScheme.secondary,
             ),
           ),

@@ -1,5 +1,4 @@
 import 'package:dev_mate_ai/core/widgets/custom_text_field.dart';
-import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

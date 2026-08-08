@@ -1,6 +1,5 @@
 import 'package:dev_mate_ai/core/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CostomReadmeTextField extends StatelessWidget {
   const CostomReadmeTextField({
@@ -21,10 +20,11 @@ class CostomReadmeTextField extends StatelessWidget {
     return CustomTextField(
       controller: controller,
       label: title,
-      keyBoardType: TextInputType.multiline,
+      maxLines: 1,
+      keyBoardType: TextInputType.text,
       hintText: description,
       prefixIcon: Icon(icon ?? Icons.edit_note),
-      radius: 16.r,
+      radius: 16.0,
     );
   }
 }

@@ -9,18 +9,30 @@ class CustomChatTextField extends StatelessWidget {
     required this.chatController,
     this.onPressed,
   });
+
   final TextEditingController chatController;
   final void Function()? onPressed;
+
   @override
   Widget build(BuildContext context) {
     final local = S.of(context);
+
     return CustomTextField(
       controller: chatController,
       hintText: local.chatHintText,
       radius: 20,
+
       keyBoardType: TextInputType.multiline,
+      maxLines: null,
+
+      hintTextStyle: TextStyle(
+        fontSize: 16,
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+        fontWeight: FontWeight.w400,
+      ),
+
       prefixIcon: Icon(
-        Icons.smart_toy_sharp,
+        Icons.message,
         color: Theme.of(context).colorScheme.primary,
         size: 24,
       ),

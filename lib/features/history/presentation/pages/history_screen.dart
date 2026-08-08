@@ -109,7 +109,7 @@ class _HistoryViewState extends State<HistoryView> {
                     ),
                     const HeightSpace(height: 16),
                     CustomHistoryTextField(controller: historyController),
-                    const HeightSpace(height: 20),
+                    const HeightSpace(height: 10),
 
                     SizedBox(
                       height: 36,

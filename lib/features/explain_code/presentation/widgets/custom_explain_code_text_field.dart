@@ -17,7 +17,7 @@ class CustomExplainCodeTextField extends StatelessWidget {
       controller: instructionsController,
       label: local.additionalInstruction,
       minLine: 1,
-      maxLines: 3,
+      maxLines: 4,
       keyBoardType: TextInputType.multiline,
       hintText: local.additionalinstructionDes,
       prefixIcon: const Icon(Icons.edit_note),

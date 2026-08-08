@@ -1,9 +1,7 @@
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/widgets/spacing_widgets.dart';
 
 class CustomTitleDescription extends StatelessWidget {
   final double titleSize;

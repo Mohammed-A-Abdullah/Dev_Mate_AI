@@ -1,4 +1,3 @@
-import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/theme/extensions/profile_theme_extension.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
 import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
@@ -226,21 +225,25 @@ class AccountSettingsScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomTextField(
-                  controller: nameController,
-                  hintText: S.of(context).fullName,
-                  textStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+          // ✅ تغليف الـ Form بـ SizedBox لتحديد العرض
+          content: SizedBox(
+            width: 400,
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomTextField(
+                    controller: nameController,
+                    hintText: S.of(context).fullName,
+                    textStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    prefixIcon: const Icon(Icons.person_outline),
+                    keyBoardType: TextInputType.text,
                   ),
-                  prefixIcon: const Icon(Icons.person_outline),
-                  keyBoardType: TextInputType.text,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           actions: [

@@ -1,5 +1,6 @@
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/responsive/responsive_layout.dart';
+import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/navigation_bar/navigation_pages.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/cubit/navigation_bar_cubit.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/widgets/custom_bottom_navigation_bar.dart';
@@ -34,6 +35,7 @@ class CustomNavigationBar extends StatelessWidget {
     );
   }
 }
+
 class _MobileNavigation extends StatelessWidget {
   const _MobileNavigation({required this.currentIndex, required this.content});
 
@@ -57,6 +59,7 @@ class _MobileNavigation extends StatelessWidget {
     );
   }
 }
+
 class _TabletNavigation extends StatelessWidget {
   const _TabletNavigation({required this.currentIndex, required this.content});
 
@@ -80,6 +83,7 @@ class _TabletNavigation extends StatelessWidget {
     );
   }
 }
+
 class _DesktopNavigation extends StatelessWidget {
   const _DesktopNavigation({required this.currentIndex, required this.content});
 
@@ -90,91 +94,119 @@ class _DesktopNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    Widget buildRailItem({
+      required IconData icon,
+      required String label,
+      required bool isSelected,
+    }) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: SizedBox(
+          width: 110,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(icon),
+              if (isSelected) ...[
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-
       body: Row(
         children: [
           NavigationRail(
-            minWidth: 80,
-
-            minExtendedWidth: 210,
-
+            minWidth: 140,
             selectedIndex: currentIndex,
-
             onDestinationSelected: (value) {
               context.read<NavigationCubit>().changeIndex(value);
             },
+            backgroundColor: theme.scaffoldBackgroundColor,
+            useIndicator: false,
 
-            backgroundColor: theme.colorScheme.surface,
+            labelType: NavigationRailLabelType.selected,
 
             selectedIconTheme: IconThemeData(
               color: theme.colorScheme.primary,
-
               size: 24,
             ),
-
             unselectedIconTheme: IconThemeData(
               color: theme.colorScheme.onSurface.withValues(alpha: .5),
-
               size: 24,
             ),
-
-            selectedLabelTextStyle: TextStyle(
-              color: theme.colorScheme.primary,
-
-              fontWeight: FontWeight.w600,
-            ),
-
-            unselectedLabelTextStyle: TextStyle(
-              color: theme.colorScheme.onSurface.withValues(alpha: .6),
-            ),
-
-            labelType: NavigationRailLabelType.all,
-
-            groupAlignment: 0,
-
-            destinations: const [
+            groupAlignment: -0.8,
+            destinations: [
               NavigationRailDestination(
-                icon: Icon(Icons.home_outlined),
-
-                selectedIcon: Icon(Icons.home),
-
-                label: Text('Home'),
+                icon: buildRailItem(
+                  icon: Icons.home_outlined,
+                  label: 'Home',
+                  isSelected: false,
+                ),
+                selectedIcon: buildRailItem(
+                  icon: Icons.home,
+                  label: 'Home',
+                  isSelected: true,
+                ),
+                label: const SizedBox.shrink(),
               ),
-
               NavigationRailDestination(
-                icon: Icon(Icons.chat_bubble_outline),
-
-                selectedIcon: Icon(Icons.chat_bubble),
-
-                label: Text('Chat'),
+                icon: buildRailItem(
+                  icon: Icons.chat_bubble_outline,
+                  label: 'Chat',
+                  isSelected: false,
+                ),
+                selectedIcon: buildRailItem(
+                  icon: Icons.chat_bubble,
+                  label: 'Chat',
+                  isSelected: true,
+                ),
+                label: const SizedBox.shrink(),
               ),
-
               NavigationRailDestination(
-                icon: Icon(Icons.history_outlined),
-
-                selectedIcon: Icon(Icons.history),
-
-                label: Text('History'),
+                icon: buildRailItem(
+                  icon: Icons.history_outlined,
+                  label: 'History',
+                  isSelected: false,
+                ),
+                selectedIcon: buildRailItem(
+                  icon: Icons.history,
+                  label: 'History',
+                  isSelected: true,
+                ),
+                label: const SizedBox.shrink(),
               ),
-
               NavigationRailDestination(
-                icon: Icon(Icons.person_outline),
-
-                selectedIcon: Icon(Icons.person),
-
-                label: Text('Profile'),
+                icon: buildRailItem(
+                  icon: Icons.person_outline,
+                  label: 'Profile',
+                  isSelected: false,
+                ),
+                selectedIcon: buildRailItem(
+                  icon: Icons.person,
+                  label: 'Profile',
+                  isSelected: true,
+                ),
+                label: const SizedBox.shrink(),
               ),
             ],
           ),
-
           VerticalDivider(
             width: 1,
             thickness: 1,
             color: theme.colorScheme.outline,
           ),
-
           Expanded(child: content),
         ],
       ),

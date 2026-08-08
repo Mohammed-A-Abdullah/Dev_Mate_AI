@@ -10,9 +10,13 @@ class LanguageDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final local = S.of(context);
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       title: Text(local.chooseLang),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 360),
+      
+      content: SizedBox(
+        width: 400,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
