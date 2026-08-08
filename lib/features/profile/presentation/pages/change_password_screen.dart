@@ -98,8 +98,15 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                         return null;
                       },
                     ),
-                  ],
-                ),
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return local.comfirmPassValidator;
+                      }
+                      return null;
+                    },
+                  ),
+                ],
               ),
             ),
             actions: [

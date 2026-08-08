@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dev_mate_ai/features/profile/domain/useccases/change_password_use_case.dart';
 import 'package:dev_mate_ai/features/profile/domain/useccases/delete_account_use_case.dart';
+import 'package:dev_mate_ai/features/profile/domain/useccases/delete_photo_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/useccases/logout_use_case.dart';
@@ -14,16 +15,18 @@ class ProfileCubit extends Cubit<ProfileState> {
   final GetProfileUseCase getProfileUseCase;
   final LogoutUseCase logoutUseCase;
   final UpdatePhotoUseCase updatePhotoUseCase;
+  final DeletePhotoUseCase deletePhotoUseCase;
   final DeleteAccountUseCase deleteAccountUseCase;
   final ChangePasswordUseCase changePasswordUseCase;
   final UpdateProfileDetailsUseCase updateProfileDetailsUseCase;
+
   ProfileCubit(
     this.getProfileUseCase,
     this.logoutUseCase, {
     required this.updatePhotoUseCase,
     required this.deleteAccountUseCase,
     required this.changePasswordUseCase,
-    required this.updateProfileDetailsUseCase,
+    required this.updateProfileDetailsUseCase, required this.deletePhotoUseCase,
   }) : super(ProfileInitial());
 
   Future<void> loadProfile() async {
@@ -35,10 +38,23 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(ProfileLoaded(profile));
     } catch (e) {
       emit(ProfileError(e.toString()));
+      await loadProfile();
+    }
+  }
+
+  Future<void> deletePhoto() async {
+    emit(ProfileLoading());
+    try {
+      await deletePhotoUseCase();
+      await loadProfile();
+    } catch (e) {
+      emit(ProfileError(e.toString()));
+      await loadProfile();
     }
   }
 
   Future<void> updatePhoto(File file) async {
+    emit(ProfileLoading());
     try {
       await updatePhotoUseCase(file);
 

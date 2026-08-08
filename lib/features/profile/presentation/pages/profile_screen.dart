@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/routing/route_name.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
@@ -13,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../core/theme/extensions/profile_status_theme_extension.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
@@ -34,13 +37,36 @@ class ProfileScreen extends StatelessWidget {
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
-  Future<void> _showImagePicker(BuildContext context) async {
-    showDialog(
+  Future<void> _handleImageAction(BuildContext context) async {
+    // 1. فتح الـ Dialog لمعرفة اختيار المستخدم
+    final action = await showDialog<ImageSourceType>(
       context: context,
       builder: (_) {
         return const ImagePickerDialog();
       },
     );
+
+    if (action == null) return;
+
+    if (!context.mounted) return;
+
+    final cubit = context.read<ProfileCubit>();
+
+    if (action == ImageSourceType.delete) {
+      cubit.deletePhoto();
+      return;
+    }
+
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(
+      source: action == ImageSourceType.camera
+          ? ImageSource.camera
+          : ImageSource.gallery,
+    );
+
+    if (pickedFile != null) {
+      cubit.updatePhoto(File(pickedFile.path));
+    }
   }
 
   @override
@@ -79,9 +105,33 @@ class ProfileView extends StatelessWidget {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: CustomAppBar(title: local.profile, needButton: false),
             body: SafeArea(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final width = constraints.maxWidth;
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    HeightSpace(height: 20),
+                    Center(
+                      child: Column(
+                        children: [
+                          CustomImageSection(
+                            onTap: () => _handleImageAction(context),
+                            photoUrl: profile.imageUrl,
+                          ),
+                          SizedBox(height: 14.h),
+                          Text(
+                            displayName,
+                            style: GoogleFonts.geist(
+                              fontSize: 22.sp,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          CustomContainterUserType(roleLabel: roleLabel),
+                        ],
+                      ),
+                    ),
 
                   final isTablet = width >= 600;
                   final isDesktop = width >= 1024;

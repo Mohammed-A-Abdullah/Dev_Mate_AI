@@ -26,6 +26,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<String> updatePhoto(File imageFile) {
     return remote.updatePhoto(imageFile);
   }
+  @override
+  Future<void> deletePhoto() {
+    return remote.deletePhoto();
+  }
   
   @override
   Future<void> changePassword(String newPassword) {
