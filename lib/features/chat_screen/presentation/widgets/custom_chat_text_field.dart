@@ -1,6 +1,5 @@
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/widgets/custom_text_field.dart';
 
@@ -18,22 +17,22 @@ class CustomChatTextField extends StatelessWidget {
     return CustomTextField(
       controller: chatController,
       hintText: local.chatHintText,
-      radius: 20.r,
+      radius: 20,
       keyBoardType: TextInputType.multiline,
       prefixIcon: Icon(
         Icons.smart_toy_sharp,
         color: Theme.of(context).colorScheme.primary,
-        size: 24.sp,
+        size: 24,
       ),
       suffixIconWidget: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Container(
           margin: const EdgeInsets.all(4),
-          width: 45.w,
-          height: 45.h,
+          width: 45,
+          height: 45,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(14.r),
+            borderRadius: BorderRadius.circular(14),
           ),
           child: IconButton(
             onPressed: onPressed,
