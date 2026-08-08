@@ -9,9 +9,11 @@ class CustomProjectPlannerTextField extends StatelessWidget {
     required this.title,
     required this.description,
   });
+
   final TextEditingController controller;
   final String title;
   final String description;
+
   @override
   Widget build(BuildContext context) {
     return CustomTextField(
