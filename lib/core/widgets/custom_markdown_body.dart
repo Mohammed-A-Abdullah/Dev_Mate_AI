@@ -8,46 +8,46 @@ class CustomMarkdownBody extends StatelessWidget {
   final String inputData;
   @override
   Widget build(BuildContext context) {
-    final colorTheme=Theme.of(context).colorScheme;
-    return MarkdownBody(
-                                  data: inputData,
-                                  selectable: true,
-                                  styleSheet: MarkdownStyleSheet(
-                                    p:  TextStyle(
-                                      color: colorTheme.surface,
-                                      fontSize: 15,
-                                    ),
-                                    h1:  TextStyle(
-                                      color: colorTheme.surface,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    h2:  TextStyle(
-                                      color: colorTheme.surface,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    h3:  TextStyle(
-                                      color: colorTheme.surface,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    listBullet:  TextStyle(
-                                      color: colorTheme.surface,
-                                    ),
-                                    strong:  TextStyle(
-                                      color: colorTheme.surface,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+    final colorTheme = Theme.of(context).colorScheme;
+    final responseTextColor = colorTheme.onSurface;
 
-                                    code: const TextStyle(
-                                      backgroundColor: Colors.transparent,
-                                    ),
-                                    codeblockDecoration: const BoxDecoration(
-                                      color: Colors.transparent,
-                                    ),
-                                  ),
-                                  builders: {'code': CustomCodeElementBuilder()},
-                                );
+    return MarkdownBody(
+      data: inputData,
+      selectable: true,
+      styleSheet: MarkdownStyleSheet(
+        p: TextStyle(color: responseTextColor, fontSize: 15),
+        h1: TextStyle(
+          color: responseTextColor,
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+        h2: TextStyle(
+          color: responseTextColor,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        h3: TextStyle(
+          color: responseTextColor,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+        listBullet: TextStyle(color: responseTextColor),
+        strong: TextStyle(
+          color: responseTextColor,
+          fontWeight: FontWeight.bold,
+        ),
+        em: TextStyle(color: responseTextColor),
+        blockquote: TextStyle(color: responseTextColor),
+        code: TextStyle(
+          color: responseTextColor,
+          backgroundColor: colorTheme.surface.withValues(alpha: 0.65),
+        ),
+        codeblockDecoration: BoxDecoration(
+          color: colorTheme.surface.withValues(alpha: 0.65),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      builders: {'code': CustomCodeElementBuilder()},
+    );
   }
 }

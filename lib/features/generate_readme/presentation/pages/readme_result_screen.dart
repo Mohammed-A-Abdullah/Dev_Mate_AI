@@ -1,4 +1,5 @@
 import 'package:dev_mate_ai/generated/l10n.dart';
+import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -109,8 +110,9 @@ class ReadmeResultScreen extends StatelessWidget {
 
                                 if (!context.mounted) return;
 
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(local.readmeCopied)),
+                                CustomSnackBar.success(
+                                  context,
+                                  message: local.readmeCopied,
                                 );
                               },
                               icon: const Icon(Icons.copy),

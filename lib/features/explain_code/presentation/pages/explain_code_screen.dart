@@ -75,6 +75,7 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
               CustomSnackBar.show(
                 context,
                 message: S.of(context).processingMayTakeLonger,
+                type: SnackBarType.info,
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 textColor: Theme.of(context).colorScheme.onPrimary,
                 time: 5,

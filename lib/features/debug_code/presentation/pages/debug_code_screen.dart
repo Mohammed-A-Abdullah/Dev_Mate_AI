@@ -84,6 +84,7 @@ class _DebugCodeViewState extends State<DebugCodeView> {
               CustomSnackBar.show(
                 context,
                 message: local.processingMayTakeLonger,
+                type: SnackBarType.info,
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 textColor: Theme.of(context).colorScheme.onPrimary,
                 time: 5,

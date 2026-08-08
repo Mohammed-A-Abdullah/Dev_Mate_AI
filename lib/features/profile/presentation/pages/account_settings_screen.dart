@@ -24,9 +24,9 @@ class AccountSettingsScreen extends StatelessWidget {
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ProfileError) {
-            CustomSnackBar.show(context, message: state.message);
+            CustomSnackBar.error(context, message: state.message);
           } else if (state is AccountDeleted) {
-            CustomSnackBar.show(context, message: local.accountDeleted);
+            CustomSnackBar.success(context, message: local.accountDeleted);
             Navigator.of(context).popUntil((route) => route.isFirst);
           }
         },

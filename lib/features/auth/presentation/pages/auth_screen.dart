@@ -52,21 +52,11 @@ class _AuthScreenState extends State<AuthScreen> {
           }
 
           if (state is AuthError) {
-            CustomSnackBar.show(
-              context,
-              message: state.message,
-              textColor: Theme.of(context).colorScheme.onPrimary,
-              backgroundColor: Theme.of(context).colorScheme.error,
-            );
+            CustomSnackBar.error(context, message: state.message);
           }
 
           if (state is AuthSuccess) {
-            CustomSnackBar.show(
-              context,
-              message: state.message,
-              textColor: Theme.of(context).colorScheme.onPrimary,
-              backgroundColor: Colors.greenAccent,
-            );
+            CustomSnackBar.success(context, message: state.message);
           }
         },
         builder: (context, state) {
@@ -133,6 +123,7 @@ class _AuthScreenState extends State<AuthScreen> {
     });
   }
 }
+
 class _AuthMobileLayout extends StatelessWidget {
   final AuthState state;
   final AuthCubit cubit;
@@ -162,26 +153,30 @@ class _AuthMobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _AuthContent(
-      state: state,
-      cubit: cubit,
-      isSignUp: isSignUp,
-      formKey: formKey,
-      nameController: nameController,
-      emailController: emailController,
-      passwordController: passwordController,
-      confirmPasswordController: confirmPasswordController,
-      onToggleMode: onToggleMode,
-      maxWidth: double.infinity,
-      horizontalPadding: 24,
-      logoSize: 100,
-      titleSize: 30,
-      descriptionSize: 15,
-      buttonHeight: 50,
-      isDesktop: false,
+    return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      child: _AuthContent(
+        state: state,
+        cubit: cubit,
+        isSignUp: isSignUp,
+        formKey: formKey,
+        nameController: nameController,
+        emailController: emailController,
+        passwordController: passwordController,
+        confirmPasswordController: confirmPasswordController,
+        onToggleMode: onToggleMode,
+        maxWidth: double.infinity,
+        horizontalPadding: 24,
+        logoSize: 100,
+        titleSize: 30,
+        descriptionSize: 15,
+        buttonHeight: 50,
+        isDesktop: false,
+      ),
     );
   }
 }
+
 class _AuthTabletLayout extends StatelessWidget {
   final AuthState state;
   final AuthCubit cubit;
@@ -212,23 +207,26 @@ class _AuthTabletLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: _AuthContent(
-        state: state,
-        cubit: cubit,
-        isSignUp: isSignUp,
-        formKey: formKey,
-        nameController: nameController,
-        emailController: emailController,
-        passwordController: passwordController,
-        confirmPasswordController: confirmPasswordController,
-        onToggleMode: onToggleMode,
-        maxWidth: 520,
-        horizontalPadding: 32,
-        logoSize: 120,
-        titleSize: 34,
-        descriptionSize: 17,
-        buttonHeight: 52,
-        isDesktop: false,
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: _AuthContent(
+          state: state,
+          cubit: cubit,
+          isSignUp: isSignUp,
+          formKey: formKey,
+          nameController: nameController,
+          emailController: emailController,
+          passwordController: passwordController,
+          confirmPasswordController: confirmPasswordController,
+          onToggleMode: onToggleMode,
+          maxWidth: 520,
+          horizontalPadding: 32,
+          logoSize: 120,
+          titleSize: 34,
+          descriptionSize: 17,
+          buttonHeight: 52,
+          isDesktop: false,
+        ),
       ),
     );
   }
@@ -273,9 +271,9 @@ class _AuthDesktopLayout extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(flex: 5, child: _AuthBranding()),
-            
+
                 const SizedBox(width: 70),
-            
+
                 Expanded(
                   flex: 5,
                   child: SingleChildScrollView(
@@ -307,6 +305,7 @@ class _AuthDesktopLayout extends StatelessWidget {
     );
   }
 }
+
 class _AuthBranding extends StatelessWidget {
   const _AuthBranding();
 
@@ -363,6 +362,7 @@ class _AuthBranding extends StatelessWidget {
     );
   }
 }
+
 class _AuthContent extends StatelessWidget {
   final AuthState state;
   final AuthCubit cubit;

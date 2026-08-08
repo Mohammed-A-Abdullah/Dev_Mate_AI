@@ -1,11 +1,13 @@
-import 'package:dev_mate_ai/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+enum SnackBarType { success, error, warning, info }
 
 class CustomSnackBar {
   static void show(
     BuildContext context, {
     required String message,
+    SnackBarType type = SnackBarType.error,
     Color? backgroundColor,
     Color? textColor,
     int? time,
@@ -33,6 +35,10 @@ class CustomSnackBar {
         ? 550
         : double.infinity;
 
+    final colors = _colors(context, type);
+    final resolvedBackground = backgroundColor ?? colors.background;
+    final resolvedText = textColor ?? colors.foreground;
+
     final snackBar = SnackBar(
       duration: Duration(seconds: time ?? 3),
 
@@ -44,25 +50,33 @@ class CustomSnackBar {
 
       elevation: 3,
 
-      backgroundColor: backgroundColor ?? Theme.of(context).colorScheme.error,
+      backgroundColor: resolvedBackground,
 
-      closeIconColor: Theme.of(context).colorScheme.secondary,
+      closeIconColor: resolvedText,
 
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
 
       content: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: maxWidth),
-          child: Text(
-            message,
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.inter(
-              color: textColor ?? AppColors.secondary,
-              fontSize: fontSize,
-              fontWeight: FontWeight.w500,
-              height: 1.4,
-            ),
+          child: Row(
+            children: [
+              Icon(colors.icon, color: resolvedText, size: 22),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  message,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(
+                    color: resolvedText,
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.w500,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -71,5 +85,54 @@ class CustomSnackBar {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(snackBar);
+  }
+
+  static void success(BuildContext context, {required String message}) {
+    show(context, message: message, type: SnackBarType.success);
+  }
+
+  static void error(BuildContext context, {required String message}) {
+    show(context, message: message, type: SnackBarType.error);
+  }
+
+  static void warning(BuildContext context, {required String message}) {
+    show(context, message: message, type: SnackBarType.warning);
+  }
+
+  static void info(BuildContext context, {required String message}) {
+    show(context, message: message, type: SnackBarType.info);
+  }
+
+  static ({Color background, Color foreground, IconData icon}) _colors(
+    BuildContext context,
+    SnackBarType type,
+  ) {
+    final theme = Theme.of(context);
+    switch (type) {
+      case SnackBarType.success:
+        return (
+          background: const Color(0xff15803D),
+          foreground: Colors.white,
+          icon: Icons.check_circle_outline,
+        );
+      case SnackBarType.warning:
+        return (
+          background: const Color(0xffB45309),
+          foreground: Colors.white,
+          icon: Icons.warning_amber_rounded,
+        );
+      case SnackBarType.info:
+        return (
+          background: theme.colorScheme.primary,
+          foreground: theme.colorScheme.onPrimary,
+          icon: Icons.info_outline,
+        );
+      case SnackBarType.error:
+        return (
+          background: theme.colorScheme.error,
+          foreground: theme.colorScheme.onError,
+          icon: Icons.error_outline,
+        );
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:dev_mate_ai/core/constants/app_assets.dart';
 import 'package:dev_mate_ai/core/theme/extensions/profile_theme_extension.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
+import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_about_build_info_tile.dart';
 import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_about_build_simple_tile.dart';
@@ -24,16 +25,15 @@ class AboutScreen extends StatelessWidget {
 
       if (!launched) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(S.of(context).couldNotOpenLink)),
+          CustomSnackBar.error(
+            context,
+            message: S.of(context).couldNotOpenLink,
           );
         }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).AboutErrorAccurre)),
-        );
+        CustomSnackBar.error(context, message: S.of(context).AboutErrorAccurre);
       }
     }
   }

@@ -69,7 +69,7 @@ class ProfileView extends StatelessWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        CustomSnackBar.show(context, message: 'Failed to pick image: $e');
+        CustomSnackBar.error(context, message: 'Failed to pick image: $e');
       }
     }
   }
@@ -88,7 +88,7 @@ class ProfileView extends StatelessWidget {
         }
 
         if (state is ProfileError) {
-          CustomSnackBar.show(context, message: state.message);
+          CustomSnackBar.error(context, message: state.message);
         }
       },
       builder: (context, state) {

@@ -1,5 +1,5 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../domain/entities/auth_user_entity.dart';
@@ -77,24 +77,28 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
     }
   }
 
- @override
+  @override
   Future<AuthUserEntity?> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final UserCredential userCredential;
 
-      if (googleUser == null) return null;
+      if (kIsWeb || !_isMobile) {
+        userCredential = await _auth.signInWithProvider(GoogleAuthProvider());
+      } else {
+        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+        if (googleUser == null) return null;
 
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
 
-      final UserCredential userCredential = await _auth.signInWithCredential(
-        credential,
-      );
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        userCredential = await _auth.signInWithCredential(credential);
+      }
 
       final User? user = userCredential.user;
 
@@ -110,11 +114,22 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
 
   @override
   Future<AuthUserEntity?> signInWithGithub() async {
-    final provider = GithubAuthProvider();
+    try {
+      final provider = GithubAuthProvider();
+      final credential = await _auth.signInWithProvider(provider);
 
-    final credential = await _auth.signInWithProvider(provider);
+      final user = credential.user;
+      return user == null ? null : _mapUser(user);
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_firebaseError(e));
+    } catch (e) {
+      throw Exception("Unexpected error during GitHub Sign-In: $e");
+    }
+  }
 
-    return _mapUser(credential.user!);
+  bool get _isMobile {
+    return defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
   }
 
   @override
@@ -135,7 +150,9 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
 
   @override
   Future<void> signOut() async {
-    await GoogleSignIn().signOut();
+    if (_isMobile) {
+      await GoogleSignIn().signOut();
+    }
     await _auth.signOut();
   }
 
@@ -169,20 +186,19 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
         return e.message ?? 'Authentication failed.';
     }
   }
-  
+
   @override
-  Future<void> resetPassword({required String email})async {
+  Future<void> resetPassword({required String email}) async {
     return await _auth.sendPasswordResetEmail(email: email);
-    
   }
-  
+
   @override
-  Future<AuthUserEntity?> getCurrentUser()async {
-    return  _mapUser(_auth.currentUser!);
+  Future<AuthUserEntity?> getCurrentUser() async {
+    return _mapUser(_auth.currentUser!);
   }
-  
+
   @override
-  Future<void> updatePassword(String password)async {
+  Future<void> updatePassword(String password) async {
     final user = _auth.currentUser;
 
     if (user == null) {

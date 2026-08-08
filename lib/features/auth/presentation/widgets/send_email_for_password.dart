@@ -41,11 +41,7 @@ class _SendEmailForPasswordState extends State<SendEmailForPassword> {
     final email = emailController.text.trim();
 
     if (email.isEmpty) {
-      CustomSnackBar.show(
-        context,
-        message: local.showDialogSendEmail,
-        backgroundColor: Theme.of(context).colorScheme.error,
-      );
+      CustomSnackBar.error(context, message: local.showDialogSendEmail);
 
       return;
     }
@@ -61,10 +57,9 @@ class _SendEmailForPasswordState extends State<SendEmailForPassword> {
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
-            CustomSnackBar.show(
+            CustomSnackBar.error(
               context,
               message: 'Failed to send reset email.',
-              backgroundColor: Theme.of(context).colorScheme.error,
             );
           }
 
@@ -135,6 +130,7 @@ class _SendEmailForPasswordState extends State<SendEmailForPassword> {
     );
   }
 }
+
 class _ForgotPasswordContent extends StatelessWidget {
   const _ForgotPasswordContent({
     required this.emailController,

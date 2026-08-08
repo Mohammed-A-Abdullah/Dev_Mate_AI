@@ -37,10 +37,13 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       child: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ChangePasswordSuccess) {
-            CustomSnackBar.show(context, message: local.passwordUpdateSucceful);
+            CustomSnackBar.success(
+              context,
+              message: local.passwordUpdateSucceful,
+            );
             Navigator.pop(context);
           } else if (state is ProfileError) {
-            CustomSnackBar.show(context, message: state.message);
+            CustomSnackBar.error(context, message: state.message);
           }
         },
         builder: (context, state) {

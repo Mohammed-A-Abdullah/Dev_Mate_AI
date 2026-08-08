@@ -9,7 +9,6 @@ import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -76,6 +75,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
               CustomSnackBar.show(
                 context,
                 message: local.processingMayTakeLonger,
+                type: SnackBarType.info,
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 textColor: Theme.of(context).colorScheme.onPrimary,
                 time: 8,

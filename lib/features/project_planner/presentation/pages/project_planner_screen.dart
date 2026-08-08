@@ -65,22 +65,18 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
         if (state.isLoading) {
           _slowLoadingTimer?.cancel();
 
-          _slowLoadingTimer = Timer(
-            const Duration(seconds: 4),
-            () {
-              if (mounted && state.isLoading) {
-                CustomSnackBar.show(
-                  context,
-                  message: S.of(context).processingMayTakeLonger,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primary,
-                  time: 8,
-                  textColor:
-                      Theme.of(context).colorScheme.onPrimary,
-                );
-              }
-            },
-          );
+          _slowLoadingTimer = Timer(const Duration(seconds: 4), () {
+            if (mounted && state.isLoading) {
+              CustomSnackBar.show(
+                context,
+                message: S.of(context).processingMayTakeLonger,
+                type: SnackBarType.info,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                time: 8,
+                textColor: Theme.of(context).colorScheme.onPrimary,
+              );
+            }
+          });
         } else {
           _slowLoadingTimer?.cancel();
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -90,8 +86,7 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
           CustomSnackBar.show(
             context,
             message: state.errorMessage!,
-            backgroundColor:
-                Theme.of(context).colorScheme.error,
+            backgroundColor: Theme.of(context).colorScheme.error,
           );
 
           context.read<ProjectPlanCubit>().clearError();
@@ -110,12 +105,9 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
           onTap: () => FocusScope.of(context).unfocus(),
 
           child: Scaffold(
-            backgroundColor:
-                Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
-            appBar: CustomAppBar(
-              title: local.projectPlanner,
-            ),
+            appBar: CustomAppBar(title: local.projectPlanner),
 
             body: LayoutBuilder(
               builder: (context, constraints) {
@@ -127,24 +119,21 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                 final double horizontalPadding = isDesktop
                     ? 40.0
                     : isTablet
-                        ? 28.0
-                        : 16.0;
+                    ? 28.0
+                    : 16.0;
 
                 final double topPadding = isDesktop
                     ? 35.0
                     : isTablet
-                        ? 30.0
-                        : 20.0;
+                    ? 30.0
+                    : 20.0;
 
-                final double maxWidth =
-                    isDesktop ? 900.0 : double.infinity;
+                final double maxWidth = isDesktop ? 900.0 : double.infinity;
 
                 return SingleChildScrollView(
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: maxWidth,
-                      ),
+                      constraints: BoxConstraints(maxWidth: maxWidth),
 
                       child: Padding(
                         padding: EdgeInsets.symmetric(
@@ -153,8 +142,7 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                         ),
 
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
                           children: [
                             /// =========================
@@ -185,8 +173,7 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                             CustomDropdownbuttonfield(
                               labelText: local.platform,
                               hintText: local.selectPlatform,
-                              items:
-                                  ProjectPlannerConstant.platforms,
+                              items: ProjectPlannerConstant.platforms,
                               initialValue: state.platform,
                               onChanged: (value) {
                                 if (value != null) {
@@ -204,18 +191,14 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                             /// =========================
                             CustomDropdownbuttonfield(
                               labelText: local.programmingLang,
-                              hintText:
-                                  local.selectProgrammingLang,
+                              hintText: local.selectProgrammingLang,
                               items: LanguageHelper.languages,
-                              initialValue:
-                                  state.programmingLanguage,
+                              initialValue: state.programmingLanguage,
                               onChanged: (value) {
                                 if (value != null) {
                                   context
                                       .read<ProjectPlanCubit>()
-                                      .updateProgrammingLanguage(
-                                        value,
-                                      );
+                                      .updateProgrammingLanguage(value);
                                 }
                               },
                             ),
@@ -227,20 +210,14 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                             /// =========================
                             CustomDropdownbuttonfield(
                               labelText: local.experienceLevel,
-                              hintText:
-                                  local.selectExperienceLevel,
-                              items:
-                                  ProjectPlannerConstant
-                                      .experienceLevel,
-                              initialValue:
-                                  state.experienceLevel,
+                              hintText: local.selectExperienceLevel,
+                              items: ProjectPlannerConstant.experienceLevel,
+                              initialValue: state.experienceLevel,
                               onChanged: (value) {
                                 if (value != null) {
                                   context
                                       .read<ProjectPlanCubit>()
-                                      .updateExperienceLevel(
-                                        value,
-                                      );
+                                      .updateExperienceLevel(value);
                                 }
                               },
                             ),
@@ -252,20 +229,14 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                             /// =========================
                             CustomDropdownbuttonfield(
                               labelText: local.architecture,
-                              hintText:
-                                  local.selectArchitecture,
-                              items:
-                                  ProjectPlannerConstant
-                                      .architectures,
-                              initialValue:
-                                  state.architecture,
+                              hintText: local.selectArchitecture,
+                              items: ProjectPlannerConstant.architectures,
+                              initialValue: state.architecture,
                               onChanged: (value) {
                                 if (value != null) {
                                   context
                                       .read<ProjectPlanCubit>()
-                                      .updateArchitecture(
-                                        value,
-                                      );
+                                      .updateArchitecture(value);
                                 }
                               },
                             ),
@@ -277,10 +248,8 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                             /// =========================
                             CustomDropdownbuttonfield(
                               labelText: local.deadline,
-                              hintText:
-                                  local.selectDeadline,
-                              items:
-                                  ProjectPlannerConstant.deadline,
+                              hintText: local.selectDeadline,
+                              items: ProjectPlannerConstant.deadline,
                               initialValue: state.deadline,
                               onChanged: (value) {
                                 if (value != null) {
@@ -297,22 +266,15 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                             /// Deployment Target
                             /// =========================
                             CustomDropdownbuttonfield(
-                              labelText:
-                                  local.deploymentTarget,
-                              hintText:
-                                  local.selectDeploymentTarget,
-                              items:
-                                  ProjectPlannerConstant
-                                      .deploymentTarget,
-                              initialValue:
-                                  state.deploymentTarget,
+                              labelText: local.deploymentTarget,
+                              hintText: local.selectDeploymentTarget,
+                              items: ProjectPlannerConstant.deploymentTarget,
+                              initialValue: state.deploymentTarget,
                               onChanged: (value) {
                                 if (value != null) {
                                   context
                                       .read<ProjectPlanCubit>()
-                                      .updateDeploymentTarget(
-                                        value,
-                                      );
+                                      .updateDeploymentTarget(value);
                                 }
                               },
                             ),
@@ -328,20 +290,15 @@ class _ProjectPlannerViewState extends State<ProjectPlannerView> {
                               onTap: state.isLoading
                                   ? null
                                   : () {
-                                      FocusScope.of(context)
-                                          .unfocus();
+                                      FocusScope.of(context).unfocus();
 
                                       context
                                           .read<ProjectPlanCubit>()
                                           .generatePlan(
-                                            title:
-                                                _titleController
-                                                    .text
-                                                    .trim(),
-                                            description:
-                                                _descriptionController
-                                                    .text
-                                                    .trim(),
+                                            title: _titleController.text.trim(),
+                                            description: _descriptionController
+                                                .text
+                                                .trim(),
                                           );
                                     },
                             ),

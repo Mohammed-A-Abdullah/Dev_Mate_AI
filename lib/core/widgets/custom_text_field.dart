@@ -97,7 +97,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
           cursorErrorColor: Colors.red,
           style:
               widget.textStyle ??
-              const TextStyle(color: Colors.white, fontSize: 16),
+              TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontSize: 16,
+              ),
 
           decoration: InputDecoration(
             labelText: widget.label,
@@ -125,7 +128,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                           isPasswordVisible
                               ? Icons.visibility
                               : Icons.visibility_off,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       )
                     : widget.suffixIcon != null
@@ -150,7 +153,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
             focusedBorder: widget.borderColor != null || widget.radius != null
                 ? OutlineInputBorder(
                     borderRadius: BorderRadius.circular(widget.radius ?? 20),
-                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    ),
                   )
                 : null,
           ),
