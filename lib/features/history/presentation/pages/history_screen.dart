@@ -8,7 +8,6 @@ import 'package:dev_mate_ai/features/history/presentation/widgets/custom_tab_bar
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../cubit/history_cubit.dart';
@@ -79,133 +78,161 @@ class _HistoryViewState extends State<HistoryView> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(title: local.history, needButton: false),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HeightSpace(height: 24),
-            Text(
-              local.activityHistory,
-              style: GoogleFonts.geist(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-            ),
-            HeightSpace(height: 16),
-            CustomHistoryTextField(controller: historyController),
-            HeightSpace(height: 20),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
 
-            SizedBox(
-              height: 35.h,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: filterChips.length,
-                physics: const BouncingScrollPhysics(),
-                separatorBuilder: (context, index) => SizedBox(width: 8.w),
-                itemBuilder: (context, index) {
-                  return CustomTabBarWidget(
-                    text: filterChips[index],
-                    isSelected: selectedFilterIndex == index,
-                    onTap: () {
-                      setState(() {
-                        selectedFilterIndex = index;
-                      });
-                    },
-                  );
-                },
-              ),
-            ),
-            HeightSpace(height: 20),
+          final isTablet = width >= 600;
+          final isDesktop = width >= 1024;
 
-            Expanded(
-              child: BlocBuilder<HistoryCubit, HistoryState>(
-                builder: (context, state) {
-                  if (state is HistoryLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.primary,
+          final horizontalPadding = isDesktop ? 40.0 : (isTablet ? 28.0 : 16.0);
+          final titleSize = isDesktop ? 28.0 : 24.0;
+
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isDesktop ? 900 : double.infinity,
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const HeightSpace(height: 24),
+                    Text(
+                      local.activityHistory,
+                      style: GoogleFonts.geist(
+                        fontSize: titleSize,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
-                    );
-                  }
+                    ),
+                    const HeightSpace(height: 16),
+                    CustomHistoryTextField(controller: historyController),
+                    const HeightSpace(height: 10),
 
-                  if (state is HistoryLoaded) {
-                    final filteredHistory = state.history.where((item) {
-                      final matchesType =
-                          selectedFilterIndex == 0 ||
-                          item.type.toLowerCase() ==
-                              filterChips[selectedFilterIndex].toLowerCase();
-
-                      final matchesQuery =
-                          searchQuery.isEmpty ||
-                          item.title.toLowerCase().contains(searchQuery) ||
-                          item.lastMessage.toLowerCase().contains(searchQuery);
-
-                      return matchesType && matchesQuery;
-                    }).toList();
-
-                    if (filteredHistory.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'No history found',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontSize: 16.sp,
-                          ),
-                        ),
-                      );
-                    }
-
-                    return ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: filteredHistory.length,
-                      itemBuilder: (context, index) {
-                        final item = filteredHistory[index];
-
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 12.h),
-                          child: CustomHistoryCardWidget(
-                            title: item.title.isEmpty
-                                ? local.newChat
-                                : item.title,
-                            description: item.lastMessage.isEmpty
-                                ? local.noMessageYet
-                                : item.lastMessage,
-                            chipType: item.type,
-                            time: item.updatedAt,
+                    SizedBox(
+                      height: 36,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: filterChips.length,
+                        physics: const BouncingScrollPhysics(),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          return CustomTabBarWidget(
+                            text: filterChips[index],
+                            isSelected: selectedFilterIndex == index,
                             onTap: () {
-                              if (item.type.toLowerCase() == 'chat') {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => ChatScreen(chatId: item.id),
+                              setState(() {
+                                selectedFilterIndex = index;
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    const HeightSpace(height: 20),
+
+                    Expanded(
+                      child: BlocBuilder<HistoryCubit, HistoryState>(
+                        builder: (context, state) {
+                          if (state is HistoryLoading) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            );
+                          }
+
+                          if (state is HistoryLoaded) {
+                            final filteredHistory = state.history.where((item) {
+                              final matchesType =
+                                  selectedFilterIndex == 0 ||
+                                  item.type.toLowerCase() ==
+                                      filterChips[selectedFilterIndex]
+                                          .toLowerCase();
+
+                              final matchesQuery =
+                                  searchQuery.isEmpty ||
+                                  item.title.toLowerCase().contains(
+                                    searchQuery,
+                                  ) ||
+                                  item.lastMessage.toLowerCase().contains(
+                                    searchQuery,
+                                  );
+
+                              return matchesType && matchesQuery;
+                            }).toList();
+
+                            if (filteredHistory.isEmpty) {
+                              return Center(
+                                child: Text(
+                                  'No history found',
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.secondary,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: filteredHistory.length,
+                              itemBuilder: (context, index) {
+                                final item = filteredHistory[index];
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: CustomHistoryCardWidget(
+                                    title: item.title.isEmpty
+                                        ? local.newChat
+                                        : item.title,
+                                    description: item.lastMessage.isEmpty
+                                        ? local.noMessageYet
+                                        : item.lastMessage,
+                                    chipType: item.type,
+                                    time: item.updatedAt,
+                                    onTap: () {
+                                      if (item.type.toLowerCase() == 'chat') {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                ChatScreen(chatId: item.id),
+                                          ),
+                                        );
+                                      } else {}
+                                    },
                                   ),
                                 );
-                              } else {}
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  }
+                              },
+                            );
+                          }
 
-                  if (state is HistoryError) {
-                    return Center(
-                      child: Text(
-                        state.message,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
+                          if (state is HistoryError) {
+                            return Center(
+                              child: Text(
+                                state.message,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
+                              ),
+                            );
+                          }
+
+                          return const SizedBox();
+                        },
                       ),
-                    );
-                  }
-
-                  return const SizedBox();
-                },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

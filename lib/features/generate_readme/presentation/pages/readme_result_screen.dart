@@ -107,6 +107,8 @@ class ReadmeResultScreen extends StatelessWidget {
                                   ClipboardData(text: readme),
                                 );
 
+                                if (!context.mounted) return;
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text(local.readmeCopied)),
                                 );

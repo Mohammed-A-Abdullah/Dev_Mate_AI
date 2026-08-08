@@ -7,7 +7,6 @@ import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_about_b
 import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_row_divider.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,18 +25,14 @@ class AboutScreen extends StatelessWidget {
       if (!launched) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(
-              content: Text(S.of(context).couldNotOpenLink),
-            ),
+            SnackBar(content: Text(S.of(context).couldNotOpenLink)),
           );
         }
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(
-            content: Text(S.of(context).AboutErrorAccurre),
-          ),
+          SnackBar(content: Text(S.of(context).AboutErrorAccurre)),
         );
       }
     }
@@ -45,112 +40,140 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final local =S.of(context);
+    final local = S.of(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(title: local.aboutDevMate),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(AppAssets.logo, width: 100.w),
-            HeightSpace(height: 16),
-            Text(
-              local.appName,
-              style: GoogleFonts.inter(
-                fontSize: 22.sp,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-            ),
-            HeightSpace(height: 4),
-            Text(
-              "Version 1.0.0",
-              style: GoogleFonts.inter(
-                color: Theme.of(context).colorScheme.onSecondary,
-                fontSize: 14.sp,
-              ),
-            ),
-            HeightSpace(height: 4),
-            Text(
-              local.yourAIPowerdDeleCompanion,
-              style: GoogleFonts.inter(
-                color: Theme.of(context).colorScheme.onSecondary,
-                fontSize: 14.sp,
-              ),
-            ),
-            HeightSpace(height: 32),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
 
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).extension<ProfileThemeExtension>()!.profilCard,
-                borderRadius: BorderRadius.circular(16.r),
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.outline,
-                  width: 1,
+          final isTablet = width >= 600;
+          final isDesktop = width >= 1024;
+
+          final horizontalPadding = isDesktop ? 40.0 : (isTablet ? 28.0 : 16.0);
+
+          return SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: horizontalPadding,
+              vertical: 24,
+            ),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: isDesktop ? 700 : double.infinity,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(AppAssets.logo, width: 100),
+                    const HeightSpace(height: 16),
+                    Text(
+                      local.appName,
+                      style: GoogleFonts.inter(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    const HeightSpace(height: 4),
+                    Text(
+                      "Version 1.0.0",
+                      style: GoogleFonts.inter(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const HeightSpace(height: 4),
+                    Text(
+                      local.yourAIPowerdDeleCompanion,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.inter(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const HeightSpace(height: 32),
+
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).extension<ProfileThemeExtension>()!.profilCard,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.outline,
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          CustomAboutBuildInfoTile(
+                            title: local.aboutDescription,
+                            subtitle: local.aboutDescriptionText,
+                            isLongText: true,
+                          ),
+                          const CustomRowDivider(),
+                          CustomAboutBuildInfoTile(
+                            title: local.aboutDeveloper,
+                            subtitle: local.aboutDeveloperName,
+                          ),
+                          const CustomRowDivider(),
+                          CustomAboutBuildInfoTile(
+                            title: local.aboutBuildWith,
+                            subtitle: local.aboutBuildWithData,
+                          ),
+                          const CustomRowDivider(),
+                          InkWell(
+                            onTap: () => launchSafeUrl(
+                              context,
+                              'https://mohammed-a-abdullah.github.io/portfolio_web/',
+                            ),
+                            child: CustomAboutBuildSimpleTile(
+                              title: local.privaceyPolicy,
+                            ),
+                          ),
+                          const CustomRowDivider(),
+                          InkWell(
+                            onTap: () => launchSafeUrl(
+                              context,
+                              'https://mohammed-a-abdullah.github.io/portfolio_web/',
+                            ),
+                            child: CustomAboutBuildSimpleTile(
+                              title: local.termService,
+                            ),
+                          ),
+                          const CustomRowDivider(),
+                          InkWell(
+                            onTap: () {
+                              launchSafeUrl(
+                                context,
+                                'https://mohammed-a-abdullah.github.io/portfolio_web/',
+                              );
+                            },
+                            child: CustomAboutBuildSimpleTile(
+                              title: local.openSource,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const HeightSpace(height: 32),
+                    Text(
+                      local.copyWrite,
+                      style: GoogleFonts.inter(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const HeightSpace(height: 16),
+                  ],
                 ),
               ),
-              child: Column(
-                children: [
-                  CustomAboutBuildInfoTile(
-                    title: local.aboutDescription,
-                    subtitle:
-                        local.aboutDescriptionText,
-                    isLongText: true,
-                  ),
-                  CustomRowDivider(),
-                  CustomAboutBuildInfoTile(
-                    title: local.aboutDeveloper,
-                    subtitle: local.aboutDeveloperName,
-                  ),
-                  CustomRowDivider(),
-                  CustomAboutBuildInfoTile(
-                    title: local.aboutBuildWith,
-                    subtitle: local.aboutBuildWithData,
-                  ),
-                  CustomRowDivider(),
-                  InkWell(
-                    onTap: () => launchSafeUrl(
-                      context,
-                      'https://mohammed-a-abdullah.github.io/portfolio_web/',
-                    ),
-                    child: CustomAboutBuildSimpleTile(title: local.privaceyPolicy),
-                  ),
-                  CustomRowDivider(),
-                  InkWell(
-                    onTap: () => launchSafeUrl(
-                      context,
-                      'https://mohammed-a-abdullah.github.io/portfolio_web/',
-                    ),
-                    child: CustomAboutBuildSimpleTile(title: local.termService),
-                  ),
-                  CustomRowDivider(),
-                  InkWell(
-                    onTap: () {
-                      launchSafeUrl(
-                        context,
-                        'https://mohammed-a-abdullah.github.io/portfolio_web/',
-                      );
-                    },
-                    child: CustomAboutBuildSimpleTile(title: local.openSource),
-                  ),
-                ],
-              ),
             ),
-            HeightSpace(height: 32.h),
-            Text(
-              local.copyWrite,
-              style: GoogleFonts.inter(
-                color: Theme.of(context).colorScheme.onSecondary,
-                fontSize: 12.sp,
-              ),
-            ),
-            HeightSpace(height: 16.h),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

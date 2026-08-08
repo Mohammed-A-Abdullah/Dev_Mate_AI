@@ -1,10 +1,11 @@
+import 'package:dev_mate_ai/core/constants/app_assets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import '../../../../core/constants/app_assets.dart';
 
 class CustomLogoWithShadowWidget extends StatelessWidget {
-  const CustomLogoWithShadowWidget({super.key});
+  final double size;
+
+  const CustomLogoWithShadowWidget({super.key, required this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -12,13 +13,13 @@ class CustomLogoWithShadowWidget extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withValues(alpha: 0.1),
-            blurRadius: 15.r,
-            spreadRadius: 10.r,
+            color: Colors.white.withValues(alpha: .1),
+            blurRadius: size * .15,
+            spreadRadius: size * .08,
           ),
         ],
       ),
-      child: SvgPicture.asset(AppAssets.logo, width: 96.w),
+      child: SvgPicture.asset(AppAssets.logo, width: size),
     );
   }
 }

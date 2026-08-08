@@ -1,4 +1,5 @@
 import 'package:dev_mate_ai/core/di/service_locator.dart';
+import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,65 +66,96 @@ class _ChatViewState extends State<ChatView> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: SafeArea(
           bottom: true,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: Column(
-              children: [
-                Expanded(
-                  child: BlocBuilder<ChatCubit, ChatState>(
-                    builder: (context, state) {
-                      final cubit = context.read<ChatCubit>();
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final width = constraints.maxWidth;
 
-                      if (state is ChatLoading && cubit.messages.isEmpty) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
+              final isTablet = width >= 600;
+              final isDesktop = width >= 1024;
 
-                      List<ChatMessage> currentMessages = [];
-                      if (state is ChatLoaded) {
-                        currentMessages = state.messages;
-                      } else {
-                        currentMessages = cubit.messages;
-                      }
+              final horizontalPadding = isDesktop
+                  ? 0.0
+                  : (isTablet ? 8.0 : 15.0);
 
-                      return ListView.builder(
-                        reverse: true,
-                        itemCount: currentMessages.length,
-                        itemBuilder: (context, index) {
-                          final message = currentMessages[index];
-                          return CustomUserAndBotMessage(
-                            check: message.isUser,
-                            text: message.text,
-                            onTap: () => cubit.toggleMessageExpansion(index),
-                          );
-                        },
-                      );
-                    },
+              return Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: isDesktop ? 900 : double.infinity,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding,
+                      vertical: 10,
+                    ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: BlocBuilder<ChatCubit, ChatState>(
+                            builder: (context, state) {
+                              final cubit = context.read<ChatCubit>();
+
+                              if (state is ChatLoading &&
+                                  cubit.messages.isEmpty) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+
+                              List<ChatMessage> currentMessages = [];
+                              if (state is ChatLoaded) {
+                                currentMessages = state.messages;
+                              } else {
+                                currentMessages = cubit.messages;
+                              }
+
+                              return ListView.builder(
+                                reverse: true,
+                                itemCount: currentMessages.length,
+                                itemBuilder: (context, index) {
+                                  final message = currentMessages[index];
+                                  return CustomUserAndBotMessage(
+                                    check: message.isUser,
+                                    text: message.text,
+                                    onTap: () =>
+                                        cubit.toggleMessageExpansion(index),
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+
+                        BlocBuilder<ChatCubit, ChatState>(
+                          builder: (context, state) {
+                            final cubit = context.read<ChatCubit>();
+                            if (state is ChatLoading &&
+                                cubit.messages.isNotEmpty) {
+                              return const Padding(
+                                padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                                child: CustomLoadingProgress(),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
+
+                        const SizedBox(height: 10),
+                        CustomChatTextField(
+                          chatController: _controller,
+                          onPressed: () {
+                            context.read<ChatCubit>().sendMessage(
+                              _controller.text,
+                            );
+                            _controller.clear();
+                          },
+                        ),
+                        HeightSpace(height: 10),
+                      ],
+                    ),
                   ),
                 ),
-
-                BlocBuilder<ChatCubit, ChatState>(
-                  builder: (context, state) {
-                    final cubit = context.read<ChatCubit>();
-                    if (state is ChatLoading && cubit.messages.isNotEmpty) {
-                      return const Padding(
-                        padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-                        child: CustomLoadingProgress(),
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  },
-                ),
-
-                const SizedBox(height: 10),
-                CustomChatTextField(
-                  chatController: _controller,
-                  onPressed: () {
-                    context.read<ChatCubit>().sendMessage(_controller.text);
-                    _controller.clear();
-                  },
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

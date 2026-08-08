@@ -1,10 +1,8 @@
 import 'package:dev_mate_ai/core/theme/extensions/home_theme_extension.dart';
-import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/navigation_bar/presentation/cubit/navigation_bar_cubit.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomNewChatContainer extends StatelessWidget {
@@ -12,77 +10,122 @@ class CustomNewChatContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeTheme = Theme.of(context).extension<HomeThemeExtension>()!;
-    final local=S.of(context);
+    final theme = Theme.of(context);
+    final homeTheme = theme.extension<HomeThemeExtension>()!;
+    final local = S.of(context);
+
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(24.w),
+
+      padding: const EdgeInsets.all(24),
+
       decoration: BoxDecoration(
         color: homeTheme.homeCard,
 
-        borderRadius: BorderRadius.circular(28.r),
+        borderRadius: BorderRadius.circular(28),
 
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline,
-          width: 1.w,
-        ),
+        border: Border.all(color: theme.colorScheme.outline, width: 1),
 
         gradient: RadialGradient(
-          center: Alignment(0.7, 0.9),
+          center: const Alignment(0.7, 0.9),
+
           radius: 1.2,
+
           colors: [
             homeTheme.homeCardGradient,
             homeTheme.secondHomeCardGradient,
           ],
-          stops: [0.0, 0.7],
+
+          stops: const [0.0, 0.7],
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            local.homeWhatCanIHelp,
-            style: GoogleFonts.inter(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-          ),
-          HeightSpace(height: 16),
-          GestureDetector(
-            onTap: () {
-              context.read<NavigationCubit>().changeIndex(1);
-            },
-            child: Container(
-              height: 36.h,
-              width: 115.w,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius: BorderRadius.circular(50.r),
+
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isSmall = constraints.maxWidth < 350;
+
+          final titleSize = isSmall ? 18.0 : 20.0;
+
+          final buttonWidth = isSmall ? 110.0 : 120.0;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            mainAxisSize: MainAxisSize.min,
+
+            children: [
+              Text(
+                local.homeWhatCanIHelp,
+
+                style: GoogleFonts.inter(
+                  fontSize: titleSize,
+
+                  fontWeight: FontWeight.w500,
+
+                  color: theme.colorScheme.secondary,
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.add_circle_outline,
-                    size: 16.sp,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                  WidthSpace(width: 4),
-                  Text(
-                    local.newChat,
-                    style: GoogleFonts.inter(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
+
+              const SizedBox(height: 16),
+
+              Material(
+                color: Colors.transparent,
+
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(50),
+
+                  onTap: () {
+                    context.read<NavigationCubit>().changeIndex(1);
+                  },
+
+                  child: Ink(
+                    width: buttonWidth,
+
+                    height: 38,
+
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+                        Icon(
+                          Icons.add_circle_outline,
+
+                          size: 17,
+
+                          color: theme.colorScheme.onPrimary,
+                        ),
+
+                        const SizedBox(width: 5),
+
+                        Flexible(
+                          child: Text(
+                            local.newChat,
+
+                            overflow: TextOverflow.ellipsis,
+
+                            style: GoogleFonts.inter(
+                              color: theme.colorScheme.onPrimary,
+
+                              fontSize: 14,
+
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }

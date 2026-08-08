@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomAboutBuildSimpleTile extends StatelessWidget {
@@ -8,7 +7,7 @@ class CustomAboutBuildSimpleTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -16,14 +15,11 @@ class CustomAboutBuildSimpleTile extends StatelessWidget {
             title,
             style: GoogleFonts.inter(
               color: Theme.of(context).colorScheme.secondary,
-              fontSize: 14.sp,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
-          Icon(
-            Icons.arrow_forward_ios,
-            size: 14.sp,
-          ),
+          const Icon(Icons.arrow_forward_ios, size: 14),
         ],
       ),
     );

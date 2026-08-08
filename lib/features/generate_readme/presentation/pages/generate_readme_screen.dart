@@ -1,6 +1,11 @@
 import 'dart:async';
 
+import 'package:dev_mate_ai/core/di/service_locator.dart';
+import 'package:dev_mate_ai/core/widgets/custom_dropdown_button_field.dart';
+import 'package:dev_mate_ai/core/widgets/custom_feature_button.dart';
 import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
+import 'package:dev_mate_ai/core/widgets/custom_text_field.dart';
+import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,16 +13,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/di/service_locator.dart';
 import '../../../../core/routing/route_name.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
-import '../../../../core/widgets/custom_dropdown_button_field.dart';
-import '../../../../core/widgets/custom_feature_button.dart';
-import '../../../../core/widgets/custom_text_field.dart';
-import '../../../../core/widgets/spacing_widgets.dart';
+import '../constants/generarte_readme_constant.dart';
 import '../cubit/readme_cubit.dart';
 import '../cubit/readme_state.dart';
-import '../constants/generarte_readme_constant.dart';
 import '../widgets/costom_readme_text_field.dart';
 
 class GenerateReadmeScreen extends StatelessWidget {
@@ -44,6 +44,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
   final _descriptionController = TextEditingController();
   final _featureController = TextEditingController();
   final _githubLinkController = TextEditingController();
+
   Timer? _slowLoadingTimer;
 
   @override
@@ -53,6 +54,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
     _featureController.dispose();
     _githubLinkController.dispose();
     _slowLoadingTimer?.cancel();
+
     super.dispose();
   }
 
@@ -68,32 +70,30 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
       listener: (context, state) {
         if (state.isLoading) {
           _slowLoadingTimer?.cancel();
+
           _slowLoadingTimer = Timer(const Duration(seconds: 4), () {
             if (mounted && state.isLoading) {
               CustomSnackBar.show(
                 context,
-                message: S.of(context).processingMayTakeLonger,
+                message: local.processingMayTakeLonger,
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 textColor: Theme.of(context).colorScheme.onPrimary,
                 time: 8,
               );
             }
           });
-          
         } else {
           _slowLoadingTimer?.cancel();
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
         }
+
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                state.errorMessage!,
-                style: const TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-            ),
+          CustomSnackBar.show(
+            context,
+            message: state.errorMessage!,
+            backgroundColor: Theme.of(context).colorScheme.error,
           );
+
           context.read<ReadmeCubit>().clearError();
         }
 
@@ -110,54 +110,100 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
           child: Scaffold(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: CustomAppBar(title: local.generateReadMe),
-            body: SingleChildScrollView(
-              padding: EdgeInsets.all(16.sp),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const HeightSpace(height: 20),
-                  CostomReadmeTextField(
-                    controller: _titleController,
-                    title: local.projectTitle,
-                    description: local.enterProjectName,
+            body: LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth;
+
+                final isTablet = width >= 600;
+                final isDesktop = width >= 1024;
+
+                final horizontalPadding = isDesktop
+                    ? 40.0
+                    : isTablet
+                    ? 28.0
+                    : 16.0;
+
+                final maxWidth = isDesktop ? 900.0 : double.infinity;
+
+                final verticalSpacing = isDesktop ? 24.0 : 20.0;
+
+                return SingleChildScrollView(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: maxWidth),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
+                          vertical: isDesktop ? 28 : 20,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CostomReadmeTextField(
+                              controller: _titleController,
+                              title: local.projectTitle,
+                              description: local.enterProjectName,
+                            ),
+
+                            SizedBox(height: verticalSpacing),
+
+                            CostomReadmeTextField(
+                              controller: _descriptionController,
+                              title: local.projectDes,
+                              description: local.enterProjectDes,
+                            ),
+
+                            SizedBox(height: verticalSpacing),
+
+                            CustomDropdownbuttonfield(
+                              labelText: local.projectType,
+                              hintText: local.selectType,
+                              initialValue: state.projectType,
+                              items: GenerarteReadmeConstant.projectTypes,
+                              onChanged: (value) {
+                                if (value != null) {
+                                  context.read<ReadmeCubit>().updateProjectType(
+                                    value,
+                                  );
+                                }
+                              },
+                            ),
+
+                            SizedBox(height: verticalSpacing),
+
+                            _buildFeatureInput(context, state),
+
+                            SizedBox(height: verticalSpacing),
+
+                            _buildTechnologiesChips(context, state),
+
+                            SizedBox(height: verticalSpacing),
+
+                            CostomReadmeTextField(
+                              controller: _githubLinkController,
+                              title: local.githubLink,
+                              description: local.githubDes,
+                              icon: Icons.link,
+                            ),
+
+                            SizedBox(height: isDesktop ? 100 : 28),
+
+                            CustomFeatureButton(
+                              text: local.generateReadMe,
+                              isLoading: state.isLoading,
+                              onTap: state.isLoading
+                                  ? null
+                                  : _onGeneratePressed,
+                            ),
+
+                            SizedBox(height: isDesktop ? 30 : 20),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  const HeightSpace(height: 20),
-                  CostomReadmeTextField(
-                    controller: _descriptionController,
-                    title: local.projectDes,
-                    description: local.enterProjectDes,
-                  ),
-                  const HeightSpace(height: 20),
-                  CustomDropdownbuttonfield(
-                    labelText: local.projectType,
-                    hintText: local.selectType,
-                    initialValue: state.projectType,
-                    items: GenerarteReadmeConstant.projectTypes,
-                    onChanged: (value) {
-                      if (value != null) {
-                        context.read<ReadmeCubit>().updateProjectType(value);
-                      }
-                    },
-                  ),
-                  const HeightSpace(height: 20),
-                  _buildFeatureInput(context, state),
-                  const HeightSpace(height: 20),
-                  _buildTechnologiesChips(context, state),
-                  const HeightSpace(height: 20),
-                  CostomReadmeTextField(
-                    controller: _githubLinkController,
-                    title: local.githubLink,
-                    description: local.githubDes,
-                    icon: Icons.link,
-                  ),
-                  const HeightSpace(height: 30),
-                  CustomFeatureButton(
-                    text: local.generateReadMe,
-                    isLoading: state.isLoading,
-                    onTap: state.isLoading ? null : _onGeneratePressed,
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         );
@@ -171,11 +217,13 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
       description: _descriptionController.text.trim(),
       githubLink: _githubLinkController.text.trim(),
     );
+
     FocusScope.of(context).unfocus();
   }
 
   Widget _buildFeatureInput(BuildContext context, ReadmeState state) {
     final local = S.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -190,8 +238,10 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
           ),
           onFieldSubmitted: (_) => _addFeature(),
         ),
+
         if (state.features.isNotEmpty) ...[
-          const HeightSpace(height: 10),
+          const HeightSpace(height: 12),
+
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -202,10 +252,13 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
                   feature,
                   style: GoogleFonts.inter(
                     color: Theme.of(context).colorScheme.secondary,
+                    fontSize: 14.0,
                   ),
                 ),
-                onDeleted: () =>
-                    context.read<ReadmeCubit>().removeFeature(feature),
+                deleteIcon: const Icon(Icons.close, size: 18.0),
+                onDeleted: () {
+                  context.read<ReadmeCubit>().removeFeature(feature);
+                },
               );
             }).toList(),
           ),
@@ -216,6 +269,7 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
 
   void _addFeature() {
     final text = _featureController.text.trim();
+
     if (text.isNotEmpty) {
       context.read<ReadmeCubit>().addFeature(text);
       _featureController.clear();
@@ -238,11 +292,14 @@ class _GenerateReadmeViewState extends State<GenerateReadmeView> {
           label: Text(
             tech,
             style: GoogleFonts.inter(
+              fontSize: 14.0,
               color: selected ? colorScheme.outline : colorScheme.secondary,
             ),
           ),
           selected: selected,
-          onSelected: (_) => context.read<ReadmeCubit>().toggleTechnology(tech),
+          onSelected: (_) {
+            context.read<ReadmeCubit>().toggleTechnology(tech);
+          },
         );
       }).toList(),
     );
