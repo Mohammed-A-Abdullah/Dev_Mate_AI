@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomSettingRow extends StatelessWidget {
@@ -23,26 +22,22 @@ class CustomSettingRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         child: Row(
           children: [
-            Icon(icon, size: 22.sp, color: iconColor),
-            SizedBox(width: 14.w),
+            Icon(icon, size: 22, color: iconColor),
+            const SizedBox(width: 14),
             Expanded(
               child: Text(
                 title,
                 style: GoogleFonts.inter(
-                  fontSize: 15.sp,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: titleColor ?? Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
-            trailing ??
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 15.sp,
-                ),
+            trailing ?? const Icon(Icons.arrow_forward_ios, size: 15),
           ],
         ),
       ),

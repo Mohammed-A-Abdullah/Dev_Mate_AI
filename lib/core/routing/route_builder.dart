@@ -20,7 +20,7 @@ import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 
 class RouteBuilder {
   static GoRouter goRouter = GoRouter(
-    initialLocation: RouteName.onboardingScreen,
+    initialLocation: RouteName.splashScreen,
     routes: [
       GoRoute(
         name: RouteName.splashScreen,
@@ -103,16 +103,16 @@ class RouteBuilder {
       GoRoute(
         name: RouteName.sendEmailForPassword,
         path: RouteName.sendEmailForPassword,
-        builder: (context, state) =>  SendEmailForPassword(),
+        builder: (context, state) => SendEmailForPassword(),
       ),
       GoRoute(
         name: RouteName.checkEmailScreen,
         path: RouteName.checkEmailScreen,
-        
+
         builder: (context, state) {
-          final String email =state.extra as String;
-          return  CheckEmailScreen(email:email ,);
-        } ,
+          final String email = state.extra as String;
+          return CheckEmailScreen(email: email);
+        },
       ),
     ],
   );

@@ -7,7 +7,6 @@ import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:dev_mate_ai/l10n/local_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomSettingGroupe extends StatelessWidget {
@@ -27,11 +26,11 @@ class CustomSettingGroupe extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final local= S.of(context);
+    final local = S.of(context);
     return Container(
       decoration: BoxDecoration(
         color: theme.extension<ProfileThemeExtension>()!.profilCard,
-        borderRadius: BorderRadius.circular(18.r),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(color: theme.colorScheme.outline),
       ),
       child: Column(
@@ -56,14 +55,14 @@ class CustomSettingGroupe extends StatelessWidget {
                     Text(
                       isDarkMode ? local.dark : local.light,
                       style: GoogleFonts.inter(
-                        fontSize: 13.sp,
+                        fontSize: 13,
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.onSurface,
                       ),
                     ),
-                    WidthSpace(width: 4.w),
+                    const WidthSpace(width: 4),
                     SizedBox(
-                      height: 24.h,
+                      height: 24,
                       child: Transform.scale(
                         scale: 0.7,
                         child: Switch(
@@ -74,7 +73,7 @@ class CustomSettingGroupe extends StatelessWidget {
                           inactiveThumbColor: theme.colorScheme.primary,
                           inactiveTrackColor: theme.colorScheme.onPrimary,
                           focusColor: theme.colorScheme.onPrimary,
-                          
+
                           onChanged: (value) {
                             context.read<ThemeCubit>().toggleTheme(value);
                           },
@@ -102,7 +101,7 @@ class CustomSettingGroupe extends StatelessWidget {
                     trailing: Text(
                       currentLanguage,
                       style: GoogleFonts.inter(
-                        fontSize: 13.sp,
+                        fontSize: 13,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -124,10 +123,10 @@ class CustomSettingGroupe extends StatelessWidget {
             title: local.logout,
             titleColor: const Color(0xffFF8A8A),
             iconColor: const Color(0xffFF8A8A),
-            trailing: Icon(
+            trailing: const Icon(
               Icons.arrow_forward_ios,
-              size: 15.sp,
-              color: const Color(0xffFF8A8A),
+              size: 15,
+              color: Color(0xffFF8A8A),
             ),
             onTap: onLogoutTap,
           ),

@@ -12,125 +12,212 @@ class ReadmeResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
+    final local = S.of(context);
+
+    final colorScheme = Theme.of(context).colorScheme;
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: const Color(0xff111319),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
         appBar: AppBar(
-          backgroundColor: const Color(0xff111319),
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           centerTitle: true,
+
           title: Text(
             local.readmeResult,
             style: GoogleFonts.geist(
-              color: const Color(0xffB5C4FF),
+              color: colorScheme.primary,
               fontWeight: FontWeight.bold,
-              fontSize: 30.sp,
+              fontSize: 25.sp,
             ),
           ),
+
           bottom: TabBar(
-            indicatorColor: const Color(0xffB5C4FF),
-            labelColor: const Color(0xffB5C4FF),
-            unselectedLabelColor: Colors.grey,
-            tabs:  [
-              Tab(icon: Icon(Icons.visibility), text: local.preview),
-              Tab(icon: Icon(Icons.code), text: local.markDown),
+            indicatorColor: colorScheme.primary,
+            labelColor: colorScheme.primary,
+            unselectedLabelColor: colorScheme.onSurface.withValues(alpha:0.5),
+
+            tabs: [
+              Tab(
+                icon: Icon(Icons.visibility, size: 20.sp),
+                text: local.preview,
+              ),
+              Tab(
+                icon: Icon(Icons.code, size: 20.sp),
+                text: local.markDown,
+              ),
             ],
           ),
         ),
 
-        body: TabBarView(
-          children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: MarkdownBody(
-                data: readme,
-                selectable: true,
-                styleSheet: MarkdownStyleSheet(
-                  p: const TextStyle(color: Colors.white, fontSize: 15),
-                  h1: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  h2: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  h3: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  strong: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  listBullet: const TextStyle(color: Colors.white),
-                  code: const TextStyle(
-                    color: Colors.orange,
-                    fontFamily: 'monospace',
-                  ),
-                  codeblockDecoration: BoxDecoration(
-                    color: const Color(0xff1E1F26),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+
+            final isTablet = width >= 600;
+            final isDesktop = width >= 1024;
+
+            final horizontalPadding = isDesktop
+                ? 40.0
+                : isTablet
+                ? 28.0
+                : 16.0;
+
+            return TabBarView(
+              children: [
+                _buildPreview(context, horizontalPadding, isDesktop),
+
+                _buildMarkdown(context, horizontalPadding, isDesktop),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPreview(
+    BuildContext context,
+    double horizontalPadding,
+    bool isDesktop,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return SingleChildScrollView(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: horizontalPadding,
+              vertical: 24,
+            ),
+            child: MarkdownBody(
+              data: readme,
+              selectable: true,
+
+              styleSheet: MarkdownStyleSheet(
+                p: TextStyle(
+                  color: colorScheme.onSurface,
+                  fontSize: isDesktop ? 16 : 15,
+                  height: 1.6,
+                ),
+
+                h1: TextStyle(
+                  color: colorScheme.onSurface,
+                  fontSize: isDesktop ? 32 : 28,
+                  fontWeight: FontWeight.bold,
+                ),
+
+                h2: TextStyle(
+                  color: colorScheme.onSurface,
+                  fontSize: isDesktop ? 25 : 22,
+                  fontWeight: FontWeight.bold,
+                ),
+
+                h3: TextStyle(
+                  color: colorScheme.onSurface,
+                  fontSize: isDesktop ? 20 : 18,
+                  fontWeight: FontWeight.bold,
+                ),
+
+                strong: TextStyle(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
+
+                listBullet: TextStyle(color: colorScheme.onSurface),
+
+                code: TextStyle(
+                  color: colorScheme.primary,
+                  fontFamily: 'monospace',
+                  fontSize: isDesktop ? 14 : 13,
+                ),
+
+                codeblockDecoration: BoxDecoration(
+                  color: colorScheme.surface,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: colorScheme.outline),
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
 
-            ///=========================
-            /// Markdown Source
-            ///=========================
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xffB5C4FF),
+  Widget _buildMarkdown(
+    BuildContext context,
+    double horizontalPadding,
+    bool isDesktop,
+  ) {
+    final local = S.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1100),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: 16,
+          ),
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: colorScheme.onPrimary,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 18.w,
+                      vertical: 12.h,
+                    ),
+                  ),
+                  onPressed: () async {
+                    await Clipboard.setData(ClipboardData(text: readme));
+
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(local.readmeCopied)));
+                  },
+                  icon: Icon(Icons.copy, size: 18.sp),
+                  label: Text(local.copy, style: TextStyle(fontSize: 13.sp)),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(color: colorScheme.outline),
+                  ),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(isDesktop ? 24 : 16),
+                    child: SelectableText(
+                      readme,
+                      style: TextStyle(
+                        color: colorScheme.onSurface,
+                        fontSize: isDesktop ? 15 : 14,
+                        fontFamily: 'monospace',
+                        height: 1.6,
                       ),
-                      onPressed: () async {
-                        await Clipboard.setData(ClipboardData(text: readme));
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                           SnackBar(content: Text(local.readmeCopied)),
-                        );
-                      },
-                      icon: const Icon(Icons.copy),
-                      label:  Text(local.copy),
                     ),
                   ),
                 ),
-
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff1E1F26),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(16),
-                      child: SelectableText(
-                        readme,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontFamily: 'monospace',
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

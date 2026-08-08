@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dev_mate_ai/core/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:re_editor/re_editor.dart';
 
@@ -15,9 +14,9 @@ import '../../../../core/widgets/custom_feature_button.dart';
 import '../../../../core/widgets/language_helper.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../core/widgets/custom_code_field.dart';
 import '../cubit/code_review_cubit.dart';
 import '../cubit/code_review_state.dart';
-import '../../../../core/widgets/custom_code_field.dart';
 import '../widgets/custom_review_text_field.dart';
 import '../widgets/custom_reveiw_types_chips.dart';
 
@@ -43,11 +42,13 @@ class CodeReviewView extends StatefulWidget {
 class _CodeReviewViewState extends State<CodeReviewView> {
   late final CodeLineEditingController _codeController;
   late final TextEditingController _errorLogController;
+
   Timer? _slowLoadingTimer;
 
   @override
   void initState() {
     super.initState();
+
     _codeController = CodeLineEditingController();
     _errorLogController = TextEditingController();
   }
@@ -57,6 +58,7 @@ class _CodeReviewViewState extends State<CodeReviewView> {
     _codeController.dispose();
     _errorLogController.dispose();
     _slowLoadingTimer?.cancel();
+
     super.dispose();
   }
 
@@ -70,13 +72,18 @@ class _CodeReviewViewState extends State<CodeReviewView> {
           previous.errorMessage != current.errorMessage ||
           previous.reviewResult != current.reviewResult,
       listener: (context, state) {
+        // ------------------------------------------------------------
+        // Loading
+        // ------------------------------------------------------------
+
         if (state.isLoading) {
           _slowLoadingTimer?.cancel();
+
           _slowLoadingTimer = Timer(const Duration(seconds: 4), () {
             if (mounted && state.isLoading) {
               CustomSnackBar.show(
                 context,
-                message: S.of(context).processingMayTakeLonger,
+                message: local.processingMayTakeLonger,
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 textColor: Theme.of(context).colorScheme.onPrimary,
                 time: 5,
@@ -87,15 +94,24 @@ class _CodeReviewViewState extends State<CodeReviewView> {
           _slowLoadingTimer?.cancel();
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
         }
+
+        // ------------------------------------------------------------
+        // Error
+        // ------------------------------------------------------------
+
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-              backgroundColor: Colors.red,
-            ),
+          CustomSnackBar.show(
+            context,
+            message: state.errorMessage!,
+            backgroundColor: Theme.of(context).colorScheme.error,
           );
+
           context.read<CodeReviewCubit>().clearError();
         }
+
+        // ------------------------------------------------------------
+        // Success
+        // ------------------------------------------------------------
 
         if (state.reviewResult != null && !state.isLoading) {
           context.pushNamed(
@@ -106,91 +122,210 @@ class _CodeReviewViewState extends State<CodeReviewView> {
       },
       builder: (context, state) {
         return GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
           child: Scaffold(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
             appBar: CustomAppBar(title: local.codeReview),
-            body: SingleChildScrollView(
-              padding: EdgeInsets.all(16.sp),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const HeightSpace(height: 35),
-                  SizedBox(
-                    width: double.infinity,
-                    child: CustomDropdownbuttonfield(
-                      labelText: local.language,
-                      hintText: local.selectProgrammingLang,
-                      initialValue: state.language,
-                      items: LanguageHelper.languages,
-                      onChanged: (value) {
-                        if (value != null) {
-                          context.read<CodeReviewCubit>().updateLanguage(value);
-                        }
-                      },
+
+            body: LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth;
+
+                // --------------------------------------------------
+                // Breakpoints
+                // --------------------------------------------------
+
+                final isTablet = width >= 600;
+                final isDesktop = width >= 1024;
+
+                // --------------------------------------------------
+                // Responsive Padding
+                // --------------------------------------------------
+
+                final horizontalPadding = isDesktop
+                    ? 40.0
+                    : isTablet
+                    ? 28.0
+                    : 16.0;
+
+                final verticalPadding = isDesktop
+                    ? 35.0
+                    : isTablet
+                    ? 30.0
+                    : 20.0;
+
+                // --------------------------------------------------
+                // Maximum Content Width
+                // --------------------------------------------------
+
+                final maxWidth = isDesktop
+                    ? 950.0
+                    : isTablet
+                    ? 750.0
+                    : double.infinity;
+
+                // --------------------------------------------------
+                // Code Editor Height
+                // --------------------------------------------------
+
+                final editorHeight = isDesktop
+                    ? 480.0
+                    : isTablet
+                    ? 400.0
+                    : 320.0;
+
+                return SingleChildScrollView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: maxWidth),
+
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
+                          vertical: verticalPadding,
+                        ),
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+
+                          children: [
+                            // ==================================================
+                            // Programming Language
+                            // ==================================================
+                            CustomDropdownbuttonfield(
+                              labelText: local.language,
+                              hintText: local.selectProgrammingLang,
+                              initialValue: state.language,
+                              items: LanguageHelper.languages,
+
+                              onChanged: (value) {
+                                if (value != null) {
+                                  context
+                                      .read<CodeReviewCubit>()
+                                      .updateLanguage(value);
+                                }
+                              },
+                            ),
+
+                            const HeightSpace(height: 20),
+
+                            // ==================================================
+                            // Code Editor
+                            // ==================================================
+                            CustomCodeEditor(
+                              controller: _codeController,
+                              height: editorHeight,
+                            ),
+
+                            const HeightSpace(height: 20),
+
+                            // ==================================================
+                            // Experience Level
+                            // ==================================================
+                            CustomDropdownbuttonfield(
+                              labelText: local.experienceLevel,
+                              hintText: local.selectExperienceLevel,
+
+                              items: const [
+                                'Beginner',
+                                'Intermediate',
+                                'Advanced',
+                                'Expert',
+                              ],
+
+                              initialValue: state.experienceLevel,
+
+                              onChanged: (value) {
+                                if (value != null) {
+                                  context
+                                      .read<CodeReviewCubit>()
+                                      .updateExperienceLevel(value);
+                                }
+                              },
+                            ),
+
+                            const HeightSpace(height: 20),
+
+                            // ==================================================
+                            // Review Depth
+                            // ==================================================
+                            CustomDropdownbuttonfield(
+                              labelText: local.reveiwDepth,
+
+                              hintText: local.reviewDepthDes,
+
+                              items: const [
+                                'Quick Review',
+                                'Detailed Review',
+                                'In-depth Analysis',
+                              ],
+
+                              initialValue: state.reviewDepth,
+
+                              onChanged: (value) {
+                                if (value != null) {
+                                  context
+                                      .read<CodeReviewCubit>()
+                                      .updateReviewDepth(value);
+                                }
+                              },
+                            ),
+
+                            const HeightSpace(height: 20),
+
+                            // ==================================================
+                            // Review Focus
+                            // ==================================================
+                            CustomReveiwTypesChips(state: state),
+
+                            const HeightSpace(height: 20),
+
+                            // ==================================================
+                            // Project Context
+                            // ==================================================
+                            CustomReviewTextField(
+                              errorLogController: _errorLogController,
+                            ),
+
+                            const HeightSpace(height: 24),
+
+                            // ==================================================
+                            // Review Button
+                            // ==================================================
+                            CustomFeatureButton(
+                              isLoading: state.isLoading,
+
+                              text: local.codeReview,
+
+                              onTap: state.isLoading
+                                  ? null
+                                  : () {
+                                      FocusScope.of(context).unfocus();
+
+                                      context
+                                          .read<CodeReviewCubit>()
+                                          .submitReview(
+                                            code: _codeController.text,
+                                            errorLog: _errorLogController.text,
+                                          );
+                                    },
+                            ),
+
+                            // Extra bottom spacing
+                            SizedBox(height: isDesktop ? 30 : 20),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  const HeightSpace(height: 20),
-                  CustomCodeEditor(controller: _codeController),
-                  const HeightSpace(height: 20),
-                  CustomDropdownbuttonfield(
-                    labelText: local.experienceLevel,
-                    hintText: local.selectExperienceLevel,
-                    items: const [
-                      'Beginner',
-                      'Intermediate',
-                      'Advanced',
-                      'Expert',
-                    ],
-                    initialValue: state.experienceLevel,
-                    onChanged: (value) {
-                      if (value != null) {
-                        context.read<CodeReviewCubit>().updateExperienceLevel(
-                          value,
-                        );
-                      }
-                    },
-                  ),
-                  const HeightSpace(height: 20),
-                  CustomDropdownbuttonfield(
-                    labelText: local.reveiwDepth,
-                    hintText: local.reviewDepthDes,
-                    items: const [
-                      'Quick Review',
-                      'Detailed Review',
-                      'In-depth Analysis',
-                    ],
-                    initialValue: state.reviewDepth,
-                    onChanged: (value) {
-                      if (value != null) {
-                        context.read<CodeReviewCubit>().updateReviewDepth(
-                          value,
-                        );
-                      }
-                    },
-                  ),
-                  const HeightSpace(height: 20),
-                  CustomReveiwTypesChips(state: state),
-                  const HeightSpace(height: 20),
-                  CustomReviewTextField(
-                    errorLogController: _errorLogController,
-                  ),
-                  const HeightSpace(height: 20),
-                  CustomFeatureButton(
-                    isLoading: state.isLoading,
-                    text: local.codeReview,
-                    onTap: state.isLoading
-                        ? null
-                        : () {
-                            context.read<CodeReviewCubit>().submitReview(
-                              code: _codeController.text,
-                              errorLog: _errorLogController.text,
-                            );
-                            FocusScope.of(context).unfocus();
-                          },
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomFeatureButton extends StatelessWidget {
@@ -17,12 +16,12 @@ class CustomFeatureButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.h),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         width: double.infinity,
-        height: 55.h,
+        height: 55,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary,
-          borderRadius: BorderRadius.circular(50.r),
+          borderRadius: BorderRadius.circular(50),
         ),
         child: isLoading
             ? Center(
@@ -37,9 +36,9 @@ class CustomFeatureButton extends StatelessWidget {
                     text,
                     style: GoogleFonts.inter(
                       color: Theme.of(context).colorScheme.onPrimary,
-                      fontSize: 20.sp,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 0.55.sp,
+                      letterSpacing: 0.55,
                     ),
                   ),
                   const SizedBox(width: 4),
