@@ -1,6 +1,5 @@
 import 'package:dev_mate_ai/core/theme/extensions/profile_theme_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomImageSection extends StatelessWidget {
   const CustomImageSection({super.key, this.photoUrl, this.onTap});
@@ -12,8 +11,8 @@ class CustomImageSection extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
-          width: 96.w,
-          height: 96.h,
+          width: 96,
+          height: 96,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: LinearGradient(
@@ -39,9 +38,9 @@ class CustomImageSection extends StatelessWidget {
                     photoUrl!,
                     fit: BoxFit.cover,
                     errorBuilder: (_, _, _) =>
-                        Icon(Icons.person, size: 44.sp, color: Colors.white),
+                        const Icon(Icons.person, size: 44, color: Colors.white),
                   )
-                : Icon(Icons.person, size: 44.sp, color: Colors.white),
+                : const Icon(Icons.person, size: 44, color: Colors.white),
           ),
         ),
         Positioned(
@@ -49,9 +48,9 @@ class CustomImageSection extends StatelessWidget {
           right: -2,
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(999.r),
+            borderRadius: BorderRadius.circular(999),
             child: Container(
-              padding: EdgeInsets.all(7.w),
+              padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Theme.of(
@@ -62,7 +61,7 @@ class CustomImageSection extends StatelessWidget {
                   width: 2,
                 ),
               ),
-              child: Icon(Icons.edit, size: 14.sp),
+              child: const Icon(Icons.edit, size: 14),
             ),
           ),
         ),

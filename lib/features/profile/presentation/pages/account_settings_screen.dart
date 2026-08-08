@@ -9,7 +9,6 @@ import 'package:dev_mate_ai/features/profile/presentation/widgets/custom_row_div
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../cubit/profile_state.dart';
@@ -40,131 +39,157 @@ class AccountSettingsScreen extends StatelessWidget {
 
           final profile = state is ProfileLoaded ? state.profile : null;
 
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildSectionTitle(context, local.personalInfo),
-                HeightSpace(height: 12.h),
-                _buildSettingsCard(
-                  context: context,
-                  children: [
-                    _buildListTile(
-                      context: context,
-                      title: local.fullName,
-                      subtitle: profile?.name ?? local.loading,
-                      trailing: _buildEditIcon(context),
-                      onTap: () {
-                        if (profile != null) {
-                          _showEditProfileDialog(
-                            context: context,
-                            cubit: context.read<ProfileCubit>(),
-                            currentName: profile.name,
-                          );
-                        }
-                      },
-                    ),
-                    CustomRowDivider(),
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final width = constraints.maxWidth;
 
-                    _buildListTile(
-                      context: context,
-                      title: local.email,
-                      subtitle: profile?.email ?? local.loading,
-                      trailing: Icon(Icons.email),
-                    ),
-                  ],
+              final isTablet = width >= 600;
+              final isDesktop = width >= 1024;
+
+              final horizontalPadding = isDesktop
+                  ? 40.0
+                  : (isTablet ? 28.0 : 16.0);
+
+              return SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: horizontalPadding,
+                  vertical: 16,
                 ),
-                HeightSpace(height: 24.h),
-                _buildSectionTitle(context, local.security),
-                HeightSpace(height: 12.h),
-                _buildSettingsCard(
-                  context: context,
-                  children: [
-                    _buildListTile(
-                      context: context,
-                      title: local.changePass,
-                      subtitle: local.updatePassword,
-                      onTap: () {
-                        showDialog(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: isDesktop ? 700 : double.infinity,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildSectionTitle(context, local.personalInfo),
+                        const HeightSpace(height: 12),
+                        _buildSettingsCard(
                           context: context,
-                          barrierDismissible: false,
-                          builder: (_) => ChangePasswordDialog(
-                            cubit: context.read<ProfileCubit>(),
-                          ),
-                        );
-                      },
-                    ),
-                    CustomRowDivider(),
-                    _buildListTile(
-                      context: context,
-                      title: local.emailVerification,
-                      subtitle: local.emailStatus,
-                      trailing: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 4.h,
+                          children: [
+                            _buildListTile(
+                              context: context,
+                              title: local.fullName,
+                              subtitle: profile?.name ?? local.loading,
+                              trailing: _buildEditIcon(context),
+                              onTap: () {
+                                if (profile != null) {
+                                  _showEditProfileDialog(
+                                    context: context,
+                                    cubit: context.read<ProfileCubit>(),
+                                    currentName: profile.name,
+                                  );
+                                }
+                              },
+                            ),
+                            const CustomRowDivider(),
+
+                            _buildListTile(
+                              context: context,
+                              title: local.email,
+                              subtitle: profile?.email ?? local.loading,
+                              trailing: const Icon(Icons.email),
+                            ),
+                          ],
                         ),
-                        decoration: BoxDecoration(
-                          color: profile?.isGuest == true
-                              ? Colors.grey.withValues(alpha: 0.1)
-                              : const Color(0xff22C55E).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12.r),
+                        const HeightSpace(height: 24),
+                        _buildSectionTitle(context, local.security),
+                        const HeightSpace(height: 12),
+                        _buildSettingsCard(
+                          context: context,
+                          children: [
+                            _buildListTile(
+                              context: context,
+                              title: local.changePass,
+                              subtitle: local.updatePassword,
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (_) => ChangePasswordDialog(
+                                    cubit: context.read<ProfileCubit>(),
+                                  ),
+                                );
+                              },
+                            ),
+                            const CustomRowDivider(),
+                            _buildListTile(
+                              context: context,
+                              title: local.emailVerification,
+                              subtitle: local.emailStatus,
+                              trailing: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: profile?.isGuest == true
+                                      ? Colors.grey.withValues(alpha: 0.1)
+                                      : const Color(
+                                          0xff22C55E,
+                                        ).withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  profile?.isGuest == true
+                                      ? local.unverified
+                                      : local.verified,
+                                  style: GoogleFonts.inter(
+                                    color: profile?.isGuest == true
+                                        ? Colors.grey
+                                        : const Color(0xff22C55E),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          profile?.isGuest == true
-                              ? local.unverified
-                              : local.verified,
-                          style: GoogleFonts.inter(
-                            color: profile?.isGuest == true
-                                ? Colors.grey
-                                : const Color(0xff22C55E),
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        const HeightSpace(height: 24),
+                        _buildSectionTitle(
+                          context,
+                          local.dangerZone,
+                          color: const Color(0xffFF5B5B),
                         ),
-                      ),
+                        const HeightSpace(height: 12),
+                        _buildSettingsCard(
+                          context: context,
+                          children: [
+                            _buildListTile(
+                              context: context,
+                              title: local.deleteAcount,
+                              subtitle: local.deleteAccountPermin,
+                              titleColor: const Color(0xffFF5B5B),
+                              onTap: () =>
+                                  _showDeleteConfirmationDialog(context),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.delete_outline,
+                                    color: Color(0xffFF5B5B),
+                                    size: 22,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: Color(0xffFF5B5B),
+                                    size: 14,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const HeightSpace(height: 32),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-                HeightSpace(height: 24.h),
-                _buildSectionTitle(
-                  context,
-                  local.dangerZone,
-                  color: const Color(0xffFF5B5B),
-                ),
-                HeightSpace(height: 12.h),
-                _buildSettingsCard(
-                  context: context,
-                  children: [
-                    _buildListTile(
-                      context: context,
-                      title: local.deleteAcount,
-                      subtitle: local.deleteAccountPermin,
-                      titleColor: const Color(0xffFF5B5B),
-                      onTap: () => _showDeleteConfirmationDialog(context),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.delete_outline,
-                            color: const Color(0xffFF5B5B),
-                            size: 22.sp,
-                          ),
-                          SizedBox(width: 8.w),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: const Color(0xffFF5B5B),
-                            size: 14.sp,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                HeightSpace(height: 32.h),
-              ],
-            ),
+              );
+            },
           );
         },
       ),
@@ -175,7 +200,7 @@ class AccountSettingsScreen extends StatelessWidget {
     return Icon(
       Icons.edit_outlined,
       color: Theme.of(context).colorScheme.secondary,
-      size: 18.sp,
+      size: 18,
     );
   }
 
@@ -192,7 +217,7 @@ class AccountSettingsScreen extends StatelessWidget {
       builder: (dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
           ),
           title: Text(
             S.of(context).editProfile,
@@ -232,7 +257,7 @@ class AccountSettingsScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               onPressed: () {
@@ -270,7 +295,7 @@ class AccountSettingsScreen extends StatelessWidget {
             S.of(parentContext).deleteAccountDesc,
             style: GoogleFonts.inter(
               color: Theme.of(parentContext).colorScheme.onSurfaceVariant,
-              fontSize: 14.sp,
+              fontSize: 14,
             ),
           ),
           actions: [
@@ -278,7 +303,7 @@ class AccountSettingsScreen extends StatelessWidget {
               onPressed: () => Navigator.pop(dialogContext),
               child: Text(
                 S.of(parentContext).cancel,
-                style: TextStyle(color: Colors.grey),
+                style: const TextStyle(color: Colors.grey),
               ),
             ),
             TextButton(
@@ -288,7 +313,7 @@ class AccountSettingsScreen extends StatelessWidget {
               },
               child: Text(
                 S.of(parentContext).delete,
-                style: TextStyle(color: Color(0xffFF5B5B)),
+                style: const TextStyle(color: Color(0xffFF5B5B)),
               ),
             ),
           ],
@@ -306,7 +331,7 @@ class AccountSettingsScreen extends StatelessWidget {
       title,
       style: GoogleFonts.inter(
         color: color ?? Theme.of(context).colorScheme.secondary,
-        fontSize: 14.sp,
+        fontSize: 14,
         fontWeight: FontWeight.w600,
       ),
     );
@@ -319,7 +344,7 @@ class AccountSettingsScreen extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).extension<ProfileThemeExtension>()!.profilCard,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Theme.of(context).dividerColor, width: 1),
       ),
       child: Column(children: children),
@@ -336,9 +361,9 @@ class AccountSettingsScreen extends StatelessWidget {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16.r),
+      borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
             Expanded(
@@ -350,17 +375,17 @@ class AccountSettingsScreen extends StatelessWidget {
                     style: GoogleFonts.inter(
                       color:
                           titleColor ?? Theme.of(context).colorScheme.secondary,
-                      fontSize: 15.sp,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   if (subtitle != null) ...[
-                    SizedBox(height: 4.h),
+                    const SizedBox(height: 4),
                     Text(
                       subtitle,
                       style: GoogleFonts.inter(
                         color: Theme.of(context).colorScheme.onSecondary,
-                        fontSize: 12.sp,
+                        fontSize: 12,
                       ),
                     ),
                   ],
@@ -378,7 +403,7 @@ class AccountSettingsScreen extends StatelessWidget {
     return Icon(
       Icons.arrow_forward_ios,
       color: Theme.of(context).colorScheme.secondary,
-      size: 14.sp,
+      size: 14,
     );
   }
 }

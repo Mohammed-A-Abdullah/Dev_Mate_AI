@@ -8,29 +8,32 @@ class LanguageDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
+    final local = S.of(context);
     return AlertDialog(
-      title:  Text(local.chooseLang),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.language),
-            title:  Text(local.english),
-            onTap: () {
-              context.read<LocaleCubit>().changeLanguage("en");
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.language),
-            title:  Text(local.arabic),
-            onTap: () {
-              context.read<LocaleCubit>().changeLanguage("ar");
-              Navigator.pop(context);
-            },
-          ),
-        ],
+      title: Text(local.chooseLang),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.language),
+              title: Text(local.english),
+              onTap: () {
+                context.read<LocaleCubit>().changeLanguage("en");
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.language),
+              title: Text(local.arabic),
+              onTap: () {
+                context.read<LocaleCubit>().changeLanguage("ar");
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
