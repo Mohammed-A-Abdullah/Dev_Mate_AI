@@ -2,7 +2,6 @@ import 'package:dev_mate_ai/core/widgets/custom_text_field.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignInForm extends StatelessWidget {
@@ -11,7 +10,8 @@ class SignInForm extends StatelessWidget {
     required this.emailController,
     required this.passwordController,
     required this.formKey,
-    required this.onSubmit, required this.isLoading,
+    required this.onSubmit,
+    required this.isLoading,
   });
 
   final TextEditingController emailController;
@@ -22,7 +22,9 @@ class SignInForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final local=S.of(context);
+    final local = S.of(context);
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -30,58 +32,80 @@ class SignInForm extends StatelessWidget {
           controller: emailController,
           keyBoardType: TextInputType.emailAddress,
           hintText: local.emailAddress,
-          prefixIcon: const Icon(
-            Icons.email_outlined,
-          ),
+          prefixIcon: const Icon(Icons.email_outlined),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
               return 'Email is required';
             }
+
             return null;
           },
         ),
-        HeightSpace(height: 16),
+
+        const SizedBox(height: 16),
+
         CustomTextField(
           controller: passwordController,
           isPassword: true,
           hintText: local.password,
-          prefixIcon: const Icon(Icons.lock_outline,),
+          prefixIcon: const Icon(Icons.lock_outline),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
               return local.passValidate;
             }
+
             return null;
           },
         ),
-        HeightSpace(height: 24),
+
+        const SizedBox(height: 24),
+
         SizedBox(
           width: double.infinity,
-          height: 50.h,
+          height: 52,
           child: ElevatedButton(
             onPressed: isLoading ? null : onSubmit,
+
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: theme.colorScheme.primary,
+
+              foregroundColor: theme.colorScheme.onPrimary,
+
+              disabledBackgroundColor: theme.colorScheme.primary.withValues(
+                alpha: 0.6,
+              ),
+
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50.r),
+                borderRadius: BorderRadius.circular(50),
               ),
             ),
-            child: isLoading
-                ? Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                )
-                : Text(
-                    local.signin,
-                    style: GoogleFonts.jetBrainsMono(
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.55.sp,
+
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+
+              child: isLoading
+                  ? SizedBox(
+                      key: const ValueKey('loading'),
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    )
+                  : Text(
+                      key: const ValueKey('text'),
+
+                      local.signin,
+
+                      style: GoogleFonts.jetBrainsMono(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: .5,
+                      ),
                     ),
-                  ),
-          )
+            ),
+          ),
         ),
       ],
     );

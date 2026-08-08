@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'spacing_widgets.dart';
 
@@ -21,7 +20,11 @@ class CustomTextField extends StatefulWidget {
     this.borderColor,
     this.cursorColor,
     this.textStyle,
-    this.hintTextStyle, this.suffixIconWidget,this.minLine=1, this.labelStyle, this.label
+    this.hintTextStyle,
+    this.suffixIconWidget,
+    this.minLine = 1,
+    this.labelStyle,
+    this.label,
   });
 
   final String? textFieldTitle;
@@ -68,8 +71,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
             children: [
               Text(
                 widget.textFieldTitle!,
-                style: TextStyle(
-                  fontSize: 16.sp,
+                style: const TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                   fontFamily: "Poppins",
                   color: Colors.white,
@@ -77,7 +80,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ),
             ],
           ),
-        if (widget.textFieldTitle != null) HeightSpace(height: 3),
+        if (widget.textFieldTitle != null) const HeightSpace(height: 3),
         TextFormField(
           controller: widget.controller,
           keyboardType: widget.keyBoardType,
@@ -90,11 +93,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
           // Remove the hardcoded Color(0xff94A3B8). If null, it uses textSelectionTheme
           cursorColor: widget.cursorColor,
-          cursorWidth: 2.w,
+          cursorWidth: 2,
           cursorErrorColor: Colors.red,
           style:
               widget.textStyle ??
-              TextStyle(color: Colors.white, fontSize: 16.sp),
+              const TextStyle(color: Colors.white, fontSize: 16),
 
           decoration: InputDecoration(
             labelText: widget.label,
@@ -102,9 +105,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
             hintText: widget.hintText ?? '',
             hintStyle: widget.hintTextStyle,
 
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 18.w,
-              vertical: 18.h,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 18,
+              vertical: 18,
             ),
 
             filled: true,
@@ -134,13 +137,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       )
                     : null),
 
-            // Note: If you want to use ScreenUtil (.r) for borders per-widget,
-            // you can keep these. Otherwise, remove them entirely to let the theme handle borders.
+            // Note: If you want rounded borders per-widget, keep these.
+            // Otherwise, remove them entirely to let the theme handle borders.
             enabledBorder: widget.borderColor != null || widget.radius != null
                 ? OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      widget.radius?.r ?? 20.r,
-                    ),
+                    borderRadius: BorderRadius.circular(widget.radius ?? 20),
                     borderSide: BorderSide(
                       color: widget.borderColor ?? const Color(0xff2A2D3A),
                       width: 1,
@@ -150,9 +151,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
             focusedBorder: widget.borderColor != null || widget.radius != null
                 ? OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      widget.radius?.r ?? 20.r,
-                    ),
+                    borderRadius: BorderRadius.circular(widget.radius ?? 20),
                     borderSide: const BorderSide(color: Colors.white, width: 2),
                   )
                 : null,
