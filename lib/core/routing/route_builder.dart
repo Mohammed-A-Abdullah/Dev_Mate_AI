@@ -30,7 +30,7 @@ class RouteBuilder {
       GoRoute(
         name: RouteName.chatScreen,
         path: RouteName.chatScreen,
-        builder: (context, state) => const ChatScreen(),
+        builder: (context, state) => const ChatScreen(showBackButton: true),
       ),
       GoRoute(
         name: RouteName.onboardingScreen,

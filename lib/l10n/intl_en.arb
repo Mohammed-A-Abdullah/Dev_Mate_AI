@@ -83,6 +83,7 @@
   "light": "Light",
   "language": "Languages",
   "logout": "Logout",
+  "logoutConfirmation": "Are you sure you want to log out?",
   "camera": "Camera",
   "gallary": "Gallery",
   "chooseLang": "Choose Language",
@@ -167,5 +168,5 @@
   "explain": "Explain",
   "planner": "planner",
   "processingMayTakeLonger": "This operation may take a little longer. Please wait...",
-  "chat":"Chat"
+  "chat": "Chat"
 }

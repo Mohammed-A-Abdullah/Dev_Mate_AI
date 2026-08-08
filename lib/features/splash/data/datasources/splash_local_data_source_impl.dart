@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../../../core/services/app_preferences.dart';
 import 'splash_local_data_source.dart';
+
 class SplashLocalDataSourceImpl implements SplashLocalDataSource {
   @override
   Future<bool> isOnboardingCompleted() {
@@ -10,9 +13,9 @@ class SplashLocalDataSourceImpl implements SplashLocalDataSource {
   Future<bool> saveOnboardingCompleted() {
     return AppPreferences.completedOnboarding();
   }
-  
+
   @override
-  Future<bool> isAuthenticated() {
-    return AppPreferences.isAuthenticated();
+  Future<bool> isAuthenticated() async {
+    return FirebaseAuth.instance.currentUser != null;
   }
 }

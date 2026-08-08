@@ -33,7 +33,15 @@ class CodeReviewCubit extends Cubit<CodeReviewState> {
     final trimmedCode = code.trim();
 
     if (trimmedCode.isEmpty) {
-      emit(state.copyWith(errorMessage: 'Please enter some code to review.'));
+      emit(
+        state.copyWith(
+          errorMessage: 'Please enter some code to review.',
+          // Clear any previous result - otherwise a stale reviewResult
+          // combined with isLoading:false makes the listener navigate to
+          // the answer screen with an old review right after this error.
+          reviewResult: null,
+        ),
+      );
       return;
     }
 
@@ -41,6 +49,7 @@ class CodeReviewCubit extends Cubit<CodeReviewState> {
       emit(
         state.copyWith(
           errorMessage: 'Please select at least one review focus.',
+          reviewResult: null,
         ),
       );
       return;

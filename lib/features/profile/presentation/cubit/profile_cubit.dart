@@ -26,19 +26,17 @@ class ProfileCubit extends Cubit<ProfileState> {
     required this.updatePhotoUseCase,
     required this.deleteAccountUseCase,
     required this.changePasswordUseCase,
-    required this.updateProfileDetailsUseCase, required this.deletePhotoUseCase,
+    required this.updateProfileDetailsUseCase,
+    required this.deletePhotoUseCase,
   }) : super(ProfileInitial());
 
   Future<void> loadProfile() async {
     emit(ProfileLoading());
-
     try {
       final profile = await getProfileUseCase();
-
       emit(ProfileLoaded(profile));
     } catch (e) {
-      emit(ProfileError(e.toString()));
-      await loadProfile();
+      emit(ProfileError(e.toString().replaceAll('Exception: ', '')));
     }
   }
 
@@ -48,7 +46,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       await deletePhotoUseCase();
       await loadProfile();
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      emit(ProfileError(e.toString().replaceAll('Exception: ', '')));
       await loadProfile();
     }
   }
@@ -57,10 +55,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(ProfileLoading());
     try {
       await updatePhotoUseCase(file);
-
       await loadProfile();
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      emit(ProfileError(e.toString().replaceAll('Exception: ', '')));
+      await loadProfile();
     }
   }
 
@@ -96,8 +94,11 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> logout() async {
-    await logoutUseCase();
-    emit(ProfileLoggedOut());
+    try {
+      await logoutUseCase();
+      emit(ProfileLoggedOut());
+    } catch (e) {
+      emit(ProfileError(e.toString().replaceAll('Exception: ', '')));
+    }
   }
-
 }

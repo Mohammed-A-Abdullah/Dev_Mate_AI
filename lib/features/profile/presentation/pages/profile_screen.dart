@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/routing/route_name.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart'; // ✅ Added Image Picker
 import '../../../../core/theme/extensions/profile_status_theme_extension.dart';
 import '../cubit/profile_cubit.dart';
 import '../cubit/profile_state.dart';
@@ -34,13 +36,42 @@ class ProfileScreen extends StatelessWidget {
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
+  // ✅ Fixed Image Picker Logic
   Future<void> _showImagePicker(BuildContext context) async {
-    showDialog(
+    final cubit = context.read<ProfileCubit>();
+
+    // 1. Wait for the dialog to return the user's choice
+    final result = await showDialog<ImageSourceType>(
       context: context,
-      builder: (_) {
-        return const ImagePickerDialog();
-      },
+      builder: (_) =>
+          BlocProvider.value(value: cubit, child: const ImagePickerDialog()),
     );
+
+    if (result == null) return; // User canceled the dialog
+
+    // 2. Handle the 'Delete' option
+    if (result == ImageSourceType.delete) {
+      await cubit.deletePhoto();
+      return;
+    }
+
+    // 3. Handle Camera / Gallery using image_picker
+    try {
+      final picker = ImagePicker();
+      final source = result == ImageSourceType.camera
+          ? ImageSource.camera
+          : ImageSource.gallery;
+
+      final pickedFile = await picker.pickImage(source: source);
+
+      if (pickedFile != null) {
+        await cubit.updatePhoto(File(pickedFile.path));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        CustomSnackBar.show(context, message: 'Failed to pick image: $e');
+      }
+    }
   }
 
   @override
@@ -82,7 +113,6 @@ class ProfileView extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final width = constraints.maxWidth;
-
                   final isTablet = width >= 600;
                   final isDesktop = width >= 1024;
 
@@ -90,133 +120,139 @@ class ProfileView extends StatelessWidget {
                       ? 40.0
                       : (isTablet ? 28.0 : 16.0);
 
-                  return SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: horizontalPadding,
-                    ),
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: isDesktop ? 700 : double.infinity,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const HeightSpace(height: 20),
-                            Center(
-                              child: Column(
+                  // ✅ Added RefreshIndicator to update stats dynamically
+                  return RefreshIndicator(
+                    onRefresh: () => context.read<ProfileCubit>().loadProfile(),
+                    child: SingleChildScrollView(
+                      physics:
+                          const AlwaysScrollableScrollPhysics(), // Ensures it can be pulled even if content is small
+                      padding: EdgeInsets.symmetric(
+                        horizontal: horizontalPadding,
+                      ),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: isDesktop ? 700 : double.infinity,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const HeightSpace(height: 20),
+                              Center(
+                                child: Column(
+                                  children: [
+                                    CustomImageSection(
+                                      onTap: () => _showImagePicker(context),
+                                      photoUrl: photoUrl,
+                                    ),
+                                    const SizedBox(height: 14),
+                                    Text(
+                                      displayName,
+                                      style: GoogleFonts.geist(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w700,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.secondary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    CustomContainterUserType(
+                                      roleLabel: roleLabel,
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              const HeightSpace(height: 28),
+
+                              Row(
                                 children: [
-                                  CustomImageSection(
-                                    onTap: () => _showImagePicker(context),
-                                    photoUrl: photoUrl,
-                                  ),
-                                  const SizedBox(height: 14),
-                                  Text(
-                                    displayName,
-                                    style: GoogleFonts.geist(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w700,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.secondary,
+                                  Expanded(
+                                    child: CustomStateCard(
+                                      value: profile.chats.toString(),
+                                      label: local.chats,
+                                      valueColor: statsTheme.chatsColor,
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
-                                  CustomContainterUserType(
-                                    roleLabel: roleLabel,
+                                  const WidthSpace(width: 10),
+                                  Expanded(
+                                    child: CustomStateCard(
+                                      value: profile.readmes.toString(),
+                                      label: local.readme,
+                                      valueColor: statsTheme.readmeColor,
+                                    ),
+                                  ),
+                                  const WidthSpace(width: 10),
+                                  Expanded(
+                                    child: CustomStateCard(
+                                      value: profile.analysis.toString(),
+                                      label: local.review,
+                                      valueColor: statsTheme.reviewColor,
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
+                              const HeightSpace(height: 12),
 
-                            const HeightSpace(height: 28),
-
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: CustomStateCard(
-                                    value: profile.chats.toString(),
-                                    label: local.chats,
-                                    valueColor: statsTheme.chatsColor,
-                                  ),
-                                ),
-                                const WidthSpace(width: 10),
-                                Expanded(
-                                  child: CustomStateCard(
-                                    value: profile.readmes.toString(),
-                                    label: local.readme,
-                                    valueColor: statsTheme.readmeColor,
-                                  ),
-                                ),
-                                const WidthSpace(width: 10),
-                                Expanded(
-                                  child: CustomStateCard(
-                                    value: profile.analysis.toString(),
-                                    label: local.review,
-                                    valueColor: statsTheme.reviewColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const HeightSpace(height: 24),
-
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: CustomStateCard(
-                                    value: profile.debug.toString(),
-                                    label: local.debug,
-                                    valueColor: statsTheme.debugColor,
-                                  ),
-                                ),
-                                const WidthSpace(width: 10),
-                                Expanded(
-                                  child: CustomStateCard(
-                                    value: profile.explain.toString(),
-                                    label: local.explain,
-                                    valueColor: statsTheme.explainColor,
-                                  ),
-                                ),
-                                const WidthSpace(width: 10),
-                                Expanded(
-                                  child: CustomStateCard(
-                                    value: profile.planner.toString(),
-                                    label: local.planner,
-                                    valueColor: statsTheme.analysisColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const HeightSpace(height: 24),
-
-                            CustomSettingGroupe(
-                              onAccountSettingsTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context_) => BlocProvider.value(
-                                      value: context.read<ProfileCubit>(),
-                                      child: const AccountSettingsScreen(),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: CustomStateCard(
+                                      value: profile.debug.toString(),
+                                      label: local.debug,
+                                      valueColor: statsTheme.debugColor,
                                     ),
                                   ),
-                                );
-                              },
-                              onLanguageTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (_) => const LanguageDialog(),
-                                );
-                              },
-                              onAboutTap: () async {
-                                context.pushNamed(RouteName.aboutScreen);
-                              },
-                              onLogoutTap: () {
-                                context.read<ProfileCubit>().logout();
-                              },
-                            ),
+                                  const WidthSpace(width: 10),
+                                  Expanded(
+                                    child: CustomStateCard(
+                                      value: profile.explain.toString(),
+                                      label: local.explain,
+                                      valueColor: statsTheme.explainColor,
+                                    ),
+                                  ),
+                                  const WidthSpace(width: 10),
+                                  Expanded(
+                                    child: CustomStateCard(
+                                      value: profile.planner.toString(),
+                                      label: local.planner,
+                                      valueColor: statsTheme.analysisColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const HeightSpace(height: 24),
 
-                            const SizedBox(height: 24),
-                          ],
+                              CustomSettingGroupe(
+                                onAccountSettingsTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BlocProvider.value(
+                                        value: context.read<ProfileCubit>(),
+                                        child: const AccountSettingsScreen(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                onLanguageTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => const LanguageDialog(),
+                                  );
+                                },
+                                onAboutTap: () {
+                                  context.pushNamed(RouteName.aboutScreen);
+                                },
+                                onLogoutTap: () {
+                                  _showLogoutConfirmationDialog(context);
+                                },
+                                // ... other code ...
+                              ),
+                              const SizedBox(height: 24),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -226,8 +262,52 @@ class ProfileView extends StatelessWidget {
             ),
           );
         }
-        return const SizedBox.shrink();
+
+        return Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.error_outline, size: 48),
+                const SizedBox(height: 12),
+                Text(
+                  state is ProfileError ? state.message : '',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: () => context.read<ProfileCubit>().loadProfile(),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
+  }
+
+  Future<void> _showLogoutConfirmationDialog(BuildContext context) async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(S.of(context).logout),
+        content: Text(S.of(context).logoutConfirmation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(S.of(context).cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(S.of(context).logout),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldLogout == true && context.mounted) {
+      await context.read<ProfileCubit>().logout();
+    }
   }
 }

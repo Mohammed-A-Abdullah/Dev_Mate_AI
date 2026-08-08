@@ -298,6 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   MaterialPageRoute(
                                                     builder: (_) => ChatScreen(
                                                       chatId: item.id,
+                                                      showBackButton: true,
                                                     ),
                                                   ),
                                                 );

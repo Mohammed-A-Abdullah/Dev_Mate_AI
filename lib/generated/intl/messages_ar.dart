@@ -204,6 +204,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "light": MessageLookupByLibrary.simpleMessage("فاتح"),
     "loading": MessageLookupByLibrary.simpleMessage("جارٍ التحميل..."),
     "logout": MessageLookupByLibrary.simpleMessage("تسجيل الخروج"),
+    "logoutConfirmation": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من تسجيل الخروج؟",
+    ),
     "markDown": MessageLookupByLibrary.simpleMessage("Markdown"),
     "newChat": MessageLookupByLibrary.simpleMessage("محادثة جديدة"),
     "next": MessageLookupByLibrary.simpleMessage("التالي"),

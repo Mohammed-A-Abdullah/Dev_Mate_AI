@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../cubit/profile_state.dart';
-import 'change_password_screen.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
   const AccountSettingsScreen({super.key});
@@ -93,24 +92,18 @@ class AccountSettingsScreen extends StatelessWidget {
                           ],
                         ),
                         const HeightSpace(height: 24),
-                        _buildSectionTitle(context, local.security),
+                        _buildSectionTitle(context, local.profile),
                         const HeightSpace(height: 12),
                         _buildSettingsCard(
                           context: context,
                           children: [
                             _buildListTile(
                               context: context,
-                              title: local.changePass,
-                              subtitle: local.updatePassword,
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (_) => ChangePasswordDialog(
-                                    cubit: context.read<ProfileCubit>(),
-                                  ),
-                                );
-                              },
+                              title: local.profile,
+                              subtitle: profile?.isGuest == true
+                                  ? local.guestEplorer
+                                  : local.aiDeveloper,
+                              trailing: const Icon(Icons.person_outline),
                             ),
                             const CustomRowDivider(),
                             _buildListTile(

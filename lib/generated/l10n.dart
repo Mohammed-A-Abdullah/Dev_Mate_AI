@@ -760,6 +760,16 @@ class S {
     return Intl.message('Logout', name: 'logout', desc: '', args: []);
   }
 
+  /// `Are you sure you want to log out?`
+  String get logoutConfirmation {
+    return Intl.message(
+      'Are you sure you want to log out?',
+      name: 'logoutConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Camera`
   String get camera {
     return Intl.message('Camera', name: 'camera', desc: '', args: []);

@@ -30,13 +30,21 @@ class ProjectPlanCubit extends Cubit<ProjectPlanState> {
     final trimmedDesc = description.trim();
 
     if (trimmedTitle.isEmpty) {
-      emit(state.copyWith(errorMessage: 'Please provide a project title.'));
+      emit(
+        state.copyWith(
+          errorMessage: 'Please provide a project title.',
+          planResult: null,
+        ),
+      );
       return;
     }
 
     if (trimmedDesc.isEmpty) {
       emit(
-        state.copyWith(errorMessage: 'Please provide a project description.'),
+        state.copyWith(
+          errorMessage: 'Please provide a project description.',
+          planResult: null,
+        ),
       );
       return;
     }

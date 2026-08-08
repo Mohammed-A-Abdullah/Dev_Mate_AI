@@ -52,8 +52,7 @@ class CodeReviewRepositoryImpl implements CodeReviewRepository {
         prompt: promptSummary,
         response: result,
       );
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
   String _buildPrompt(CodeReviewRequestEntity request) {
@@ -86,8 +85,11 @@ SOURCE CODE
 
 ```${request.language}
 ${request.code}
+```
+
 ==================================================
 REVIEW INSTRUCTIONS
+==================================================
 
 Review ONLY the code provided.
 
@@ -101,6 +103,8 @@ If something cannot be verified because context is missing, clearly mention that
 
 ==================================================
 OUTPUT FORMAT
+==================================================
+
 Overall Score
 
 Give a score from 1–10.
@@ -237,5 +241,4 @@ Keep explanations concise but professional.
 Return the entire response in Markdown.
 ''';
   }
-
 }

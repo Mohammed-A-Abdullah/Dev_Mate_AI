@@ -11,7 +11,7 @@ import 'profile_remote_data_source.dart';
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final FirebaseAuth auth;
   final FirebaseFirestore firestore;
-  final String cloudName = 'ednlfqzo';
+  final String cloudName = 'ednlfqzo'; 
   final String uploadPreset = 'igtrcmzy';
 
   ProfileRemoteDataSourceImpl({required this.auth, required this.firestore});
@@ -75,7 +75,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   Future<void> logout() {
     return auth.signOut();
   }
-  
+
   @override
   Future<String> updatePhoto(File imageFile) async {
     final user = auth.currentUser;
@@ -120,7 +120,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     }
   }
 
-
   @override
   Future<void> changePassword(String newPassword) async {
     final user = auth.currentUser;
@@ -144,15 +143,26 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     if (user == null) throw Exception('User is not logged in');
 
     try {
-      final historyDocs = await firestore
-          .collection('history')
-          .where('uid', isEqualTo: user.uid)
+      // 1. Delete the conversations subcollection (in chunks of 500)
+      final conversationsSnapshot = await firestore
+          .collection('user')
+          .doc(user.uid)
+          .collection('conversations')
           .get();
 
-      for (var doc in historyDocs.docs) {
-        await doc.reference.delete();
+      final docs = conversationsSnapshot.docs;
+      for (var i = 0; i < docs.length; i += 500) {
+        final batch = firestore.batch();
+        for (var doc in docs.skip(i).take(500)) {
+          batch.delete(doc.reference);
+        }
+        await batch.commit();
       }
 
+      // 2. Delete the user document itself
+      await firestore.collection('user').doc(user.uid).delete();
+
+      // 3. Delete the Firebase Auth account (must be LAST)
       await user.delete();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
@@ -161,6 +171,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         );
       }
       throw Exception(e.message ?? 'Failed to delete account.');
+    } catch (e) {
+      throw Exception('Failed to delete account: $e');
     }
   }
 
@@ -172,10 +184,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     try {
       await user.updateDisplayName(name);
 
-      await firestore.collection('users').doc(user.uid).set(
-        {'name': name,},
-        SetOptions(merge: true),
-      ); 
+      // ✅ unified to 'user' (was 'users')
+      await firestore.collection('user').doc(user.uid).set({
+        'name': name,
+      }, SetOptions(merge: true));
     } catch (e) {
       throw Exception('Failed to update profile: $e');
     }

@@ -13,25 +13,41 @@ import '../widgets/custom_loading_progress.dart';
 import '../widgets/custom_user_and_bot_message.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key, this.chatId, this.initialMessages});
+  const ChatScreen({
+    super.key,
+    this.chatId,
+    this.initialMessages,
+    this.showBackButton = false,
+  });
 
   final String? chatId;
   final List<Map<String, dynamic>>? initialMessages;
+  final bool showBackButton;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<ChatCubit>(),
-      child: ChatView(chatId: chatId, initialMessages: initialMessages),
+      child: ChatView(
+        chatId: chatId,
+        initialMessages: initialMessages,
+        showBackButton: showBackButton,
+      ),
     );
   }
 }
 
 class ChatView extends StatefulWidget {
-  const ChatView({super.key, this.chatId, this.initialMessages});
+  const ChatView({
+    super.key,
+    this.chatId,
+    this.initialMessages,
+    required this.showBackButton,
+  });
 
   final String? chatId;
   final List<Map<String, dynamic>>? initialMessages;
+  final bool showBackButton;
 
   @override
   State<ChatView> createState() => _ChatViewState();
@@ -61,7 +77,10 @@ class _ChatViewState extends State<ChatView> {
     final local = S.of(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBar(title: local.chat, needButton: false),
+      appBar: CustomAppBar(
+        title: local.chat,
+        needButton: widget.showBackButton,
+      ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SafeArea(
