@@ -6,24 +6,30 @@ class ResponsiveLayout extends StatelessWidget {
   final Widget desktop;
 
   const ResponsiveLayout({
-    Key? key,
+    super.key,
     required this.mobile,
     this.tablet,
     required this.desktop,
-  }) : super(key: key);
+  });
+
+  static const double mobileBreakpoint = 600;
+  static const double desktopBreakpoint = 1024;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth >= 1024) {
+        final width = constraints.maxWidth;
+
+        if (width >= desktopBreakpoint) {
           return desktop;
-        } else if (constraints.maxWidth >= 600) {
-          return tablet ??
-              mobile;
-        } else {
-          return mobile;
         }
+
+        if (width >= mobileBreakpoint) {
+          return tablet ?? mobile;
+        }
+
+        return mobile;
       },
     );
   }
