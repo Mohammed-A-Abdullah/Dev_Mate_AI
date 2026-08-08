@@ -1,7 +1,6 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:dev_mate_ai/core/theme/extensions/dropdown_theme_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomDropdownbuttonfield extends StatefulWidget {
@@ -72,8 +71,8 @@ class _CustomDropdownbuttonfieldState extends State<CustomDropdownbuttonfield> {
         closedFillColor: effectiveColor,
         expandedFillColor: effectiveColor,
 
-        closedBorderRadius: BorderRadius.circular(12.r),
-        expandedBorderRadius: BorderRadius.circular(12.r),
+        closedBorderRadius: BorderRadius.circular(12),
+        expandedBorderRadius: BorderRadius.circular(12),
         closedBorder: BoxBorder.all(
           color: Theme.of(context).colorScheme.outline,
           width: 1.5,
@@ -84,15 +83,15 @@ class _CustomDropdownbuttonfieldState extends State<CustomDropdownbuttonfield> {
         ),
         hintStyle: GoogleFonts.inter(
           color: Theme.of(context).hintColor,
-          fontSize: 14.sp,
+          fontSize: 14,
         ),
         headerStyle: GoogleFonts.inter(
           color: dropdownTheme?.textDropdown,
-          fontSize: 16.sp,
+          fontSize: 16,
         ),
         listItemStyle: GoogleFonts.inter(
           color: dropdownTheme?.textDropdown,
-          fontSize: 16.sp,
+          fontSize: 16,
         ),
         prefixIcon: const Icon(Icons.code),
       ),

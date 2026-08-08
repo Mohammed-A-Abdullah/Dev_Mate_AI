@@ -8,10 +8,18 @@ import '../cubit/code_review_state.dart';
 
 class CustomReveiwTypesChips extends StatelessWidget {
   const CustomReveiwTypesChips({super.key, required this.state});
+
   final CodeReviewState state;
+
   @override
   Widget build(BuildContext context) {
     final local = S.of(context);
+
+    final width = MediaQuery.sizeOf(context).width;
+
+    final isTablet = width >= 600;
+    final isDesktop = width >= 1024;
+
     final reviewOptions = const [
       'Bugs',
       'Security',
@@ -28,29 +36,51 @@ class CustomReveiwTypesChips extends StatelessWidget {
       'Documentation',
       'Testing Suggestions',
     ];
+
+    final chipFontSize = isDesktop
+        ? 15.0
+        : isTablet
+        ? 14.0
+        : 13.0;
+
+    final spacing = isDesktop ? 10.0 : 8.0;
+
     return InputDecorator(
       decoration: InputDecoration(
         labelText: local.reviewFocus,
         hintText: local.reviewFocusDes,
       ),
+
       child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
+        spacing: spacing,
+        runSpacing: spacing,
+
         children: reviewOptions.map((tech) {
           final selected = state.reviewTypes.contains(tech);
+
           return FilterChip(
             showCheckmark: false,
+
             backgroundColor: Theme.of(context).colorScheme.outline,
+
             selectedColor: Theme.of(context).colorScheme.secondary,
+
             label: Text(
               tech,
+
               style: GoogleFonts.inter(
+                fontSize: chipFontSize,
+
                 color: selected
                     ? Theme.of(context).colorScheme.outline
                     : Theme.of(context).colorScheme.secondary,
+
+                fontWeight: FontWeight.w500,
               ),
             ),
+
             selected: selected,
+
             onSelected: (_) {
               context.read<CodeReviewCubit>().toggleReviewType(tech);
             },

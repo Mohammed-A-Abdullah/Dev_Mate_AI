@@ -7,7 +7,6 @@ import 'package:dev_mate_ai/features/explain_code/presentation/cubit/explain_cod
 import 'package:dev_mate_ai/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:re_editor/re_editor.dart';
 
@@ -65,7 +64,7 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
 
     return BlocConsumer<ExplainCubit, ExplainCodeState>(
       listenWhen: (previous, current) =>
-      previous.isLoading != current.isLoading ||
+          previous.isLoading != current.isLoading ||
           previous.errorMessage != current.errorMessage ||
           previous.explanation != current.explanation,
       listener: (context, state) {
@@ -92,9 +91,7 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
             message: state.errorMessage!,
             backgroundColor: Theme.of(context).colorScheme.error,
           );
-          print(state.errorMessage);
           context.read<ExplainCubit>().clearError();
-          print(state.errorMessage);
         }
 
         if (state.explanation != null && !state.isLoading) {
@@ -110,48 +107,77 @@ class _ExplainCodeViewState extends State<ExplainCodeView> {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: CustomAppBar(title: local.explainCode),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(16.sp),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const HeightSpace(height: 35),
-                  CustomDropdownbuttonfield(
-                    labelText: local.language,
-                    hintText: local.selectProgrammingLang,
-                    items: LanguageHelper.languages,
-                    initialValue: state.language,
-                    onChanged: (value) {
-                      if (value != null) {
-                        context.read<ExplainCubit>().updateLanguage(value);
-                      }
-                    },
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              final width = constraints.maxWidth;
+
+              final isTablet = width >= 600;
+              final isDesktop = width >= 1024;
+
+              final horizontalPadding = isDesktop
+                  ? 40.0
+                  : (isTablet ? 28.0 : 16.0);
+
+              final editorHeight = isDesktop
+                  ? 450.0
+                  : (isTablet ? 400.0 : 320.0);
+
+              return SingleChildScrollView(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: isDesktop ? 900 : double.infinity,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(horizontalPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const HeightSpace(height: 35),
+                          CustomDropdownbuttonfield(
+                            labelText: local.language,
+                            hintText: local.selectProgrammingLang,
+                            items: LanguageHelper.languages,
+                            initialValue: state.language,
+                            onChanged: (value) {
+                              if (value != null) {
+                                context.read<ExplainCubit>().updateLanguage(
+                                  value,
+                                );
+                              }
+                            },
+                          ),
+                          const HeightSpace(height: 20),
+                          CustomCodeEditor(
+                            controller: _codeController,
+                            height: editorHeight,
+                          ),
+                          const HeightSpace(height: 20),
+                          CustomExplainCodeTextField(
+                            instructionsController: _instructionsController,
+                          ),
+                          const HeightSpace(height: 20),
+                          CustomFeatureButton(
+                            text: local.explainCode,
+                            isLoading: state.isLoading,
+                            onTap: state.isLoading
+                                ? null
+                                : () {
+                                    FocusScope.of(context).unfocus();
+                                    context.read<ExplainCubit>().submitExplain(
+                                      code: _codeController.text,
+                                      additionalInstructions:
+                                          _instructionsController.text,
+                                    );
+                                  },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  const HeightSpace(height: 20),
-                  CustomCodeEditor(controller: _codeController),
-                  const HeightSpace(height: 20),
-                  CustomExplainCodeTextField(
-                    instructionsController: _instructionsController,
-                  ),
-                  const HeightSpace(height: 20),
-                  CustomFeatureButton(
-                    text: local.explainCode,
-                    isLoading: state.isLoading,
-                    onTap: state.isLoading
-                        ? null
-                        : () {
-                            FocusScope.of(context).unfocus();
-                            context.read<ExplainCubit>().submitExplain(
-                              code: _codeController.text,
-                              additionalInstructions:
-                                  _instructionsController.text,
-                            );
-                          },
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         );
       },
