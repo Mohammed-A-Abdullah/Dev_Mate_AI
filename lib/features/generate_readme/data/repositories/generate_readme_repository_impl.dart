@@ -23,7 +23,6 @@ class GenerateReadmeRepositoryImpl implements GenerateReadmeRepository {
         );
       }
 
-      // حفظ السجل في الفايربيس داخل طبقة البيانات
       _saveToHistory(request, result);
 
       return result;
@@ -57,7 +56,6 @@ class GenerateReadmeRepositoryImpl implements GenerateReadmeRepository {
         response: result,
       );
     } catch (_) {
-      // إخفاء خطأ الحفظ لكي لا يعطل تجربة المستخدم الأساسية
     }
   }
 

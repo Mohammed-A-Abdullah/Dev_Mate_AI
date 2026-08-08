@@ -41,11 +41,16 @@ class ReadmeCubit extends Cubit<ReadmeState> {
     required String githubLink,
   }) async {
     emit(
-      state.copyWith(
+      ReadmeState(
         isLoading: true,
         projectTitle: title,
         projectDescription: description,
         githubLink: githubLink,
+        projectType: state.projectType,
+        features: state.features,
+        technologies: state.technologies,
+        readmeResult: null,
+        errorMessage: null,
       ),
     );
 
