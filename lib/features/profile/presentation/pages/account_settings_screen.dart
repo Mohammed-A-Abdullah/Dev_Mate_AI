@@ -86,7 +86,11 @@ class AccountSettingsScreen extends StatelessWidget {
                             _buildListTile(
                               context: context,
                               title: local.email,
-                              subtitle: profile?.email ?? local.loading,
+                              subtitle: profile == null
+                                  ? local.loading
+                                  : profile.isGuest
+                                  ? local.guestEplorer
+                                  : profile.email,
                               trailing: const Icon(Icons.email),
                             ),
                           ],

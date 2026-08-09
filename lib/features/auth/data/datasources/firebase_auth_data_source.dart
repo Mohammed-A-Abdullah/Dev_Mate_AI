@@ -134,9 +134,16 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
 
   @override
   Future<AuthUserEntity?> signInAnonymously() async {
-    final credential = await _auth.signInAnonymously();
+    try {
+      final credential = await _auth.signInAnonymously();
+      final user = credential.user;
 
-    return _mapUser(credential.user!);
+      return user == null ? null : _mapUser(user);
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_firebaseError(e));
+    } catch (e) {
+      throw Exception('Unable to continue as guest: $e');
+    }
   }
 
   @override
@@ -179,6 +186,9 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
       case 'network-request-failed':
         return 'No internet connection.';
 
+      case 'operation-not-allowed':
+        return 'Guest access is not enabled for this app.';
+
       case 'too-many-requests':
         return 'Too many attempts. Try again later.';
 
@@ -194,7 +204,8 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
 
   @override
   Future<AuthUserEntity?> getCurrentUser() async {
-    return _mapUser(_auth.currentUser!);
+    final user = _auth.currentUser;
+    return user == null ? null : _mapUser(user);
   }
 
   @override
