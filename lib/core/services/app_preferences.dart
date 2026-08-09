@@ -1,10 +1,25 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
+  static const String _initializedKey = 'app_initialized';
+  static const String themeKey = 'is_dark_mode';
+  static const String languageKey = 'selected_language';
   static const String onboardingKey = 'onboarding_screen';
   static const String authEmailKey = 'auth_email';
   static const String authPasswordKey = 'auth_password';
   static const String authStatusKey = 'auth_status';
+
+  static Future<void> initializeDefaults() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(_initializedKey) ?? false) {
+      return;
+    }
+
+    await prefs.setBool(themeKey, true);
+    await prefs.setString(languageKey, 'en');
+    await prefs.remove(onboardingKey);
+    await prefs.setBool(_initializedKey, true);
+  }
 
   static Future<bool> isOnboardingCompleted() async {
     final prefs = await SharedPreferences.getInstance();

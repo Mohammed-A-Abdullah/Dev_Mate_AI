@@ -1,5 +1,6 @@
 import 'package:dev_mate_ai/core/di/service_locator.dart';
 import 'package:dev_mate_ai/core/routing/route_builder.dart';
+import 'package:dev_mate_ai/core/services/app_preferences.dart';
 import 'package:dev_mate_ai/core/theme/dark_theme.dart';
 import 'package:dev_mate_ai/core/theme/light_theme.dart';
 import 'package:dev_mate_ai/core/theme/theme_cubit.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  await AppPreferences.initializeDefaults();
   await setupServiceLocator();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
