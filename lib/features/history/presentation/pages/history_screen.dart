@@ -1,5 +1,8 @@
 import 'package:dev_mate_ai/core/di/service_locator.dart';
+import 'package:dev_mate_ai/core/widgets/custom_ai_model_answer_screen.dart';
 import 'package:dev_mate_ai/features/chat_screen/presentation/pages/chat_screen.dart';
+import 'package:dev_mate_ai/features/chat_screen/domain/usecases/load_messages_usecase.dart';
+import 'package:dev_mate_ai/features/history/domain/entity/history_entity.dart';
 import 'package:dev_mate_ai/core/widgets/custom_app_bar.dart';
 import 'package:dev_mate_ai/core/widgets/spacing_widgets.dart';
 import 'package:dev_mate_ai/features/history/presentation/widgets/custom_history_card_widget.dart';
@@ -67,6 +70,43 @@ class _HistoryViewState extends State<HistoryView> {
     setState(() {
       searchQuery = historyController.text.trim().toLowerCase();
     });
+  }
+
+  Future<void> _openHistoryItem(
+    BuildContext context,
+    HistoryEntity item,
+  ) async {
+    if (item.type.toLowerCase() == 'chat') {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ChatScreen(chatId: item.id, showBackButton: true),
+        ),
+      );
+    } else {
+      final messages = await sl<LoadMessagesUsecase>().call(item.id);
+      final assistantMessages = messages
+          .where((message) => message['isUser'] != true)
+          .map((message) => message['text']?.toString() ?? '')
+          .where((message) => message.isNotEmpty)
+          .toList();
+      final answer = assistantMessages.isNotEmpty
+          ? assistantMessages.last
+          : (messages.isNotEmpty
+                ? messages.last['text']?.toString() ?? ''
+                : item.lastMessage);
+
+      if (context.mounted) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => CustomAiModelAnswerScreen(data: answer),
+          ),
+        );
+      }
+    }
+
+    if (context.mounted) {
+      await context.read<HistoryCubit>().loadHistory();
+    }
   }
 
   @override
@@ -234,19 +274,8 @@ class _HistoryViewState extends State<HistoryView> {
                                             : item.lastMessage,
                                         chipType: item.type,
                                         time: item.updatedAt,
-                                        onTap: () {
-                                          if (item.type.toLowerCase() ==
-                                              'chat') {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (_) => ChatScreen(
-                                                  chatId: item.id,
-                                                  showBackButton: true,
-                                                ),
-                                              ),
-                                            );
-                                          } else {}
-                                        },
+                                        onTap: () =>
+                                            _openHistoryItem(context, item),
                                       ),
                                     );
                                   },

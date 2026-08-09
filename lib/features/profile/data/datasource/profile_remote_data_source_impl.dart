@@ -11,7 +11,7 @@ import 'profile_remote_data_source.dart';
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final FirebaseAuth auth;
   final FirebaseFirestore firestore;
-  final String cloudName = 'ednlfqzo'; 
+  final String cloudName = 'ednlfqzo';
   final String uploadPreset = 'igtrcmzy';
 
   ProfileRemoteDataSourceImpl({required this.auth, required this.firestore});
@@ -37,19 +37,20 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       for (var doc in conversationsSnapshot.docs) {
         final data = doc.data();
         final type = (data['type'] ?? '').toString().toLowerCase();
+        final messageCount = (data['messageCount'] as num?)?.toInt() ?? 0;
 
         if (type.contains('chat')) {
-          chatsCount++;
+          chatsCount += messageCount;
         } else if (type.contains('readme')) {
-          readmesCount++;
+          readmesCount += messageCount;
         } else if (type.contains('review') || type.contains('analysis')) {
-          analysisCount++;
+          analysisCount += messageCount;
         } else if (type.contains('debug')) {
-          debugCount++;
+          debugCount += messageCount;
         } else if (type.contains('explain')) {
-          explainCount++;
+          explainCount += messageCount;
         } else if (type.contains('planner')) {
-          plannerCount++;
+          plannerCount += messageCount;
         }
       }
     } catch (e) {
@@ -143,7 +144,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     if (user == null) throw Exception('User is not logged in');
 
     try {
-      // 1. Delete the conversations subcollection (in chunks of 500)
       final conversationsSnapshot = await firestore
           .collection('user')
           .doc(user.uid)
@@ -159,10 +159,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         await batch.commit();
       }
 
-      // 2. Delete the user document itself
       await firestore.collection('user').doc(user.uid).delete();
 
-      // 3. Delete the Firebase Auth account (must be LAST)
       await user.delete();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
@@ -184,7 +182,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     try {
       await user.updateDisplayName(name);
 
-      // ✅ unified to 'user' (was 'users')
       await firestore.collection('user').doc(user.uid).set({
         'name': name,
       }, SetOptions(merge: true));

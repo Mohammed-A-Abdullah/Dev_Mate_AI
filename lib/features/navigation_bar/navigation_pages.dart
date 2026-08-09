@@ -7,7 +7,7 @@ import '../profile/presentation/pages/profile_screen.dart';
 class NavigationPages {
   static const pages = <Widget>[
     HomeScreen(),
-    ChatScreen(),
+    ChatScreen(listenToNavigation: true),
     HistoryScreen(),
     ProfileScreen(),
   ];

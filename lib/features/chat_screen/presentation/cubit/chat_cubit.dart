@@ -23,11 +23,17 @@ class ChatCubit extends Cubit<ChatState> {
   final List<ChatMessage> messages = [];
   String? currentChatId;
 
+  void startNewChat() {
+    currentChatId = null;
+    messages.clear();
+    emit(ChatInitial());
+  }
+
   Future<void> loadConversation(String chatId, {String? title}) async {
     currentChatId = chatId;
     messages.clear();
 
-    emit( ChatLoading());
+    emit(ChatLoading());
 
     try {
       final loadedMessages = await loadMessagesUsecase.call(chatId);

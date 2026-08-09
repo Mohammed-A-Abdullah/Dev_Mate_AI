@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../navigation_bar/presentation/cubit/navigation_bar_cubit.dart';
 import '../../domain/entities/chat_message_model.dart';
 import '../cubit/chat_cubit.dart';
 import '../cubit/chat_state.dart';
@@ -18,11 +19,13 @@ class ChatScreen extends StatelessWidget {
     this.chatId,
     this.initialMessages,
     this.showBackButton = false,
+    this.listenToNavigation = false,
   });
 
   final String? chatId;
   final List<Map<String, dynamic>>? initialMessages;
   final bool showBackButton;
+  final bool listenToNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +35,7 @@ class ChatScreen extends StatelessWidget {
         chatId: chatId,
         initialMessages: initialMessages,
         showBackButton: showBackButton,
+        listenToNavigation: listenToNavigation,
       ),
     );
   }
@@ -43,11 +47,13 @@ class ChatView extends StatefulWidget {
     this.chatId,
     this.initialMessages,
     required this.showBackButton,
+    required this.listenToNavigation,
   });
 
   final String? chatId;
   final List<Map<String, dynamic>>? initialMessages;
   final bool showBackButton;
+  final bool listenToNavigation;
 
   @override
   State<ChatView> createState() => _ChatViewState();
@@ -75,7 +81,7 @@ class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {
     final local = S.of(context);
-    return Scaffold(
+    final chatPage = Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: local.chat,
@@ -178,6 +184,19 @@ class _ChatViewState extends State<ChatView> {
           ),
         ),
       ),
+    );
+
+    if (!widget.listenToNavigation) {
+      return chatPage;
+    }
+
+    return BlocListener<NavigationCubit, int>(
+      listenWhen: (previous, current) =>
+          widget.chatId == null && current == 1 && previous != current,
+      listener: (context, index) {
+        context.read<ChatCubit>().startNewChat();
+      },
+      child: chatPage,
     );
   }
 }
